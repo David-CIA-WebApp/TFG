@@ -85,7 +85,7 @@ _/editClient/DNI_
 ### DELETES
 _/deleteUser/DNI_
 >Cambiando DNI por el dni de una persona
->Borra ese usuario
+Borra ese usuario
 
 _/deleteWorker/DNI_
 >Cambiando DNI por el dni de una persona
