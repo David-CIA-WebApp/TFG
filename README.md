@@ -36,7 +36,7 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 
 **_/addClients_**
 >Con una cabecera que contenga: 
-    - dni
+- dni
 >Convierte el usuario en cliente
 
 **_/addManager_**
