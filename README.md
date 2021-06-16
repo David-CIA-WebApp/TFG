@@ -22,7 +22,7 @@ Cambiando DNI por el dni de una persona, devuelve los datos de ese trabajador si
 
 # POSTS
 /addWorkers
-\nCon una cabecera que contenga: 
+Con una cabecera que contenga: 
     - passw
     - dni
     - tipo
