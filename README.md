@@ -2,49 +2,49 @@
 En esta API hay varias llamadas para gestionar el control de datos de usuarios de una página web. Estas son:
 
 ### GETS
-/users
+####_/users
 Devuelve una lista de todos los usuarios de la página
 
-/workers
+####_/workers
 Devuelve una lista de todos los trabajadores de la empresa
 
-/externalWorkers
+####_/externalWorkers
 Devuelve una lista de todos los trabajadores externos de la empresa
 
-/clients
+####_/clients
 Devuelve una lista de todos los clientes de la empresa
 
-/gestores
+####_/gestores
 Devuelve una lista de todos los gestores de la empresa
 
-/workers/DNI
+####_/workers/DNI
 Cambiando DNI por el dni de una persona, devuelve los datos de ese trabajador si existiese
 
 ### POSTS
-/addWorkers
+####_/addWorkers
 Con una cabecera que contenga: 
     - passw
     - dni
     - tipo
 Asocia al usuario con ese dni el tipo de trabajador y una contraseña
 
-/addExternalWorkers
+####_/addExternalWorkers
 Con una cabecera que contenga: 
     - dni
     - ocupacion
 Asocia al usuario con ese dni la ocupacion del trabajador externo
 
-/addClients
+####_/addClients
 Con una cabecera que contenga: 
     - dni
 Convierte el usuario en cliente
 
-/addManager
+####_/addManager
 Con una cabecera que contenga: 
     - dni
 Convierte el usuario en gestor
 
-/addUsers
+####_/addUsers
 Con una cabecera que contenga: 
     - nombre
     - apellidos
@@ -54,7 +54,7 @@ Con una cabecera que contenga:
     - telefono
 Crea un nuevo usuario en la base de datos
 
-/editUser/DNI
+####_/editUser/DNI
 Cambiando DNI por el dni de una persona
 Con una cabecera que contenga: 
     - nombre
@@ -64,41 +64,41 @@ Con una cabecera que contenga:
     - telefono
 Cambia los datos del usuario por estos nuevos
 
-/editWorker/DNI
+####_/editWorker/DNI
 Cambiando DNI por el dni de una persona
 Con una cabecera que contenga: 
     - passswd
 Cambia la contraseña del trabajador
 
-/editExternalWorker/DNI
+####_/editExternalWorker/DNI
 Cambiando DNI por el dni de una persona
 Con una cabecera que contenga: 
     - ocupacion
 Cambia la ocupacion del trabajador externo
 
-/editClient/DNI
+####_/editClient/DNI
 Cambiando DNI por el dni de una persona
 Con una cabecera que contenga: 
     - clientePotencial
 Indica si es o no cliente potencial
 
 ### DELETES
-/deleteUser/DNI
+####_/deleteUser/DNI
 Cambiando DNI por el dni de una persona
 Borra ese usuario
 
-/deleteWorker/DNI
+####_/deleteWorker/DNI
 Cambiando DNI por el dni de una persona
 Borra ese trabajador
 
-/deleteExternalWorker/DNI
+####_/deleteExternalWorker/DNI
 Cambiando DNI por el dni de una persona
 Borra ese trabajador externo
 
-/deleteClient/DNI
+####_/deleteClient/DNI
 Cambiando DNI por el dni de una persona
 Borra ese cliente
 
-/deleteManager/DNI
+####_/deleteManager/DNI
 Cambiando DNI por el dni de una persona
 Borra ese gestor
