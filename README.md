@@ -2,7 +2,7 @@
 En esta API hay varias llamadas para gestionar el control de datos de usuarios de una página web. Estas son:
 
 ### GETS
-####_/users
+_/users_
 Devuelve una lista de todos los usuarios de la página
 
 ####_/workers
