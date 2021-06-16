@@ -89,7 +89,7 @@ _/deleteUser/DNI_
 
 _/deleteWorker/DNI_
 >Cambiando DNI por el dni de una persona
->>Borra ese trabajador
+>Borra ese trabajador
 
 _/deleteExternalWorker/DNI_
 >Cambiando DNI por el dni de una persona
