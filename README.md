@@ -1,7 +1,7 @@
-## TFG
+# TFG
 En esta API hay varias llamadas para gestionar el control de datos de usuarios de una página web. Estas son:
 
-# GETS
+### GETS
 /users
 Devuelve una lista de todos los usuarios de la página
 
@@ -20,7 +20,7 @@ Devuelve una lista de todos los gestores de la empresa
 /workers/DNI
 Cambiando DNI por el dni de una persona, devuelve los datos de ese trabajador si existiese
 
-# POSTS
+### POSTS
 /addWorkers
 Con una cabecera que contenga: 
     - passw
@@ -82,7 +82,7 @@ Con una cabecera que contenga:
     - clientePotencial
 Indica si es o no cliente potencial
 
-# DELETES
+### DELETES
 /deleteUser/DNI
 Cambiando DNI por el dni de una persona
 Borra ese usuario
