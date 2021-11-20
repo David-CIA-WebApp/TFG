@@ -1,16 +1,21 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 from users import users
 from flask_mysqldb import MySQL
 from encriptacion import encriptar
 
-
 app = Flask(__name__)
+
+CORS(app, resources={r'/*': {'origins': '*'}})
+
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'users_api'
 
+
 mysql = MySQL(app)
+
 
 #Testing Route
 @app.route('/', methods=['GET'])
@@ -445,6 +450,25 @@ def deleteManager(user_dni):
     cur.execute('DELETE from gestor where id = {}'.format(res[0][0]))
     mysql.connection.commit()
     return jsonify({"message": "Gestor borrado correctamente"})
+
+
+
+#Login as admin
+@app.route('/login', methods=['POST'])
+def login():
+    mail = request.json['mail']
+    password = request.json['password']
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM `users` JOIN `workers` WHERE id_persona LIKE user_id AND email LIKE "{}"'.format(mail))
+    data = cur.fetchall()
+    if len(data) != 0:
+        if data[0][10] == "Administrador" and data[0][8] == password:
+            return jsonify({ "message": "Login accepted", "status": 200, "accepted": True })
+        else:
+            return jsonify({ "message": "User denied", "status": 200, "accepted": False })
+    else:
+        return jsonify({ "message": "User not found", "status": 404, "accepted": False })
+
 
 
 if __name__ == '__main__':
