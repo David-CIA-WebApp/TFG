@@ -30,7 +30,7 @@ services:
        - "80:8081"
      restart: always
      environment:
-      VUE_APP_BACK_URL: http://141.94.203.217:8001
+       VUE_APP_BACK_URL: http://141.94.203.217:8001
 
 volumes:
     db_data: {}
