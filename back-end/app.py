@@ -9,10 +9,10 @@ app = Flask(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST'] or 'localhost'
-app.config['MYSQL_USER'] = os.environ['MYSQL_USER'] or 'root'
-app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD'] or ''
-app.config['MYSQL_DB'] = os.environ['MYSQL_DB'] or 'users_api'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] ='root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'users_api'
 
 
 mysql = MySQL(app)
@@ -206,9 +206,12 @@ def addWorkers():
         if i[3] == dni:
             user_id = i[0]
 
-    cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (passw, user_id, tipo))
-    mysql.connection.commit()
-    return jsonify({'message': "Trabajador insertado en la base de datos"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (passw, user_id, tipo))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajador insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -227,9 +230,12 @@ def addExternalWorkers():
         if i[3] == dni:
             user_id = i[0]
 
-    cur.execute('INSERT INTO externalworkers (user_id, ocupacion) VALUES (%s, %s)', (user_id, ocupacion))
-    mysql.connection.commit()
-    return jsonify({'message': "Trabajador Externo insertado en la base de datos"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('INSERT INTO externalworkers (user_id, ocupacion) VALUES (%s, %s)', (user_id, ocupacion))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajador Externo insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -248,9 +254,12 @@ def addClients():
         if i[3] == dni:
             user_id = i[0]
 
-    cur.execute('INSERT INTO clients (user_id, clientePotencial) VALUES (%s, %s)', (user_id, clientePotencial))
-    mysql.connection.commit()
-    return jsonify({'message': "Cliente insertado en la base de datos"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('INSERT INTO clients (user_id, clientePotencial) VALUES (%s, %s)', (user_id, clientePotencial))
+        mysql.connection.commit()
+        return jsonify({'message': "Cliente insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -268,9 +277,13 @@ def addManager():
         if i[3] == dni:
             user_id = i[0]
 
-    cur.execute('INSERT INTO gestor (user_id) VALUES (%s)', (user_id))
-    mysql.connection.commit()
-    return jsonify({'message': "Gestor insertado en la base de datos"})
+
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('INSERT INTO gestor (user_id) VALUES (%s)', (user_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Gestor insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -285,10 +298,13 @@ def addUsers():
     direccion = request.json['direccion']
     telefono = request.json['telefono']
 
-    cur = mysql.connection.cursor()
-    cur.execute('INSERT INTO users (nombre, apellidos, dni, email, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)', (nombre, apellidos, dni, email, direccion, telefono))
-    mysql.connection.commit()
-    return jsonify({'message': "Usuario insertado en la base de datos"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO users (nombre, apellidos, dni, email, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)', (nombre, apellidos, dni, email, direccion, telefono))
+        mysql.connection.commit()
+        return jsonify({'message': "Usuario insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -308,9 +324,13 @@ def editUsers(user_dni):
     for i in data:
         if i[3] == user_dni:
             res.append(i)
-    cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, user_dni, email, direccion, telefono, res[0][0]))
-    mysql.connection.commit()
-    return jsonify({'message': "Usuario editado correctamente"})
+    
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, user_dni, email, direccion, telefono, res[0][0]))
+        mysql.connection.commit()
+        return jsonify({'message': "Usuario editado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 #Edit Workers Routes
@@ -325,9 +345,13 @@ def editWorkers(user_dni):
     for i in data:
         if i[3] == user_dni:
             res.append(i)
-    cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, res[0][0]))
-    mysql.connection.commit()
-    return jsonify({'message': "Trabajador editado correctamente"})
+    
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, res[0][0]))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajador editado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -343,9 +367,13 @@ def editExternalWorker(user_dni):
     for i in data:
         if i[3] == user_dni:
             res.append(i)
-    cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, res[0][0]))
-    mysql.connection.commit()
-    return jsonify({'message': "Trabajador Externo editado correctamente"})
+    
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, res[0][0]))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajador Externo editado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -361,9 +389,13 @@ def editClient(user_dni):
     for i in data:
         if i[3] == user_dni:
             res.append(i)
-    cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, res[0][0]))
-    mysql.connection.commit()
-    return jsonify({'message': "Trabajador Externo editado correctamente"})
+    
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, res[0][0]))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajador Externo editado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -378,11 +410,14 @@ def deleteUser(user_dni):
         if i[3] == user_dni:
             res.append(i)
 
-    cur.execute('DELETE from workers where user_id = {}'.format(res[0][0]))
-    mysql.connection.commit()
-    cur.execute('DELETE from users where id_persona = {}'.format(res[0][0]))
-    mysql.connection.commit()
-    return jsonify({"message": "Usuario borrado correctamente"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('DELETE from workers where user_id = {}'.format(res[0][0]))
+        mysql.connection.commit()
+        cur.execute('DELETE from users where id_persona = {}'.format(res[0][0]))
+        mysql.connection.commit()
+        return jsonify({"message": "Usuario borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -397,9 +432,12 @@ def deleteWorker(user_dni):
         if i[3] == user_dni:
             res.append()
     
-    cur.execute('DELETE from workers where id = {}'.format(res[0][0]))
-    mysql.connection.commit()
-    return jsonify({"message": "Trabajador borrado correctamente"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('DELETE from workers where id = {}'.format(res[0][0]))
+        mysql.connection.commit()
+        return jsonify({"message": "Trabajador borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -414,9 +452,12 @@ def deleteExternalWorker(user_dni):
         if i[3] == user_dni:
             res.append()
     
-    cur.execute('DELETE from externalworkers where id = {}'.format(res[0][0]))
-    mysql.connection.commit()
-    return jsonify({"message": "Trabajador Externo borrado correctamente"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('DELETE from externalworkers where id = {}'.format(res[0][0]))
+        mysql.connection.commit()
+        return jsonify({"message": "Trabajador Externo borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -431,9 +472,12 @@ def deleteClient(user_dni):
         if i[3] == user_dni:
             res.append()
     
-    cur.execute('DELETE from clients where id = {}'.format(res[0][0]))
-    mysql.connection.commit()
-    return jsonify({"message": "Cliente borrado correctamente"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('DELETE from clients where id = {}'.format(res[0][0]))
+        mysql.connection.commit()
+        return jsonify({"message": "Cliente borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -448,9 +492,12 @@ def deleteManager(user_dni):
         if i[3] == user_dni:
             res.append()
     
-    cur.execute('DELETE from gestor where id = {}'.format(res[0][0]))
-    mysql.connection.commit()
-    return jsonify({"message": "Gestor borrado correctamente"})
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur.execute('DELETE from gestor where id = {}'.format(res[0][0]))
+        mysql.connection.commit()
+        return jsonify({"message": "Gestor borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 

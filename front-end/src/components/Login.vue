@@ -1,13 +1,14 @@
 <template>
   <div class="login">
-      <p>Inicia sesión</p>
       <div>
+        <img v-bind:src="logo" alt="" />
         <input v-model="mail" type="text" placeholder="correo"/>
         <br>
         <input v-model="password" type="password" placeholder="contraseña"/>
       </div>
         <br>
       <button
+      class="button"
       @click="login()">
         Entrar
       </button>
@@ -26,7 +27,8 @@ export default {
     return {
       logged: false,
       mail: "",
-      password: ""
+      password: "",
+      logo: "https://i.ibb.co/YpKv3mr/LOGO-DAVID-CIA.png"
     }
   },
   methods: {
@@ -67,6 +69,10 @@ export default {
 h3 {
   margin: 40px 0 0;
 }
+img {
+  max-width: 100%;
+  height: 300px;
+}
 ul {
   list-style-type: none;
   padding: 0;
@@ -76,10 +82,10 @@ li {
   margin: 0 10px;
 }
 p {
-  color: #5419c2;
+  color: #ffffff;
 }
 .login {
-  background-color: rgba(0, 255, 255, 0.212);
+  background-color: #102797;
   width: 30%;
   position: relative;
   margin-left: auto;
@@ -88,7 +94,44 @@ p {
   border-radius: 12px;
 }
 input {
+  font-size: 18px;
+  margin-top: 20px;
+  width: 80%;
+  height: 30px;
   border-style: none;
   border-radius: 5px;
+}
+button {
+  position: relative;
+  background-color: #90cbee;
+  border: none;
+  font-size: 18px;
+  color: #000000;
+  padding: 10px;
+  width: 150px;
+  text-align: center;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+.button:after {
+    content: "";
+    background: #FFFFFF;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px!important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+.button:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
 }
 </style>
