@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     login() {
-      const path = `${process.env.VUE_APP_BACK_URL}/login`;
+      const path = `http://141.94.203.217:8001/login`;
       const config = {
         method: 'post',
         url: path,
