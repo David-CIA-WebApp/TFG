@@ -19,4 +19,4 @@ COPY . .
 # construir aplicación para producción minificada
 RUN npm run build
 
-CMD [ "http-server", "dist" ]
+CMD [ "http-server", "-P", "http://localhost:8080?", "dist" ]
