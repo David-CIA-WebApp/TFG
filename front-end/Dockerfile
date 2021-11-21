@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:latest
+FROM node:16.8.3
 WORKDIR /app
 ADD src .
 ADD public .
