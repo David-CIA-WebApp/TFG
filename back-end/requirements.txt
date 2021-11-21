@@ -23,7 +23,6 @@ itsdangerous==2.0.1
 Jinja2==3.0.2
 lxml==4.6.3
 MarkupSafe==2.0.1
-mysqlclient==2.0.3
 Pillow==8.4.0
 pipenv==2021.11.15
 platformdirs==2.4.0
