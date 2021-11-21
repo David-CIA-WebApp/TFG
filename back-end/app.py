@@ -31,7 +31,7 @@ def getUsers():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * from users')
     data = cur.fetchall()
-    res = []
+    res = ["test"]
     for i in data:
         user_n = {
             "id": i[0],
