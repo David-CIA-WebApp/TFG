@@ -16,7 +16,6 @@ RUN npm install
 # copiar los archivos y carpetas del proyecto al directorio de trabajo actual (es decir, la carpeta 'app')
 COPY . .
 
-ENV VUE_APP_BACK_URL "http://141.94.203.217:8001"
 # construir aplicación para producción minificada
 RUN npm run build
 
