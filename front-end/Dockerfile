@@ -1,4 +1,10 @@
 # syntax=docker/dockerfile:1
-FROM nginx:latest
-ADD dist /user/share/nginx/html/
-CMD ["nginx", "-g", "daemon off;"]
+FROM node:latest
+WORKDIR /app
+ADD src .
+ADD public .
+ADD babel.config.js .
+ADD package-lock.json .
+ADD package.json .
+RUN npm i
+CMD ["npm", "run", "serve"]
