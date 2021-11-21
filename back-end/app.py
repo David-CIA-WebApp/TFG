@@ -9,10 +9,16 @@ app = Flask(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST'] or 'localhost'
-app.config['MYSQL_USER'] = os.environ['MYSQL_USER'] or 'root'
-app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD'] or ''
-app.config['MYSQL_DB'] = os.environ['MYSQL_DB'] or 'users_api'
+try:
+    app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
+    app.config['MYSQL_USER'] = os.environ['MYSQL_USER']
+    app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD']
+    app.config['MYSQL_DB'] = os.environ['MYSQL_DB']
+except:
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'root'
+    app.config['MYSQL_PASSWORD'] = ''
+    app.config['MYSQL_DB'] = 'users_api'
 
 
 mysql = MySQL(app)

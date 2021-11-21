@@ -48,9 +48,10 @@ export default {
       };
       axios(config)
         .then((res) => {
-          console.log(res.data);
           if (res.data.accepted) this.logged = true;
+          
           this.$emit("logging", this.logged);
+          this.$emit("loadUsers");
         })
         .catch((error) => {
           // eslint-disable-next-line
