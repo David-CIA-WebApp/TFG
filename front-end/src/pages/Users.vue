@@ -1,7 +1,8 @@
 <template>
   <div id="login">
 
-    <div v-if="forceReload">
+    <p style="color: red;">{{messageAccess}}</p>
+    <div v-if="forceReload && logged">
     <h3>USUARIOS</h3>
       <table class="table table-striped" id="users">
         <thead>
@@ -151,7 +152,7 @@ export default {
   },
   data() {
     return {
-      logged: true,
+      logged: false,
       messageAccess: "",
       users: [],
       workers: [],
@@ -163,6 +164,7 @@ export default {
   },
   methods: {
     loadUsers() {
+      this.logged = localStorage.logged;
       const path = `${process.env.VUE_APP_BACK_URL}/users`;
       const config = {
         method: 'get',

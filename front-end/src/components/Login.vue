@@ -50,6 +50,7 @@ export default {
         .then((res) => {
           if (res.data.accepted) this.logged = true;
           
+          localStorage.logged = this.logged;
           this.$emit("logging", this.logged);
         })
         .catch((error) => {
