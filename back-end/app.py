@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
+from flask_cors.core import try_match
 from users import users
 from flask_mysqldb import MySQL
 from encriptacion import encriptar
@@ -206,12 +207,9 @@ def addWorkers():
     tipo = request.json['tipo']
     
     cur = mysql.connection.cursor()
-    cur.execute("Select * from users")
+    cur.execute("Select * from users WHERE dni LIKE '" + dni + "'")
     data = cur.fetchall()
-    user_id = 0
-    for i in data:
-        if i[3] == dni:
-            user_id = i[0]
+    user_id = data[0][0]
 
     if request.headers['Authorization'] == "0i234c6c89":
         cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (passw, user_id, tipo))
@@ -230,12 +228,9 @@ def addExternalWorkers():
     ocupacion = request.json['ocupacion']
     
     cur = mysql.connection.cursor()
-    cur.execute("Select * from users")
+    cur.execute("Select * from users WHERE dni LIKE '" + dni + "'")
     data = cur.fetchall()
-    user_id = 0
-    for i in data:
-        if i[3] == dni:
-            user_id = i[0]
+    user_id = data[0][0]
 
     if request.headers['Authorization'] == "0i234c6c89":
         cur.execute('INSERT INTO externalworkers (user_id, ocupacion) VALUES (%s, %s)', (user_id, ocupacion))
@@ -254,12 +249,9 @@ def addClients():
     clientePotencial = request.json['clientePotencial']
     
     cur = mysql.connection.cursor()
-    cur.execute("Select * from users")
+    cur.execute("Select * from users WHERE dni LIKE '" + dni + "'")
     data = cur.fetchall()
-    user_id = 0
-    for i in data:
-        if i[3] == dni:
-            user_id = i[0]
+    user_id = data[0][0]
 
     if request.headers['Authorization'] == "0i234c6c89":
         cur.execute('INSERT INTO clients (user_id, clientePotencial) VALUES (%s, %s)', (user_id, clientePotencial))
@@ -277,12 +269,9 @@ def addManager():
     dni = request.json['dni']
     
     cur = mysql.connection.cursor()
-    cur.execute("Select * from users")
+    cur.execute("Select * from users WHERE dni LIKE '" + dni + "'")
     data = cur.fetchall()
-    user_id = 0
-    for i in data:
-        if i[3] == dni:
-            user_id = i[0]
+    user_id = data[0][0]
 
 
     if request.headers['Authorization'] == "0i234c6c89":
@@ -322,18 +311,32 @@ def editUsers(user_dni):
     email = request.json['email']
     direccion = request.json['direccion']
     telefono = request.json['telefono']
+    passswd = request.json['pass']
+    tipo = request.json['tipo']
+    ocupacion = request.json['ocupacion'] 
+    clientePotencial = request.json['clientePotencial']
     
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users')
+    cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append(i)
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, user_dni, email, direccion, telefono, res[0][0]))
+        cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, user_dni, email, direccion, telefono, user_id))
         mysql.connection.commit()
+        try:
+            cur.execute('UPDATE workers SET pass = %s, tipo = %s where user_id = %s', (passswd, tipo, user_id))
+            mysql.connection.commit()
+        except:
+            try:
+                cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, user_id))
+                mysql.connection.commit()
+            except:
+                try:
+                    cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, user_id))
+                    mysql.connection.commit()
+                except:
+                    pass
         return jsonify({'message': "Usuario editado correctamente"})
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -345,15 +348,12 @@ def editWorkers(user_dni):
     passswd = request.json['pass']
     
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users')
+    cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append(i)
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, res[0][0]))
+        cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador editado correctamente"})
     else:
@@ -367,15 +367,12 @@ def editExternalWorker(user_dni):
     ocupacion = request.json['ocupacion']
     
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users')
+    cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append(i)
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, res[0][0]))
+        cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador Externo editado correctamente"})
     else:
@@ -389,15 +386,12 @@ def editClient(user_dni):
     clientePotencial = request.json['clientePotencial']
     
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users')
+    cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append(i)
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, res[0][0]))
+        cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador Externo editado correctamente"})
     else:
@@ -409,17 +403,20 @@ def editClient(user_dni):
 @app.route('/deleteUser/<string:user_dni>', methods=['DELETE'])
 def deleteUser(user_dni):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users')
+    cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append(i)
+    user_id = data[0][0]
 
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('DELETE from workers where user_id = {}'.format(res[0][0]))
+        cur.execute('DELETE from clients where user_id = {}'.format(user_id))
         mysql.connection.commit()
-        cur.execute('DELETE from users where id_persona = {}'.format(res[0][0]))
+        cur.execute('DELETE from gestor where user_id = {}'.format(user_id))
+        mysql.connection.commit()
+        cur.execute('DELETE from externalworkers where user_id = {}'.format(user_id))
+        mysql.connection.commit()
+        cur.execute('DELETE from workers where user_id = {}'.format(user_id))
+        mysql.connection.commit()
+        cur.execute('DELETE from users where id_persona = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Usuario borrado correctamente"})
     else:
@@ -431,15 +428,12 @@ def deleteUser(user_dni):
 @app.route('/deleteWorker/<string:user_dni>', methods=['DELETE'])
 def deleteWorker(user_dni):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users JOIN workers where id_persona = user_id')
+    cur.execute("Select * from users JOIN workers WHERE id_persona = user_id and dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append()
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('DELETE from workers where id = {}'.format(res[0][0]))
+        cur.execute('DELETE from workers where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Trabajador borrado correctamente"})
     else:
@@ -451,15 +445,12 @@ def deleteWorker(user_dni):
 @app.route('/deleteExternalWorker/<string:user_dni>', methods=['DELETE'])
 def deleteExternalWorker(user_dni):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users JOIN externalworkers where id_persona = user_id')
+    cur.execute("Select * from users JOIN externalworkers WHERE id_persona = user_id and dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append()
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('DELETE from externalworkers where id = {}'.format(res[0][0]))
+        cur.execute('DELETE from externalworkers where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Trabajador Externo borrado correctamente"})
     else:
@@ -471,15 +462,12 @@ def deleteExternalWorker(user_dni):
 @app.route('/deleteClient/<string:user_dni>', methods=['DELETE'])
 def deleteClient(user_dni):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users JOIN clients where id_persona = user_id')
+    cur.execute("Select * from users JOIN clients WHERE id_persona = user_id and dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append()
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('DELETE from clients where id = {}'.format(res[0][0]))
+        cur.execute('DELETE from clients where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Cliente borrado correctamente"})
     else:
@@ -491,15 +479,12 @@ def deleteClient(user_dni):
 @app.route('/deleteManager/<string:user_dni>', methods=['DELETE'])
 def deleteManager(user_dni):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * from users JOIN gestor where id_persona = user_id')
+    cur.execute("Select * from users JOIN gestor WHERE id_persona = user_id and dni LIKE '" + user_dni + "'")
     data = cur.fetchall()
-    res = []
-    for i in data:
-        if i[3] == user_dni:
-            res.append()
+    user_id = data[0][0]
     
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('DELETE from gestor where id = {}'.format(res[0][0]))
+        cur.execute('DELETE from gestor where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Gestor borrado correctamente"})
     else:

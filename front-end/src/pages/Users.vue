@@ -144,7 +144,7 @@
       <h1>Sorry! This page is not available</h1>
     </div>
 
-    <div id="miModal" class="modal">
+    <div id="miModal" class="modal" v-if="forceReload">
       <div class="modal-contenido">
         <a href="#">X</a>
         <h3 style="margin-bottom: -2%;">{{actualUser.nombre}} - {{actualUser.dni}}</h3>
@@ -173,13 +173,15 @@
         
       <button
         class="button"
-        @click="actualizar()">
+        @click="actualizar(actualUser)"
+        href="#">
           Actualizar
       </button>
       
       <button
         class="button red"
-        @click="eliminar()">
+        @click="eliminar(actualUser)"
+        href="#"  >
           Eliminar
       </button>
       </div>  
@@ -277,11 +279,127 @@ export default {
     test(user) {
       this.actualUser = user;
     },
-    actualizar() {
+    actualizar(actualUser) {
+      if (actualUser.pass == null) {
+        actualUser.pass = "";
+      }
+      if (actualUser.tipo == null) {
+        actualUser.tipo = "";
+      }
+      if (actualUser.ocupacion == null) {
+        actualUser.ocupacion = "";
+      }
 
-    },
-    eliminar() {
+      const path = `${process.env.VUE_APP_BACK_URL}/editUser/${actualUser.dni}`;
+      const config = {
+        method: 'put',
+        url: path,
+        data: {
+          "apellidos": actualUser.apellidos,
+          "direccion": actualUser.direccion,
+          "dni": actualUser.dni,
+          "email": actualUser.email,
+          "nombre": actualUser.nombre,
+          "pass": actualUser.pass,
+          "telefono": actualUser.telefono,
+          "tipo": actualUser.tipo,
+          "ocupacion": actualUser.ocupacion,
+          "clientePotencial": false // TODO Aqui y en el formulario, añadir
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "0i234c6c89"
+        }
+      }
+      axios(config)
+      .then((res) => {
+        console.log(res);
+      });
       
+      this.forceReload = false;
+      setTimeout(() => {
+        this.forceReload = true;
+      }, 2000);
+
+      if (this.actualUser.pass == "") {
+        this.actualUser.pass = null;
+      }
+      if (this.actualUser.tipo == "") {
+        this.actualUser.tipo = null;
+      }
+      if (this.actualUser.ocupacion == "") {
+        this.actualUser.ocupacion = null;
+      }
+      // TODO El tipo (en trabajador=>tipo) es un enum, debe ser un select de: Técnico, Perito, Administrador
+    },
+    eliminar(actualUser) {
+      if (actualUser.pass != null || actualUser.tipo != null) {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteWorker/${actualUser.dni}`;
+        const config = {
+          method: 'delete',
+          url: path,
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "0i234c6c89"
+          }
+        }
+        axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+      }
+      if (actualUser.ocupacion != null) {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteExternalWorker/${actualUser.dni}`;
+        const config = {
+          method: 'delete',
+          url: path,
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "0i234c6c89"
+          }
+        }
+        axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+      }
+
+      
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteManager/${actualUser.dni}`;
+        const config = {
+          method: 'delete',
+          url: path,
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "0i234c6c89"
+          }
+        }
+        axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+
+        config.url = `${process.env.VUE_APP_BACK_URL}/deleteUser/${actualUser.dni}`;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+      setTimeout(() => {
+        this.forceReload = true;
+      }, 2000);
     }
   },
   mounted() {
