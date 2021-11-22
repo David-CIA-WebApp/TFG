@@ -51,7 +51,6 @@ export default {
           if (res.data.accepted) this.logged = true;
           
           this.$emit("logging", this.logged);
-          this.$emit("loadUsers");
         })
         .catch((error) => {
           // eslint-disable-next-line
