@@ -1,7 +1,6 @@
 <template>
   <div id="users">
 
-    <p style="color: red;">{{messageAccess}}</p>
     <div v-if="forceReload && logged">
     <h3>USUARIOS</h3>
       <table class="table table-striped" id="users">
@@ -17,7 +16,7 @@
         </thead>
         <tbody>
           <tr v-for="(user,i) in users" :key="i">
-            <td @click="test(user)">{{ user.nombre }}</td> 
+            <td><a href="#miModal" @click="test(user)"> {{ user.nombre }} </a></td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
             <td>{{ user.email }}</td> 
@@ -45,7 +44,7 @@
         </thead>
         <tbody>
           <tr v-for="(worker,i) in workers" :key="i">
-            <td>{{ worker.nombre }}</td> 
+            <td><a href="#miModal" @click="test(worker)"> {{ worker.nombre }} </a></td> 
             <td>{{ worker.apellidos }}</td> 
             <td>{{ worker.dni }}</td> 
             <td>{{ worker.email }}</td> 
@@ -74,7 +73,7 @@
         </thead>
         <tbody>
           <tr v-for="(ew,i) in externalWorkers" :key="i">
-            <td>{{ ew.nombre }}</td> 
+            <td><a href="#miModal" @click="test(ew)"> {{ ew.nombre }} </a></td> 
             <td>{{ ew.apellidos }}</td> 
             <td>{{ ew.dni }}</td> 
             <td>{{ ew.email }}</td> 
@@ -101,7 +100,7 @@
         </thead>
         <tbody>
           <tr v-for="(em,i) in economyManagers" :key="i">
-            <td>{{ em.nombre }}</td> 
+            <td><a href="#miModal" @click="test(em)"> {{ em.nombre }} </a></td> 
             <td>{{ em.apellidos }}</td> 
             <td>{{ em.dni }}</td> 
             <td>{{ em.email }}</td> 
@@ -128,7 +127,7 @@
         </thead>
         <tbody>
           <tr v-for="(client,i) in clients" :key="i">
-            <td>{{ client.nombre }}</td> 
+            <td><a href="#miModal" @click="test(client)"> {{ client.nombre }} </a></td> 
             <td>{{ client.apellidos }}</td> 
             <td>{{ client.dni }}</td> 
             <td>{{ client.email }}</td> 
@@ -139,6 +138,52 @@
         </tbody>
       </table>
     </div>
+
+    <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
+      <h1>Sorry! This page is not available</h1>
+    </div>
+
+    <div id="miModal" class="modal">
+      <div class="modal-contenido">
+        <a href="#">X</a>
+        <h3 style="margin-bottom: -2%;">{{actualUser.nombre}} - {{actualUser.dni}}</h3>
+        <p>Nombre:</p>
+        <input v-model="actualUser.nombre"/>
+        <p>Apellidos:</p>
+        <input v-model="actualUser.apellidos"/>
+        <p>DNI:</p>
+        <input v-model="actualUser.dni"/>
+        <p>Dirección:</p>
+        <input v-model="actualUser.direccion"/>
+        <p>Teléfono:</p>
+        <input v-model="actualUser.telefono"/>
+        <p>Correo:</p>
+        <input v-model="actualUser.email"/>
+
+        <p v-if="actualUser.pass != null">Contraseña:</p>
+        <input v-if="actualUser.pass != null" v-model="actualUser.pass"/>
+
+        <p v-if="actualUser.tipo != null">Ocupación:</p>
+        <input v-if="actualUser.tipo != null" v-model="actualUser.tipo"/>
+
+        <p v-if="actualUser.ocupacion != null">Ocupación:</p>
+        <input v-if="actualUser.ocupacion != null" v-model="actualUser.ocupacion"/>
+
+        
+      <button
+        class="button"
+        @click="actualizar()">
+          Actualizar
+      </button>
+      
+      <button
+        class="button red"
+        @click="eliminar()">
+          Eliminar
+      </button>
+      </div>  
+    </div>
+
   </div>
 </template>
 
@@ -153,19 +198,19 @@ export default {
   data() {
     return {
       logged: false,
-      messageAccess: "",
       users: [],
       workers: [],
       externalWorkers: [],
       economyManagers: [],
       clients: [],
-      forceReload: false
+      forceReload: false,
+      actualUser: {}
     }
   },
   methods: {
     loadUsers() {
       this.logged = localStorage.logged == 'true';
-      
+
       const path = `${process.env.VUE_APP_BACK_URL}/users`;
       const config = {
         method: 'get',
@@ -228,9 +273,14 @@ export default {
         this.forceReload = true;
       }, 100);
     },
-    test() {
-      console.log(this.logged);
-      console.log(this.forceReload);
+    test(user) {
+      this.actualUser = user;
+    },
+    actualizar() {
+
+    },
+    eliminar() {
+      
     }
   },
   mounted() {
@@ -271,4 +321,96 @@ export default {
   color: white;
 }
 
+.typewriter h1 {
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation: 
+    typing 3s steps(50, end),
+    blink-caret .75s step-end infinite;
+}
+ 
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+ 
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange; }
+}
+
+.modal-contenido{
+  background-color: #207fdd;
+  width:300px;
+  padding: 10px 20px;
+  margin: 1% auto;
+  position: relative;
+}
+.modal{
+  background-color: rgba(0,0,0,.8);
+  position:fixed;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  opacity:0;
+  pointer-events:none;
+  transition: all 1s;
+}
+#miModal:target{
+  opacity:1;
+  pointer-events:auto;
+}
+.modal-contenido p {
+  margin-top: 5%;
+  margin-bottom: 1%;
+  color: white;
+}
+.modal-contenido input {
+  width: 90%;
+}
+
+button {
+  margin-top: 5%;
+  position: relative;
+  background-color: #129232;
+  border: none;
+  font-size: 15px;
+  color: #000000;
+  padding: 5px;
+  width: 100px;
+  text-align: center;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.red {
+  background-color: #921212;
+}
+.button:after {
+    content: "";
+    background: #FFFFFF;
+    display: block;
+    position: absolute;
+    padding-top: 100%;
+    padding-left: 150%;
+    margin-left: -20px!important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+.button:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
 </style>

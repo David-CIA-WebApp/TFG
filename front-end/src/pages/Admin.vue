@@ -37,10 +37,13 @@ export default {
       } else {
         this.messageAccess = "";
       }
+    },
+    loadData() {
+      this.logged = localStorage.logged == 'true';
     }
   },
   mounted() {
-
+    this.loadData();
   }
 }
 </script>
