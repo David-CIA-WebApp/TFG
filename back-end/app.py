@@ -168,7 +168,7 @@ def getGestores():
 @app.route('/workers/<string:user_dni>')
 def getWorkerByDNI(user_dni):
     cur = mysql.connection.cursor()
-    cur.execute('select * from users join workers where id_persona = user_id')
+    cur.execute('select * from users join workers where id_persona = user_id and dni LIKE "' + user_dni + '"')
     data = cur.fetchall()
     js = []
 
@@ -188,9 +188,10 @@ def getWorkerByDNI(user_dni):
             }
         js.append(user_n)
 
-    for i in js:
-        if i['dni'] == user_dni:
-            return i
+    
+    if len(js) > 0:
+        return js[0] 
+    
     return jsonify({'message': 'Usuario no encontrado'})
 
 
@@ -314,8 +315,7 @@ def addUsers():
 
 
 
-#Edit Users Routes
-@app.route('/editUser/<string:user_dni>', methods=['POST'])
+@app.route('/editUser/<string:user_dni>', methods=['PUT'])
 def editUsers(user_dni):
     nombre = request.json['nombre']
     apellidos = request.json['apellidos']
@@ -340,7 +340,7 @@ def editUsers(user_dni):
 
 
 #Edit Workers Routes
-@app.route('/editWorker/<string:user_dni>', methods=['POST'])
+@app.route('/editWorker/<string:user_dni>', methods=['PUT'])
 def editWorkers(user_dni):
     passswd = request.json['pass']
     
@@ -362,7 +362,7 @@ def editWorkers(user_dni):
 
 
 #Edit External Worker Routes
-@app.route('/editExternalWorker/<string:user_dni>', methods=['POST'])
+@app.route('/editExternalWorker/<string:user_dni>', methods=['PUT'])
 def editExternalWorker(user_dni):
     ocupacion = request.json['ocupacion']
     
@@ -384,7 +384,7 @@ def editExternalWorker(user_dni):
 
 
 #Edit Client Routes
-@app.route('/editClient/<string:user_dni>', methods=['POST'])
+@app.route('/editClient/<string:user_dni>', methods=['PUT'])
 def editClient(user_dni):
     clientePotencial = request.json['clientePotencial']
     
