@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="users">
 
     <p style="color: red;">{{messageAccess}}</p>
     <div v-if="forceReload && logged">
@@ -146,7 +146,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'Admin',
+  name: 'Users',
   components: {
     
   },
@@ -164,7 +164,8 @@ export default {
   },
   methods: {
     loadUsers() {
-      this.logged = localStorage.logged;
+      this.logged = localStorage.logged == 'true';
+      
       const path = `${process.env.VUE_APP_BACK_URL}/users`;
       const config = {
         method: 'get',
@@ -224,11 +225,12 @@ export default {
       });
       
       setTimeout(() => {
-      this.forceReload = true;
+        this.forceReload = true;
       }, 100);
     },
-    test(user) {
-      console.log(user.nombre);
+    test() {
+      console.log(this.logged);
+      console.log(this.forceReload);
     }
   },
   mounted() {
