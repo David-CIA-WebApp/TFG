@@ -5,7 +5,7 @@
       v-if="logged"
       style="background-color: blue; color: white; margin-top: 0px; margin-left: 0px;"
       @click="redirectHome">
-        USUARIOS
+        INICIO
       </button>
       <button 
       v-if="logged"
@@ -39,6 +39,11 @@
             <td>{{ user.telefono }}</td> 
           </tr>
         </tbody>
+      <button
+      style="background-color: transparent; color: blue;"
+      @click="createUser('USUARIOS')">
+        Crear usuario
+      </button>
       </table>
 
       <br><br>
@@ -395,9 +400,6 @@ export default {
         });
       }
       
-        
-
-        
       this.forceReload = false;
       setTimeout(() => {
         this.forceReload = true;
@@ -440,8 +442,41 @@ export default {
       localStorage.userType = "";
       this.redirectHome();
     }, 
-    crearUsuario() {
+    createUser(entrada) {
+      if (entrada == 'USUARIOS') {
+        const path = `${process.env.VUE_APP_BACK_URL}/addUsers`;
+        const config = {
+        method: 'post',
+        url: path,
+        data: {
+          "apellidos": "nuevo",
+          "direccion": "sin especificar",
+          "dni": "123456789X",
+          "email": "sin mail",
+          "nombre": "nuevo",
+          "pass": "pass",
+          "telefono": 670123456,
+          "tipo": "Técnico",
+          "ocupacion": "Técnico",
+          "tabla":  "usuario",
+          "clientePotencial": false // TODO Aqui y en el formulario, añadir
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "0i234c6c89"
+        }
+      }
+      axios(config)
+      .then((res) => {
+        console.log(res);
+      });
       
+      this.forceReload = false;
+      setTimeout(() => {
+        this.forceReload = true;
+      }, 2000);
+      }
     }
   },
   mounted() {
