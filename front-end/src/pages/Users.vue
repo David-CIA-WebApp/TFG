@@ -74,18 +74,14 @@
             <td>{{ worker.tipo }}</td> 
           </tr>
         </tbody>
-        <!--
-        <select class="border rounded-sm ml-2 p-1" v-model="dniSelected">
-          <option 
-          v-for="dniSelected in dniArray" v-bind:key="dniSelected"
-          value="dni"> {{dni}} </option>
+        <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
+          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
         </select>
-      <button
-      style="background-color: transparent; color: blue; width: 100%; margin-left: 0px;"
-      @click="createUser('TRABJADOR')">
-        Crear trabjador
-      </button>
-      -->
+        <button
+        style="background-color: transparent; color: blue; width: 50%;"
+        @click="createUser('TRABJADOR')">
+          Crear trabajador
+        </button>
       </table>
 
       <br><br>
@@ -114,6 +110,14 @@
             <td>{{ ew.ocupacion }}</td> 
           </tr>
         </tbody>
+        <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
+          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+        </select>
+        <button
+        style="background-color: transparent; color: blue; width: 50%;"
+        @click="createUser('TRABJADOR EXTERNO')">
+          Crear trabajador externo
+        </button>
       </table>
 
       <br><br>
@@ -140,6 +144,14 @@
             <td>{{ em.telefono }}</td> 
           </tr>
         </tbody>
+        <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
+          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+        </select>
+        <button
+        style="background-color: transparent; color: blue; width: 50%;"
+        @click="createUser('GESTOR')">
+          Crear gestor
+        </button>
       </table>
 
       <br><br>
@@ -168,6 +180,14 @@
             <td>{{ client.clientePotencial }}</td> 
           </tr>
         </tbody>
+        <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
+          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+        </select>
+        <button
+        style="background-color: transparent; color: blue; width: 50%;"
+        @click="createUser('CLIENTE')">
+          Crear cliente
+        </button>
       </table>
     </div>
 
@@ -276,6 +296,7 @@ export default {
         for (let index = 0; index < res.data.length; index++) {
           var element = res.data[index];
           this.users[index] = element;
+          this.dniArray.push(element.dni);
         }
       });
       
@@ -466,40 +487,61 @@ export default {
       this.redirectHome();
     }, 
     createUser(entrada) {
-      if (entrada == 'USUARIOS') {
-        const path = `${process.env.VUE_APP_BACK_URL}/addUsers`;
+      var path = "";
         const config = {
-        method: 'post',
-        url: path,
-        data: {
-          "apellidos": "nuevo",
-          "direccion": "sin especificar",
-          "dni": "123456789X",
-          "email": "sin mail",
-          "nombre": "nuevo",
-          "pass": "pass",
-          "telefono": 670123456,
-          "tipo": "Técnico",
-          "ocupacion": "Técnico",
-          "tabla":  "usuario",
-          "clientePotencial": false // TODO Aqui y en el formulario, añadir
-        },
-        headers: {
-          "Content-Type": "application/JSON",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": "0i234c6c89"
+          method: 'post',
+          url: "",
+          data: {
+            "apellidos": "nuevo",
+            "direccion": "sin especificar",
+            "dni": "123456789X",
+            "email": "sin mail",
+            "nombre": "nuevo",
+            "pass": "pass",
+            "telefono": 670123456,
+            "tipo": "Técnico",
+            "ocupacion": "Técnico",
+            "tabla":  "usuario",
+            "clientePotencial": false // TODO Aqui y en el formulario, añadir
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "0i234c6c89"
+          }
         }
+      if (entrada == 'USUARIOS') {
+        path = `${process.env.VUE_APP_BACK_URL}/addUsers`; 
       }
+      else if (entrada == 'TRABJADOR') {
+        path = `${process.env.VUE_APP_BACK_URL}/addWorkers`;
+        config.data.dni = this.dniSelected;
+      }
+      else if (entrada == 'TRABJADOR EXTERNO') {
+        path = `${process.env.VUE_APP_BACK_URL}/addExternalWorkers`;
+        config.data.dni = this.dniSelected;
+      }
+      else if (entrada == 'GESTOR') {
+        path = `${process.env.VUE_APP_BACK_URL}/addManager`;
+        config.data.dni = this.dniSelected;
+      }
+      else if (entrada == 'CLIENTE') {
+        path = `${process.env.VUE_APP_BACK_URL}/addClients`;
+        config.data.dni = this.dniSelected;
+      }
+
+
+      config.url = path;
       axios(config)
       .then((res) => {
         console.log(res);
       });
-      
+        
+
       this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 5000);
-      }
+        setTimeout(() => {
+          this.forceReload = true;
+        }, 5000);
     }
   },
   mounted() {
