@@ -501,8 +501,8 @@ def login():
     cur.execute('SELECT * FROM `users` JOIN `workers` WHERE id_persona LIKE user_id AND email LIKE "{}"'.format(mail))
     data = cur.fetchall()
     if len(data) != 0:
-        if data[0][10] == "Administrador" and data[0][8] == password:
-            return jsonify({ "message": "Login accepted", "status": 200, "accepted": True })
+        if data[0][8] == password:
+            return jsonify({ "message": "Login accepted", "status": 200, "accepted": True, "user": data[0] })
         else:
             return jsonify({ "message": "User denied", "status": 200, "accepted": False })
     else:

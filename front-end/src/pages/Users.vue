@@ -212,8 +212,6 @@ export default {
   },
   methods: {
     loadUsers() {
-      this.logged = localStorage.logged == 'true';
-
       const path = `${process.env.VUE_APP_BACK_URL}/users`;
       const config = {
         method: 'get',
@@ -400,9 +398,37 @@ export default {
       setTimeout(() => {
         this.forceReload = true;
       }, 2000);
+    },
+    loadData() {
+      const path = `${process.env.VUE_APP_BACK_URL}/login`;
+      const config = {
+        method: 'post',
+        url: path,
+        data: {
+          "mail": localStorage.userMail, 
+          "password": localStorage.userPass
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*"
+        }
+      };
+      axios(config)
+        .then((res) => {
+          if (res.data.accepted) { 
+            this.logged = true;
+          }
+          
+          this.$emit("logging", this.logged);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
     }
   },
   mounted() {
+    this.loadData();
     this.loadUsers();
   }
 }

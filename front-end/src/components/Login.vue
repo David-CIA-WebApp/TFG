@@ -48,9 +48,13 @@ export default {
       };
       axios(config)
         .then((res) => {
-          if (res.data.accepted) this.logged = true;
-          
-          localStorage.logged = this.logged;
+          if (res.data.accepted) { 
+            this.logged = true;
+            localStorage.userMail = res.data.user[4];
+            localStorage.userPass = res.data.user[8];
+            localStorage.userType = res.data.user[10];
+          }
+
           this.$emit("logging", this.logged);
         })
         .catch((error) => {
@@ -58,9 +62,14 @@ export default {
           console.error(error);
         });
     }, 
+    firstCharge() {
+            localStorage.userMail = localStorage.userMail || " ";
+            localStorage.userPass = localStorage.userPass || " ";
+            localStorage.userType = localStorage.userType || " ";
+    },
   },
   mounted() {
-    
+    this.firstCharge();
   }
 }
 </script>

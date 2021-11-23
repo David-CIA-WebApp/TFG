@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import Login from "../components/Login";
 
 export default {
@@ -39,7 +40,31 @@ export default {
       }
     },
     loadData() {
-      this.logged = localStorage.logged == 'true';
+      const path = `${process.env.VUE_APP_BACK_URL}/login`;
+      const config = {
+        method: 'post',
+        url: path,
+        data: {
+          "mail": localStorage.userMail, 
+          "password": localStorage.userPass
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*"
+        }
+      };
+      axios(config)
+        .then((res) => {
+          if (res.data.accepted) { 
+            this.logged = true;
+          }
+          
+          this.$emit("logging", this.logged);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
     }
   },
   mounted() {
