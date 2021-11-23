@@ -74,6 +74,18 @@
             <td>{{ worker.tipo }}</td> 
           </tr>
         </tbody>
+        <!--
+        <select class="border rounded-sm ml-2 p-1" v-model="dniSelected">
+          <option 
+          v-for="dniSelected in dniArray" v-bind:key="dniSelected"
+          value="dni"> {{dni}} </option>
+        </select>
+      <button
+      style="background-color: transparent; color: blue; width: 100%; margin-left: 0px;"
+      @click="createUser('TRABJADOR')">
+        Crear trabjador
+      </button>
+      -->
       </table>
 
       <br><br>
@@ -184,12 +196,20 @@
         <input v-if="actualUser.pass != null" v-model="actualUser.pass"/>
 
         <p v-if="actualUser.tipo != null">Ocupación:</p>
-        <input v-if="actualUser.tipo != null" v-model="actualUser.tipo"/>
+        <select
+          v-if="actualUser.tipo != null"
+          class="border rounded-sm ml-2 p-1"
+          v-model="actualUser.tipo"
+        >
+          <option value="Administrador">Administrador</option>
+          <option value="Técnico">Técnico</option>
+          <option value="Perito">Perito</option>
+        </select>
 
         <p v-if="actualUser.ocupacion != null">Ocupación:</p>
         <input v-if="actualUser.ocupacion != null" v-model="actualUser.ocupacion"/>
 
-        
+      <br>
       <button
         v-if="userType == 'Administrador'"
         class="button"
@@ -229,7 +249,10 @@ export default {
       clients: [],
       forceReload: false,
       actualUser: {},
-      userType: ""
+      userType: "",
+      dniArray: [],
+      dniSelected: null
+      
     }
   },
   methods: {
@@ -341,7 +364,7 @@ export default {
       this.forceReload = false;
       setTimeout(() => {
         this.forceReload = true;
-      }, 2000);
+      }, 5000);
 
       if (this.actualUser.pass == "") {
         this.actualUser.pass = null;
@@ -403,7 +426,7 @@ export default {
       this.forceReload = false;
       setTimeout(() => {
         this.forceReload = true;
-      }, 2000);
+      }, 5000);
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
@@ -475,7 +498,7 @@ export default {
       this.forceReload = false;
       setTimeout(() => {
         this.forceReload = true;
-      }, 2000);
+      }, 5000);
       }
     }
   },
