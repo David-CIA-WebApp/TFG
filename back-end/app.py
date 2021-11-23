@@ -47,7 +47,8 @@ def getUsers():
             "dni": i[3],
             "email": i[4],
             "direccion": i[5],
-            "telefono": i[6]
+            "telefono": i[6],
+            "tabla": "usuario"
             }
         res.append(user_n)
 
@@ -75,7 +76,8 @@ def getWorkers():
             "worker_id": i[7],
             "pass": i[8],
             "user_id": i[9],
-            "tipo": i[10]
+            "tipo": i[10],
+            "tabla": "trabajador"
             }
         res.append(user_n)
 
@@ -103,7 +105,8 @@ def getExternalWorkers():
             "telefono": i[6],
             "ext_worker_id": i[7],
             "user_id": i[8],
-            "ocupacion": i[9]
+            "ocupacion": i[9],
+            "tabla": "trabajador externo"
             }
         res.append(user_n)
 
@@ -131,7 +134,8 @@ def getClients():
             "telefono": i[6],
             "ext_worker_id": i[7],
             "user_id": i[8],
-            "clientePotencial": i[9]
+            "clientePotencial": i[9],
+            "tabla": "cliente"
             }
         res.append(user_n)
 
@@ -157,7 +161,8 @@ def getGestores():
             "direccion": i[5],
             "telefono": i[6],
             "worker_id": i[7],
-            "user_id": i[8]
+            "user_id": i[8],
+            "tabla": "gestor"
             }
         res.append(user_n)
 

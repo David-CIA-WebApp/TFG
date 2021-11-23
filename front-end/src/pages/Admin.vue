@@ -1,11 +1,25 @@
 <template>
-  <div id="login">
-    <div v-if="!logged">
-      <p>ADMINISTRACIÓN</p>
-      <Login @logging="loggingFunction"/>
-      <p style="color: red;">{{messageAccess}}</p>
-    </div>
+  <div>
+    <div id="menu" v-if="logged">
+      <button 
+      style="background-color: blue; color: white; margin-top: 0px; margin-left: 0px;"
+      @click="redirectUser">
+        USUARIOS
+      </button>
+      <button 
+      style="background-color: transparent; color: red; margin-top: 0px; float: right;"
+      @click="closeSession">
+        Cerrar Sesión
+      </button>
+    </div>  
 
+    <div id="login">
+      <div v-if="!logged">
+        <p>ADMINISTRACIÓN</p>
+        <Login @logging="loggingFunction"/>
+        <p style="color: red;">{{messageAccess}}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -65,6 +79,15 @@ export default {
           // eslint-disable-next-line
           console.error(error);
         });
+    },
+    redirectUser() {
+      this.$router.push('users');
+    },
+    closeSession() {
+      localStorage.userMail = "";
+      localStorage.userPass = "";
+      localStorage.userType = "";
+      this.$router.go();
     }
   },
   mounted() {

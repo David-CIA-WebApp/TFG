@@ -1,5 +1,19 @@
 <template>
   <div id="users">
+    <div id="menu" v-if="forceReload && logged">
+      <button 
+      v-if="logged"
+      style="background-color: blue; color: white; margin-top: 0px; margin-left: 0px;"
+      @click="redirectHome">
+        USUARIOS
+      </button>
+      <button 
+      v-if="logged"
+      style="background-color: transparent; color: red; margin-top: 0px; float: right;"
+      @click="closeSession">
+        Cerrar Sesión
+      </button>
+    </div>  
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div v-if="forceReload && logged">
@@ -17,7 +31,7 @@
         </thead>
         <tbody>
           <tr v-for="(user,i) in users" :key="i">
-            <td><a href="#miModal" @click="test(user)"> {{ user.nombre }} </a></td> 
+            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
             <td>{{ user.email }}</td> 
@@ -45,7 +59,7 @@
         </thead>
         <tbody>
           <tr v-for="(worker,i) in workers" :key="i">
-            <td><a href="#miModal" @click="test(worker)"> {{ worker.nombre }} </a></td> 
+            <td><a href="#miModal" @click="setActualUser(worker)"> {{ worker.nombre }} </a></td> 
             <td>{{ worker.apellidos }}</td> 
             <td>{{ worker.dni }}</td> 
             <td>{{ worker.email }}</td> 
@@ -74,7 +88,7 @@
         </thead>
         <tbody>
           <tr v-for="(ew,i) in externalWorkers" :key="i">
-            <td><a href="#miModal" @click="test(ew)"> {{ ew.nombre }} </a></td> 
+            <td><a href="#miModal" @click="setActualUser(ew)"> {{ ew.nombre }} </a></td> 
             <td>{{ ew.apellidos }}</td> 
             <td>{{ ew.dni }}</td> 
             <td>{{ ew.email }}</td> 
@@ -101,7 +115,7 @@
         </thead>
         <tbody>
           <tr v-for="(em,i) in economyManagers" :key="i">
-            <td><a href="#miModal" @click="test(em)"> {{ em.nombre }} </a></td> 
+            <td><a href="#miModal" @click="setActualUser(em)"> {{ em.nombre }} </a></td> 
             <td>{{ em.apellidos }}</td> 
             <td>{{ em.dni }}</td> 
             <td>{{ em.email }}</td> 
@@ -128,7 +142,7 @@
         </thead>
         <tbody>
           <tr v-for="(client,i) in clients" :key="i">
-            <td><a href="#miModal" @click="test(client)"> {{ client.nombre }} </a></td> 
+            <td><a href="#miModal" @click="setActualUser(client)"> {{ client.nombre }} </a></td> 
             <td>{{ client.apellidos }}</td> 
             <td>{{ client.dni }}</td> 
             <td>{{ client.email }}</td> 
@@ -172,6 +186,7 @@
 
         
       <button
+        v-if="userType == 'Administrador'"
         class="button"
         @click="actualizar(actualUser)"
         href="#">
@@ -179,6 +194,7 @@
       </button>
       
       <button
+        v-if="userType == 'Administrador'"
         class="button red"
         @click="eliminar(actualUser)"
         href="#"  >
@@ -207,7 +223,8 @@ export default {
       economyManagers: [],
       clients: [],
       forceReload: false,
-      actualUser: {}
+      actualUser: {},
+      userType: ""
     }
   },
   methods: {
@@ -274,7 +291,7 @@ export default {
         this.forceReload = true;
       }, 5000);
     },
-    test(user) {
+    setActualUser(user) {
       this.actualUser = user;
     },
     actualizar(actualUser) {
@@ -302,6 +319,7 @@ export default {
           "telefono": actualUser.telefono,
           "tipo": actualUser.tipo,
           "ocupacion": actualUser.ocupacion,
+          "tabla":  actualUser.tabla,
           "clientePotencial": false // TODO Aqui y en el formulario, añadir
         },
         headers: {
@@ -332,69 +350,55 @@ export default {
       // TODO El tipo (en trabajador=>tipo) es un enum, debe ser un select de: Técnico, Perito, Administrador
     },
     eliminar(actualUser) {
-      if (actualUser.pass != null || actualUser.tipo != null) {
+      const config = {
+          method: 'delete',
+          url: "",
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "0i234c6c89"
+          }
+        }
+      if (actualUser.tabla == "trabajador") {
         const path = `${process.env.VUE_APP_BACK_URL}/deleteWorker/${actualUser.dni}`;
-        const config = {
-          method: 'delete',
-          url: path,
-          data: {
-            
-          },
-          headers: {
-            "Content-Type": "application/JSON",
-            "Access-Control-Allow-Origin": "*",
-            "Authorization": "0i234c6c89"
-          }
-        }
+        config.url = path;
         axios(config)
         .then((res) => {
           console.log(res);
         });
       }
-      if (actualUser.ocupacion != null) {
+      else if (actualUser.tabla == "trabajador externo") {
         const path = `${process.env.VUE_APP_BACK_URL}/deleteExternalWorker/${actualUser.dni}`;
-        const config = {
-          method: 'delete',
-          url: path,
-          data: {
-            
-          },
-          headers: {
-            "Content-Type": "application/JSON",
-            "Access-Control-Allow-Origin": "*",
-            "Authorization": "0i234c6c89"
-          }
-        }
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+      } 
+      else if (actualUser.tabla == "gestor") {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteManager/${actualUser.dni}`;
+        config.url = path;
         axios(config)
         .then((res) => {
           console.log(res);
         });
       }
-
+      else if (actualUser.tabla == "usuario") {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteUser/${actualUser.dni}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+      }
       
-        const path = `${process.env.VUE_APP_BACK_URL}/deleteManager/${actualUser.dni}`;
-        const config = {
-          method: 'delete',
-          url: path,
-          data: {
-            
-          },
-          headers: {
-            "Content-Type": "application/JSON",
-            "Access-Control-Allow-Origin": "*",
-            "Authorization": "0i234c6c89"
-          }
-        }
-        axios(config)
-        .then((res) => {
-          console.log(res);
-        });
+        
 
-        config.url = `${process.env.VUE_APP_BACK_URL}/deleteUser/${actualUser.dni}`;
-        axios(config)
-        .then((res) => {
-          console.log(res);
-        });
+        
+      this.forceReload = false;
       setTimeout(() => {
         this.forceReload = true;
       }, 2000);
@@ -417,6 +421,7 @@ export default {
         .then((res) => {
           if (res.data.accepted) { 
             this.logged = true;
+            this.userType = localStorage.userType;
           }
           
           this.$emit("logging", this.logged);
@@ -425,6 +430,18 @@ export default {
           // eslint-disable-next-line
           console.error(error);
         });
+    },
+    redirectHome() {
+      this.$router.push('admin');
+    },
+    closeSession() {
+      localStorage.userMail = "";
+      localStorage.userPass = "";
+      localStorage.userType = "";
+      this.redirectHome();
+    }, 
+    crearUsuario() {
+      
     }
   },
   mounted() {
