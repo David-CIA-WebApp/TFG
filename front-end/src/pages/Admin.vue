@@ -7,6 +7,11 @@
         USUARIOS
       </button>
       <button 
+      style="background-color: blue; color: white; margin-top: 0px; margin-left: 0px;"
+      @click="redirectMaterial">
+        MATERIALES
+      </button>
+      <button 
       style="background-color: transparent; color: red; margin-top: 0px; float: right;"
       @click="closeSession">
         Cerrar Sesión
@@ -82,6 +87,9 @@ export default {
     },
     redirectUser() {
       this.$router.push('users');
+    },
+    redirectMaterial() {
+      this.$router.push('materials');
     },
     closeSession() {
       localStorage.userMail = "";

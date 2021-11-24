@@ -52,7 +52,10 @@ def getUsers():
             }
         res.append(user_n)
 
-    return jsonify(res)
+    if request.headers['Authorization'] == "0i234c6c89":
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -81,7 +84,10 @@ def getWorkers():
             }
         res.append(user_n)
 
-    return jsonify(res)
+    if request.headers['Authorization'] == "0i234c6c89":
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -110,7 +116,10 @@ def getExternalWorkers():
             }
         res.append(user_n)
 
-    return jsonify(res)
+    if request.headers['Authorization'] == "0i234c6c89":
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -139,7 +148,10 @@ def getClients():
             }
         res.append(user_n)
 
-    return jsonify(res)
+    if request.headers['Authorization'] == "0i234c6c89":
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -166,7 +178,10 @@ def getGestores():
             }
         res.append(user_n)
 
-    return jsonify(res)
+    if request.headers['Authorization'] == "0i234c6c89":
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -194,11 +209,14 @@ def getWorkerByDNI(user_dni):
             }
         js.append(user_n)
 
+    if request.headers['Authorization'] == "0i234c6c89":
+        if len(js) > 0:
+            return js[0] 
+
+        return jsonify({'message': 'Usuario no encontrado'})
+    else:
+        return jsonify({'message': "Acceso denegado"})
     
-    if len(js) > 0:
-        return js[0] 
-    
-    return jsonify({'message': 'Usuario no encontrado'})
 
 
 
@@ -512,6 +530,46 @@ def login():
             return jsonify({ "message": "User denied", "status": 200, "accepted": False })
     else:
         return jsonify({ "message": "User not found", "status": 404, "accepted": False })
+
+
+@app.route('/materials', methods=['GET'])
+def getMaterials():
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from materials")
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        material = {
+            "nombre": i[0],
+            "cantidad": i[1],
+            "stockSeguridad": i[2]
+        }
+        
+        res.append(material)
+
+    
+    if request.headers['Authorization'] == "0i234c6c89":
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+@app.route('/addMaterials', methods=['POST'])
+def addMaterial():
+    #mysql data
+    nombre = request.json['nombre']
+    cantidad = request.json['cantidad']
+    stockSeguridad = request.json['stockSeguridad']
+
+    if request.headers['Authorization'] == "0i234c6c89":
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO materials (nombre, cantidad, stockSeguridad) VALUES (%s, %s, %s)', (nombre, cantidad, stockSeguridad))
+        mysql.connection.commit()
+        return jsonify({'message': "Material insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+
 
 
 

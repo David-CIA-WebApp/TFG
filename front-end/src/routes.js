@@ -1,6 +1,7 @@
 import App from "./App";
 import Admin from "./pages/Admin";
 import Users from "./pages/Users";
+import Materials from "./pages/Materials";
 
 const routes = [
     {     
@@ -20,6 +21,12 @@ const routes = [
         component: Users,
         name: "Users",
         meta: { title: "David&CIA - Users" },
+    }, 
+    {     
+        path: "/materials",
+        component: Materials,
+        name: "Materials",
+        meta: { title: "David&CIA - Materials" },
     }, 
 ];
 export default routes;
