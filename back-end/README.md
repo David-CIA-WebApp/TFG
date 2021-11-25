@@ -17,35 +17,41 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 **_/gestores_**
 >Devuelve una lista de todos los gestores de la empresa
 
-**_/workers/DNI_**
->Cambiando DNI por el dni de una persona, devuelve los datos de ese trabajador si existiese
+**_/workers/word_**
+>Cambiando word por una palabra busca entre el nombre, apellidos o dni del trabajador y devuelve todos aquellos que lo contengan
+
+**_/users/word_**
+>Cambiando word por una palabra busca entre el nombre, apellidos o dni del usuario y devuelve todos aquellos que lo contengan
+
+**_/materials_**
+>Devuelve una lista de todos los materiales de la empresa
 
 ### POSTS
 **_/addWorkers_**
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - passw
 - dni
 - tipo
 >Asocia al usuario con ese dni el tipo de trabajador y una contraseña
 
 **_/addExternalWorkers_**
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - dni
 - ocupacion
 >Asocia al usuario con ese dni la ocupacion del trabajador externo
 
 **_/addClients_**
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - dni
 >Convierte el usuario en cliente
 
 **_/addManager_**
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - dni
 >Convierte el usuario en gestor
 
 **_/addUsers_**
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - nombre
 - apellidos
 - dni
@@ -54,31 +60,44 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - telefono
 >Crea un nuevo usuario en la base de datos
 
+**_/addMaterials_**
+>Con un cuerpo que contenga: 
+- pass
+- dni
+- tipo
+>Asocia al usuario con ese dni el tipo de trabajador y una contraseña
+
+### PUTS
 **_/editUser/DNI_**
 >Cambiando DNI por el dni de una persona
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - nombre
 - apellidos
 - email
 - direccion
 - telefono
+- pass
+- tipo
+- ocupacion
+- clientePotencial
 >Cambia los datos del usuario por estos nuevos
 
 **_/editWorker/DNI_**
 >Cambiando DNI por el dni de una persona
->Con una cabecera que contenga: 
-- passswd
+>Con un cuerpo que contenga: 
+- tipo
+- pass
 >Cambia la contraseña del trabajador
 
 **_/editExternalWorker/DNI_**
 >Cambiando DNI por el dni de una persona
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - ocupacion
 >Cambia la ocupacion del trabajador externo
 
 **_/editClient/DNI_**
 >Cambiando DNI por el dni de una persona
->Con una cabecera que contenga: 
+>Con un cuerpo que contenga: 
 - clientePotencial
 >Indica si es o no cliente potencial
 

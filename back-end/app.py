@@ -186,12 +186,12 @@ def getGestores():
 
 
 #Returns a worker by DNI
-@app.route('/workers/<string:user_dni>')
-def getWorkerByDNI(user_dni):
+@app.route('/workers/<string:word>')
+def searchWorkers(word):
     cur = mysql.connection.cursor()
-    cur.execute('select * from users join workers where id_persona = user_id and dni LIKE "' + user_dni + '"')
+    cur.execute("SELECT * FROM users JOIN workers WHERE (nombre LIKE '%{words}%' OR apellidos LIKE '%{words}%' OR dni LIKE '%{words}%' ) AND user_id LIKE id_persona".format(words = word))
     data = cur.fetchall()
-    js = []
+    res = []
 
     for i in data:
         user_n = {
@@ -205,20 +205,51 @@ def getWorkerByDNI(user_dni):
             "worker_id": i[7],
             "pass": i[8],
             "user_id": i[9],
-            "tipo": i[10]
+            "tipo": i[10],
+            "tabla": "trabajador"
             }
-        js.append(user_n)
+        res.append(user_n)
 
+    print("\n\n" + str(res) + "\n\n")
     if request.headers['Authorization'] == "0i234c6c89":
-        if len(js) > 0:
-            return js[0] 
+        if len(res) > 0:
+            return jsonify(res)
 
-        return jsonify({'message': 'Usuario no encontrado'})
+        return jsonify({'message': 'Ningún usuario encontrado'})
     else:
         return jsonify({'message': "Acceso denegado"})
     
 
 
+#Returns a worker by DNI
+@app.route('/users/<string:word>')
+def searchUsers(word):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE nombre LIKE '%{words}%' OR apellidos LIKE '%{words}%' OR dni LIKE '%{words}%'".format(words = word))
+    data = cur.fetchall()
+    res = []
+
+    for i in data:
+        user_n = {
+            "id": i[0],
+            "nombre": i[1],
+            "apellidos": i[2],
+            "dni": i[3],
+            "email": i[4],
+            "direccion": i[5],
+            "telefono": i[6],
+            "tabla": "usuario"
+            }
+        res.append(user_n)
+
+    if request.headers['Authorization'] == "0i234c6c89":
+        if len(res) > 0:
+            return jsonify(res)
+
+        return jsonify({'message': 'Ningún usuario encontrado'})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+    
 
 
 #Create Workers Routes
@@ -532,6 +563,8 @@ def login():
         return jsonify({ "message": "User not found", "status": 404, "accepted": False })
 
 
+
+#Get all materials
 @app.route('/materials', methods=['GET'])
 def getMaterials():
     cur = mysql.connection.cursor()
@@ -553,6 +586,9 @@ def getMaterials():
     else:
         return jsonify({'message': "Acceso denegado"})
 
+
+
+#Create a new material
 @app.route('/addMaterials', methods=['POST'])
 def addMaterial():
     #mysql data
