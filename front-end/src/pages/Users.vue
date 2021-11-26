@@ -16,9 +16,9 @@
     </div>  
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="forceReload && logged">
+    <div v-if="logged">
     <h3>USUARIOS</h3>
-      <table class="table table-striped" id="users">
+      <table class="table table-striped" id="users" v-if="usersLoaded">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -49,7 +49,7 @@
       <br><br>
 
       <h3>TRABAJADORES INTERNOS</h3>
-      <table class="table table-striped" id="users">
+      <table class="table table-striped" id="users" v-if="workersLoaded">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -87,7 +87,7 @@
       <br><br>
 
       <h3>TRABAJADORES EXTERNOS</h3>
-      <table class="table table-striped" id="users">
+      <table class="table table-striped" id="users" v-if="externalWorkersLoaded">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -123,7 +123,7 @@
       <br><br>
 
       <h3>GESTORES</h3>
-      <table class="table table-striped" id="users">
+      <table class="table table-striped" id="users" v-if="managersLoaded">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -157,7 +157,7 @@
       <br><br>
 
       <h3>CLIENTES</h3>
-      <table class="table table-striped" id="users">
+      <table class="table table-striped" id="users" v-if="clientsLoaded">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -267,7 +267,12 @@ export default {
       externalWorkers: [],
       economyManagers: [],
       clients: [],
-      forceReload: false,
+      forceReload: true,
+      usersLoaded: false,
+      workersLoaded: false,
+      externalWorkersLoaded: false,
+      managersLoaded: false,
+      clientsLoaded: false,
       actualUser: {},
       userType: "",
       dniArray: [],
@@ -298,6 +303,7 @@ export default {
           this.users[index] = element;
           this.dniArray.push(element.dni);
         }
+        this.usersLoaded = true;
       });
       
       config.url = `${process.env.VUE_APP_BACK_URL}/workers`;
@@ -307,6 +313,7 @@ export default {
           var element = res.data[index];
           this.workers[index] = element;
         }
+        this.workersLoaded = true;
       });
       
       config.url = `${process.env.VUE_APP_BACK_URL}/externalWorkers`;
@@ -316,6 +323,7 @@ export default {
           var element = res.data[index];
           this.externalWorkers[index] = element;
         }
+        this.externalWorkersLoaded = true;
       });
       
       config.url = `${process.env.VUE_APP_BACK_URL}/clients`;
@@ -325,6 +333,7 @@ export default {
           var element = res.data[index];
           this.clients[index] = element;
         }
+        this.clientsLoaded = true;
       });
       
       config.url = `${process.env.VUE_APP_BACK_URL}/gestores`;
@@ -334,11 +343,9 @@ export default {
           var element = res.data[index];
           this.economyManagers[index] = element;
         }
+        this.managersLoaded = true;
       });
       
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 5000);
     },
     setActualUser(user) {
       this.actualUser = user;

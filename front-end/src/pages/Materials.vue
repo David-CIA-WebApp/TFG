@@ -74,11 +74,9 @@ export default {
           var element = res.data[index];
           this.materials[index] = element;
         }
+        this.forceReload = true;
       });
 
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 5000);
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
