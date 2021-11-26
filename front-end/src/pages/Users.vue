@@ -282,6 +282,12 @@ export default {
   },
   methods: {
     loadUsers() {
+      this.users = [];
+      this.workers = [];
+      this.externalWorkers = [];
+      this.clients = [];
+      this.economyManagers = [];
+
       const path = `${process.env.VUE_APP_BACK_URL}/users`;
       const config = {
         method: 'get',
@@ -389,10 +395,6 @@ export default {
         console.log(res);
       });
       
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 5000);
 
       if (this.actualUser.pass == "") {
         this.actualUser.pass = null;
@@ -403,7 +405,8 @@ export default {
       if (this.actualUser.ocupacion == "") {
         this.actualUser.ocupacion = null;
       }
-      // TODO El tipo (en trabajador=>tipo) es un enum, debe ser un select de: Técnico, Perito, Administrador
+      
+      window.location.reload();
     },
     eliminar(actualUser) {
       const config = {
@@ -450,11 +453,8 @@ export default {
           console.log(res);
         });
       }
-      
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 5000);
+
+      window.location.reload();
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
@@ -544,11 +544,8 @@ export default {
         console.log(res);
       });
         
-
-      this.forceReload = false;
-        setTimeout(() => {
-          this.forceReload = true;
-        }, 5000);
+        
+      window.location.reload();
     }
   },
   mounted() {
