@@ -197,7 +197,7 @@
 
     <div id="miModal" class="modal" v-if="forceReload">
       <div class="modal-contenido">
-        <a href="#">X</a>
+        <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
         <h3 style="margin-bottom: -2%;">{{actualUser.nombre}} - {{actualUser.dni}}</h3>
         <p>Nombre:</p>
         <input v-model="actualUser.nombre"/>
@@ -406,7 +406,7 @@ export default {
         this.actualUser.ocupacion = null;
       }
       
-      window.location.reload();
+      //this.$router.go();
     },
     eliminar(actualUser) {
       const config = {
@@ -453,8 +453,8 @@ export default {
           console.log(res);
         });
       }
-
-      window.location.reload();
+      
+      //this.$router.go();
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
@@ -494,6 +494,7 @@ export default {
       this.redirectHome();
     }, 
     createUser(entrada) {
+      console.log(entrada);
       var path = "";
         const config = {
           method: 'post',
@@ -543,9 +544,10 @@ export default {
       .then((res) => {
         console.log(res);
       });
-        
-        
-      window.location.reload();
+    }, 
+    reloadSite() {
+      this.$router.push('users');
+      this.$router.go();
     }
   },
   mounted() {

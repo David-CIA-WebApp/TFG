@@ -326,10 +326,11 @@ def addManager():
     cur.execute("Select * from users WHERE dni LIKE '" + dni + "'")
     data = cur.fetchall()
     user_id = data[0][0]
+    print(user_id)
 
 
     if request.headers['Authorization'] == "0i234c6c89":
-        cur.execute('INSERT INTO gestor (user_id) VALUES (%s)', (user_id))
+        cur.execute('INSERT INTO gestor (user_id) VALUES (' + str(user_id) + ')')
         mysql.connection.commit()
         return jsonify({'message': "Gestor insertado en la base de datos"})
     else:
