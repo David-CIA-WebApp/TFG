@@ -493,7 +493,7 @@ export default {
       localStorage.userType = "";
       this.redirectHome();
     }, 
-    createUser(entrada) {
+    createUser(entrada) { //TODO Para recarga reactiva usar this.listas (borrar y añadir ahí los usuarios para que se haga la recarga)
       console.log(entrada);
       var path = "";
         const config = {
