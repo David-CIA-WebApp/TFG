@@ -393,18 +393,19 @@ export default {
       axios(config)
       .then((res) => {
         console.log(res);
+        if (this.actualUser.pass == "") {
+          this.actualUser.pass = null;
+        }
+        if (this.actualUser.tipo == "") {
+          this.actualUser.tipo = null;
+        }
+        if (this.actualUser.ocupacion == "") {
+          this.actualUser.ocupacion = null;
+        }
+        this.reloadSite();
       });
       
 
-      if (this.actualUser.pass == "") {
-        this.actualUser.pass = null;
-      }
-      if (this.actualUser.tipo == "") {
-        this.actualUser.tipo = null;
-      }
-      if (this.actualUser.ocupacion == "") {
-        this.actualUser.ocupacion = null;
-      }
       
       //this.$router.go();
     },
@@ -427,6 +428,7 @@ export default {
         axios(config)
         .then((res) => {
           console.log(res);
+          this.reloadSite();
         });
       }
       else if (actualUser.tabla == "trabajador externo") {
@@ -435,6 +437,7 @@ export default {
         axios(config)
         .then((res) => {
           console.log(res);
+          this.reloadSite();
         });
       } 
       else if (actualUser.tabla == "gestor") {
@@ -443,6 +446,7 @@ export default {
         axios(config)
         .then((res) => {
           console.log(res);
+          this.reloadSite();
         });
       }
       else if (actualUser.tabla == "usuario") {
@@ -451,6 +455,7 @@ export default {
         axios(config)
         .then((res) => {
           console.log(res);
+          this.reloadSite();
         });
       }
       
@@ -543,6 +548,7 @@ export default {
       axios(config)
       .then((res) => {
         console.log(res);
+        this.reloadSite();
       });
     }, 
     reloadSite() {
