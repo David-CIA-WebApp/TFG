@@ -15,6 +15,37 @@
       </button>
     </div>  
 
+    <div>
+      <p>Buscar usuario: </p>
+      <input type="text" id="myInput" @input="searchUser()">
+    </div>
+    <div>
+      <table class="table table-striped" id="searchedUsers" v-if="changeSearch">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>DNI</th>
+            <th>Correo</th>
+            <th>Dirección</th>
+            <th>Telefono</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(user,i) in searchedUsers" :key="i">
+            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
+            <td>{{ user.apellidos }}</td> 
+            <td>{{ user.dni }}</td> 
+            <td>{{ user.email }}</td> 
+            <td>{{ user.direccion }}</td> 
+            <td>{{ user.telefono }}</td> 
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <br><br><br>
+
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div v-if="logged">
     <h3>USUARIOS</h3>
@@ -276,7 +307,9 @@ export default {
       actualUser: {},
       userType: "",
       dniArray: [],
-      dniSelected: null
+      dniSelected: null,
+      searchedUsers: [],
+      changeSearch: false
       
     }
   },
@@ -356,7 +389,7 @@ export default {
     setActualUser(user) {
       this.actualUser = user;
     },
-    actualizar(actualUser) {
+    actualizar(actualUser) {  
       if (actualUser.pass == null) {
         actualUser.pass = "";
       }
@@ -498,7 +531,7 @@ export default {
       localStorage.userType = "";
       this.redirectHome();
     }, 
-    createUser(entrada) { //TODO Para recarga reactiva usar this.listas (borrar y añadir ahí los usuarios para que se haga la recarga)
+    createUser(entrada) { 
       console.log(entrada);
       var path = "";
         const config = {
@@ -554,6 +587,37 @@ export default {
     reloadSite() {
       this.$router.push('users');
       this.$router.go();
+    },
+    searchUser() {
+      this.changeSearch = false;
+      var text = document.getElementById("myInput").value;
+
+      this.searchedUsers = [];
+      
+      if (text != "") {
+        const path = `${process.env.VUE_APP_BACK_URL}/users/` + text;
+        const config = {
+          method: 'get',
+          url: path,
+          data: {
+            "mail": this.mail, 
+            "password": this.password
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "0i234c6c89"
+          }
+        }
+        axios(config)
+        .then((res) => {
+          for (let index = 0; index < res.data.length; index++) {
+            var element = res.data[index];
+            this.searchedUsers[index] = element;
+          }
+          this.changeSearch = true;
+        });
+      }
     }
   },
   mounted() {
