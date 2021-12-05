@@ -53,7 +53,8 @@ export default {
       logged: false,
       materials: [],
       forceReload: false,
-      actualMaterial: {}
+      actualMaterial: {},
+      token: null
     }
   },
   methods: {
@@ -65,7 +66,7 @@ export default {
         headers: {
           "Content-Type": "application/JSON",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": "0i234c6c89"
+          "Authorization": this.token
         }
       }
       axios(config)
@@ -97,6 +98,8 @@ export default {
           if (res.data.accepted) { 
             this.logged = true;
             this.userType = localStorage.userType;
+            this.token = res.data.token;
+            this.loadMaterials();
           }
           
           this.$emit("logging", this.logged);
@@ -134,7 +137,6 @@ export default {
   },
   mounted() {
     this.loadData();
-    this.loadMaterials();
   }
 }
 </script>

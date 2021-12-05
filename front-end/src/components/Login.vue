@@ -28,7 +28,8 @@ export default {
       logged: false,
       mail: "",
       password: "",
-      logo: "https://i.ibb.co/YpKv3mr/LOGO-DAVID-CIA.png"
+      logo: "https://i.ibb.co/YpKv3mr/LOGO-DAVID-CIA.png",
+      token: null
     }
   },
   methods: {
@@ -53,6 +54,7 @@ export default {
             localStorage.userMail = res.data.user[4];
             localStorage.userPass = res.data.user[8];
             localStorage.userType = res.data.user[10];
+            this.token = res.data.token;
           }
 
           this.$emit("logging", this.logged);

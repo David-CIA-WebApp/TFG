@@ -58,7 +58,7 @@ def getUsers():
     if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
-        return jsonify({'message': "Acceso denegado"})
+        return jsonify({'message': "Acceso denegado" })
 
 
 
@@ -560,7 +560,7 @@ def login():
     data = cur.fetchall()
     if len(data) != 0:
         if data[0][8] == password:
-            os.environ['TOKEN'] = token_generator()
+            os.environ['TOKEN'] = token_generator() + ""
             return jsonify({ "message": "Login accepted", "status": 200, "accepted": True, "user": data[0], "token": os.environ['TOKEN'] })
         else:
             return jsonify({ "message": "User denied", "status": 200, "accepted": False })

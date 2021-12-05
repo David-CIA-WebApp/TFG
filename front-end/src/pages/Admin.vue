@@ -46,7 +46,8 @@ export default {
       externalWorkers: [],
       economyManagers: [],
       clients: [],
-      load: false
+      load: false,
+      token: null
     }
   },
   methods: {
@@ -76,6 +77,7 @@ export default {
         .then((res) => {
           if (res.data.accepted) { 
             this.logged = true;
+            this.token = res.data.token;
           }
           
           this.$emit("logging", this.logged);

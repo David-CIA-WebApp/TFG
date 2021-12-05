@@ -309,7 +309,8 @@ export default {
       dniArray: [],
       dniSelected: null,
       searchedUsers: [],
-      changeSearch: false
+      changeSearch: false,
+      token: null
       
     }
   },
@@ -332,7 +333,7 @@ export default {
         headers: {
           "Content-Type": "application/JSON",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": "0i234c6c89"
+          "Authorization": this.token
         }
       }
       axios(config)
@@ -420,7 +421,7 @@ export default {
         headers: {
           "Content-Type": "application/JSON",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": "0i234c6c89"
+          "Authorization": this.token
         }
       }
       axios(config)
@@ -452,7 +453,7 @@ export default {
           headers: {
             "Content-Type": "application/JSON",
             "Access-Control-Allow-Origin": "*",
-            "Authorization": "0i234c6c89"
+            "Authorization": this.token
           }
         }
       if (actualUser.tabla == "trabajador") {
@@ -513,6 +514,8 @@ export default {
           if (res.data.accepted) { 
             this.logged = true;
             this.userType = localStorage.userType;
+            this.token = res.data.token;
+            this.loadUsers();
           }
           
           this.$emit("logging", this.logged);
@@ -553,7 +556,7 @@ export default {
           headers: {
             "Content-Type": "application/JSON",
             "Access-Control-Allow-Origin": "*",
-            "Authorization": "0i234c6c89"
+            "Authorization": this.token
           }
         }
       if (entrada == 'USUARIOS') {
@@ -606,7 +609,7 @@ export default {
           headers: {
             "Content-Type": "application/JSON",
             "Access-Control-Allow-Origin": "*",
-            "Authorization": "0i234c6c89"
+            "Authorization": this.token
           }
         }
         axios(config)
@@ -622,7 +625,6 @@ export default {
   },
   mounted() {
     this.loadData();
-    this.loadUsers();
   }
 }
 </script>
