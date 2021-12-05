@@ -3,12 +3,15 @@ from flask_cors import CORS, cross_origin
 from flask_cors.core import try_match
 from users import users
 from flask_mysqldb import MySQL
-from encriptacion import encriptar
+from encriptacion import *
+from token_generator import *
 import os
 
 app = Flask(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
+
+os.environ['TOKEN'] = ""
 
 try:
     app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
@@ -52,7 +55,7 @@ def getUsers():
             }
         res.append(user_n)
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -84,7 +87,7 @@ def getWorkers():
             }
         res.append(user_n)
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -116,7 +119,7 @@ def getExternalWorkers():
             }
         res.append(user_n)
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -148,7 +151,7 @@ def getClients():
             }
         res.append(user_n)
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -178,7 +181,7 @@ def getGestores():
             }
         res.append(user_n)
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -211,7 +214,7 @@ def searchWorkers(word):
         res.append(user_n)
 
     print("\n\n" + str(res) + "\n\n")
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         if len(res) > 0:
             return jsonify(res)
 
@@ -242,7 +245,7 @@ def searchUsers(word):
             }
         res.append(user_n)
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         if len(res) > 0:
             return jsonify(res)
 
@@ -265,7 +268,7 @@ def addWorkers():
     data = cur.fetchall()
     user_id = data[0][0]
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (passw, user_id, tipo))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador insertado en la base de datos"})
@@ -286,7 +289,7 @@ def addExternalWorkers():
     data = cur.fetchall()
     user_id = data[0][0]
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('INSERT INTO externalworkers (user_id, ocupacion) VALUES (%s, %s)', (user_id, ocupacion))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador Externo insertado en la base de datos"})
@@ -307,7 +310,7 @@ def addClients():
     data = cur.fetchall()
     user_id = data[0][0]
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('INSERT INTO clients (user_id, clientePotencial) VALUES (%s, %s)', (user_id, clientePotencial))
         mysql.connection.commit()
         return jsonify({'message': "Cliente insertado en la base de datos"})
@@ -329,7 +332,7 @@ def addManager():
     print(user_id)
 
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('INSERT INTO gestor (user_id) VALUES (' + str(user_id) + ')')
         mysql.connection.commit()
         return jsonify({'message': "Gestor insertado en la base de datos"})
@@ -349,7 +352,7 @@ def addUsers():
     direccion = request.json['direccion']
     telefono = request.json['telefono']
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur = mysql.connection.cursor()
         cur.execute('INSERT INTO users (nombre, apellidos, dni, email, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)', (nombre, apellidos, dni, email, direccion, telefono))
         mysql.connection.commit()
@@ -376,7 +379,7 @@ def editUsers(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, user_dni, email, direccion, telefono, user_id))
         mysql.connection.commit()
         try:
@@ -407,7 +410,7 @@ def editWorkers(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador editado correctamente"})
@@ -426,7 +429,7 @@ def editExternalWorker(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador Externo editado correctamente"})
@@ -445,7 +448,7 @@ def editClient(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador Externo editado correctamente"})
@@ -462,7 +465,7 @@ def deleteUser(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('DELETE from clients where user_id = {}'.format(user_id))
         mysql.connection.commit()
         cur.execute('DELETE from gestor where user_id = {}'.format(user_id))
@@ -487,7 +490,7 @@ def deleteWorker(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('DELETE from workers where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Trabajador borrado correctamente"})
@@ -504,7 +507,7 @@ def deleteExternalWorker(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('DELETE from externalworkers where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Trabajador Externo borrado correctamente"})
@@ -521,7 +524,7 @@ def deleteClient(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('DELETE from clients where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Cliente borrado correctamente"})
@@ -538,7 +541,7 @@ def deleteManager(user_dni):
     data = cur.fetchall()
     user_id = data[0][0]
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur.execute('DELETE from gestor where user_id = {}'.format(user_id))
         mysql.connection.commit()
         return jsonify({"message": "Gestor borrado correctamente"})
@@ -557,7 +560,8 @@ def login():
     data = cur.fetchall()
     if len(data) != 0:
         if data[0][8] == password:
-            return jsonify({ "message": "Login accepted", "status": 200, "accepted": True, "user": data[0] })
+            os.environ['TOKEN'] = token_generator()
+            return jsonify({ "message": "Login accepted", "status": 200, "accepted": True, "user": data[0], "token": os.environ['TOKEN'] })
         else:
             return jsonify({ "message": "User denied", "status": 200, "accepted": False })
     else:
@@ -582,7 +586,7 @@ def getMaterials():
         res.append(material)
 
     
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
@@ -597,7 +601,7 @@ def addMaterial():
     cantidad = request.json['cantidad']
     stockSeguridad = request.json['stockSeguridad']
 
-    if request.headers['Authorization'] == "0i234c6c89":
+    if request.headers['Authorization'] == os.environ['TOKEN']:
         cur = mysql.connection.cursor()
         cur.execute('INSERT INTO materials (nombre, cantidad, stockSeguridad) VALUES (%s, %s, %s)', (nombre, cantidad, stockSeguridad))
         mysql.connection.commit()

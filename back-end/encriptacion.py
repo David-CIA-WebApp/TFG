@@ -1,10 +1,11 @@
-def encriptar(psswd):
-	BITSNumber = 32
+def encriptar(psswd, BTSN):
+	diccionario_de_caracteres = "0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+	BITSNumber = BTSN or 32
 	integer = 0
 	finalWord = ""
 
 	while integer < 10:
-		prohi = "#%&*{ }:<>?/+, $"
+		prohi = "#%&*{ }:<>?/+, $.-"
 		
 		cadena = psswd * 20
 
@@ -96,9 +97,29 @@ def encriptar(psswd):
 
 		psswd = changing(palabraEncriptada)[:32]
 
-		finalWord += changing(palabraEncriptada)[:32]
+		for i in prohi:
+			psswd = psswd.replace(i, "")
 
-		integer += 1;
+		clave = "DBG4m3syt"
 
-	print(finalWord[:BITSNumber])
-	input("Press enter to leave...")
+		newWorld = ""
+
+		i = 0
+		j = 0
+		while i < len(psswd):
+			letraN1 = diccionario_de_caracteres.index(psswd[i])
+			while j < len(clave):
+				letraN2 = diccionario_de_caracteres.index(clave[j])
+				value = (letraN1 + letraN2) % len(diccionario_de_caracteres)
+				i += 1
+				j += 1
+				
+				newWorld += diccionario_de_caracteres[value]
+				
+			j = 0
+
+		finalWord += changing(newWorld[:-len(clave)])[:32]
+
+		integer += 1
+		
+	return finalWord[115:115+BITSNumber]
