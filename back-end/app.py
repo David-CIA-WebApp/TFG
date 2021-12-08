@@ -610,6 +610,31 @@ def addMaterial():
         return jsonify({'message': "Acceso denegado"})
 
 
+#Get all jobs
+@app.route('/trabajos', methods=['GET'])
+def getJobs():
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from trabajo")
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        trabajo = {
+            "id": i[0],
+            "tipo": i[1],
+            "descripcion": i[2],
+            "direccion": i[3],
+            "id_cliente": i[4],
+            "id_certificado": i[5],
+            "id_cita": i[6]
+        }
+        
+        res.append(trabajo)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
