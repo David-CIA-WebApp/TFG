@@ -26,6 +26,10 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 **_/materials_**
 >Devuelve una lista de todos los materiales de la empresa
 
+**_/trabajos_**
+>Devuelve una lista de todos los trabajos realizados por la empresa
+
+
 ### POSTS
 **_/addWorkers_**
 >Con un cuerpo que contenga: 

@@ -1,22 +1,16 @@
 <template>
   <div>
-    <div id="menu" v-if="logged">
       <button 
-      style="background-color: blue; color: white; margin-top: 0px; margin-left: 0px;"
-      @click="redirectUser">
-        USUARIOS
-      </button>
-      <button 
-      style="background-color: blue; color: white; margin-top: 0px; margin-left: 0px;"
-      @click="redirectMaterial">
-        MATERIALES
-      </button>
-      <button 
-      style="background-color: transparent; color: red; margin-top: 0px; float: right;"
+      style="background-color: transparent; color: red; margin-top: 0px; float: right; top: -300px;"
       @click="closeSession">
         Cerrar Sesión
       </button>
-    </div>  
+
+    <div id="menu">
+      <div v-if="logged">
+        <Menu @handleClick="handleClick"/>
+      </div>
+    </div>
 
     <div id="login">
       <div v-if="!logged">
@@ -31,11 +25,13 @@
 <script>
 import axios from 'axios';
 import Login from "../components/Login";
+import Menu from "../components/Menu";
 
 export default {
   name: 'Admin',
   components: {
-    Login
+    Login,
+    Menu
   },
   data() {
     return {
@@ -87,18 +83,22 @@ export default {
           console.error(error);
         });
     },
+    closeSession() {
+      localStorage.userMail = "";
+      localStorage.userPass = "";
+      localStorage.userType = "";
+      this.$router.go();
+    },
+    handleClick (item) {
+        if (item == 'USUARIOS') this.redirectUser();
+        else if (item == 'MATERIALES') this.redirectMaterial();
+    },
     redirectUser() {
       this.$router.push('users');
     },
     redirectMaterial() {
       this.$router.push('materials');
     },
-    closeSession() {
-      localStorage.userMail = "";
-      localStorage.userPass = "";
-      localStorage.userType = "";
-      this.$router.go();
-    }
   },
   mounted() {
     this.loadData();

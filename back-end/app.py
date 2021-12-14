@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-os.environ['TOKEN'] = ""
+os.environ['TOKEN'] = token_generator() + ""
 
 try:
     app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
@@ -610,7 +610,7 @@ def addMaterial():
         return jsonify({'message': "Acceso denegado"})
 
 
-#Get all jobs
+#Get all works
 @app.route('/trabajos', methods=['GET'])
 def getJobs():
     cur = mysql.connection.cursor()
@@ -626,6 +626,34 @@ def getJobs():
             "id_cliente": i[4],
             "id_certificado": i[5],
             "id_cita": i[6]
+        }
+        
+        res.append(trabajo)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+#Get all appointments
+@app.route('/citas', methods=['GET'])
+def getAgenda():
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from cita")
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        trabajo = {
+            "id": i[0],
+            "descripcion": i[1],
+            "direccion": i[2],
+            "fecha": i[3],
+            "id_certificado": i[4],
+            "id_tecnico": i[5],
+            "id_perito": i[6],
+            "id_administrador": i[7]
         }
         
         res.append(trabajo)
