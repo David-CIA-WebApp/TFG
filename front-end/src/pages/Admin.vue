@@ -92,12 +92,16 @@ export default {
     handleClick (item) {
         if (item == 'USUARIOS') this.redirectUser();
         else if (item == 'MATERIALES') this.redirectMaterial();
+        else if (item == 'AGENDA') this.redirectAgenda();
     },
     redirectUser() {
       this.$router.push('users');
     },
     redirectMaterial() {
       this.$router.push('materials');
+    },
+    redirectAgenda() {
+      this.$router.push('agenda');
     },
   },
   mounted() {
