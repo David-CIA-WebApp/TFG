@@ -19,7 +19,7 @@ try:
     app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD']
     app.config['MYSQL_DB'] = os.environ['MYSQL_DB']
 except:
-    app.config['MYSQL_HOST'] = 'localhost:3308'
+    app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
     app.config['MYSQL_PASSWORD'] = ''
     app.config['MYSQL_DB'] = 'users_api'
@@ -569,6 +569,24 @@ def login():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Get all materials
 @app.route('/materials', methods=['GET'])
 def getMaterials():
@@ -608,6 +626,26 @@ def addMaterial():
         return jsonify({'message': "Material insertado en la base de datos"})
     else:
         return jsonify({'message': "Acceso denegado"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #Get all works

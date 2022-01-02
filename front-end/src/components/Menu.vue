@@ -1,16 +1,16 @@
 <template>
   <div id="app">
     <radial-menu
-      style="margin: auto; margin-top: 300px; background-color: white"
-      :itemSize="50"
-      :radius="120"
+      style="margin: auto; margin-top: 300px; background-color: white;"
+      :itemSize="100"
+      :radius="200"
       :angle-restriction="180">
         <radial-menu-item 
           v-for="(item, index) in items" 
           :key="index" 
-          style="background-color: blue;" 
+          style="margin-left: -50px; background-color: blue;" 
           @click="() => handleClick(item)">
-          <span>{{item}}</span>
+          <span style="font-size: 13px; color: white;">{{item}}</span>
         </radial-menu-item>
       </radial-menu>
   </div>
@@ -27,7 +27,7 @@ export default {
   },
   data () {
     return {
-      items: ['AGENDA', 'USUARIOS', 'MATERIALES', 'TRABAJOS']
+      items: ['AGENDA', 'USUARIOS', 'MATERIALES', 'TRABAJOS', 'PRESUPUESTOS', 'PROVEEDORES']
     }
   },
   methods: {
