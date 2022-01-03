@@ -26,13 +26,13 @@ CREATE TABLE `cita` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` text NOT NULL,
   `direccion` text NOT NULL,
-  `fecha` date NOT NULL,
+  `fecha` datetime NOT NULL,
   `id_certificado` int(11) DEFAULT NULL,
   `id_tecnico` int(11) DEFAULT NULL,
   `id_perito` int(11) DEFAULT NULL,
   `id_administrador` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
-INSERT INTO `cita` VALUES (1,'Peritaje del catastro','Calle Japon 2 6A','2021-10-12',NULL,NULL,NULL,1);
+INSERT INTO `cita` VALUES (1,'Peritaje del catastro','Calle Japon 2 6A','2021-10-12 07:10:00',NULL,NULL,4,2),(2,'Arreglo cisterna','Calle Carlinga 7 7ºF','2021-10-12 07:50:00',NULL,1,NULL,2);
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,7 +222,7 @@ CREATE TABLE `workers` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `workers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +231,7 @@ CREATE TABLE `workers` (
 
 LOCK TABLES `workers` WRITE;
 /*!40000 ALTER TABLE `workers` DISABLE KEYS */;
-INSERT INTO `workers` VALUES (1,'0T234T6T897TcT11f5disKl21oñlPq17',3,'Técnico'),(2,'contraseña',4,'Administrador');
+INSERT INTO `workers` VALUES (1,'0T234T6T897TcT11f5disKl21oñlPq17',3,'Técnico'),(2,'contraseña',4,'Administrador'),(4,'Peritisimo',3,'Perito');
 /*!40000 ALTER TABLE `workers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -248,4 +248,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-02 22:18:52
+-- Dump completed on 2022-01-02 23:37:18

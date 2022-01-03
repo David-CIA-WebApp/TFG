@@ -373,6 +373,7 @@ def editUsers(user_dni):
     tipo = request.json['tipo']
     ocupacion = request.json['ocupacion'] 
     clientePotencial = request.json['clientePotencial']
+    new_dni = request.json['dni']
     
     cur = mysql.connection.cursor()
     cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
@@ -380,7 +381,7 @@ def editUsers(user_dni):
     user_id = data[0][0]
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, user_dni, email, direccion, telefono, user_id))
+        cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, new_dni, email, direccion, telefono, user_id))
         mysql.connection.commit()
         try:
             cur.execute('UPDATE workers SET pass = %s, tipo = %s where user_id = %s', (passswd, tipo, user_id))

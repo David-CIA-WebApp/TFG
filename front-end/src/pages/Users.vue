@@ -389,6 +389,7 @@ export default {
     },
     setActualUser(user) {
       this.actualUser = user;
+      this.actualUser.oldDNI = user.dni;
     },
     actualizar(actualUser) {  
       if (actualUser.pass == null) {
@@ -401,7 +402,7 @@ export default {
         actualUser.ocupacion = "";
       }
 
-      const path = `${process.env.VUE_APP_BACK_URL}/editUser/${actualUser.dni}`;
+      const path = `${process.env.VUE_APP_BACK_URL}/editUser/${actualUser.oldDNI}`;
       const config = {
         method: 'put',
         url: path,
