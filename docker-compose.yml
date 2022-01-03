@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+   db:
+     image: mariadb:latest
+     ports:
+       - "3308:3306"
+     environment:
+       MYSQL_ROOT_PASSWORD: tfg_db_pass
+       MYSQL_DATABASE: db
+       MYSQL_USER: root
+       MYSQL_PASSWORD: tfg_db_pass
+     volumes:
+       - /home/ubuntu/TFG_DB_VOLUME:/var/lib/mysql
+     restart: always
+   backend:
+     depends_on:
+       - db
+     image: tfg-back
+     ports:
+       - "8001:5000"
+     restart: always
+     environment:
+       MYSQL_HOST: db
+       MYSQL_USER: root
+       MYSQL_PASSWORD: tfg_db_pass
+       MYSQL_DB: db
+   frontend:
+     image: tfg-front
+     ports:
+       - "80:8080"
+     restart: always
+     environment:
+       VUE_APP_BACK_URL: http://141.94.203.217:8001
