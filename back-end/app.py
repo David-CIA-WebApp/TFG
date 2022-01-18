@@ -675,6 +675,47 @@ def getJobs():
     else:
         return jsonify({'message': "Acceso denegado"})
 
+#Create Works Routes
+@app.route('/addJobs', methods=['POST'])
+def addWorkers():
+    #mysql data
+    dni = request.json['dni']
+    tipo = request.json['tipo']
+    descripcion = request.json['descripcion']
+    direccion = request.json['direccion']
+    
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from users WHERE dni LIKE '" + dni + "'")
+    data = cur.fetchall()
+    user_id = data[0][0]
+
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('INSERT INTO trabajo (tipo, descripcion, direccion, id_cliente, id_certificado, id_cita) VALUES (%s, %s, %s, %s, %s, %s)', (tipo, descripcion, direccion, user_id, None, None))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajo insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+#Edit Workers Routes
+@app.route('/editJobs/<string:work_id>', methods=['PUT'])
+def editWorkers(work_id):
+    tipo = request.json['tipo']
+    descripcion = request.json['descripcion']
+    direccion = request.json['direccion']
+    id_cliente = request.json['id_certificado']
+    id_cita = request.json['id_cita']
+    id_certificado = request.json['id_certificado']
+    
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('UPDATE trabajo SET tipo=%s, descripcion=%s, direccion=%s, id_cliente=%s, id_certificado=%s, id_cita=%s WHERE id=%s', (tipo, descripcion, direccion, id_cliente, id_certificado, id_cita, work_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Trabajo editado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
 
 #Get all appointments
 @app.route('/citas', methods=['GET'])
