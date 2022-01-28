@@ -36,7 +36,7 @@
         <tbody>
           <tr v-for="(cita,i) in citasMostradas" :key="i">
             <td>{{ cita.descripcion }}</td> 
-            <td>{{ cita.direccion }}</td> 
+            <td>{{ cita.direccion }}</td>
             <td>{{ cita.dates.toLocaleTimeString() }}</td> 
           </tr>
         </tbody>
@@ -126,11 +126,13 @@
                 dates: new Date(element.fecha),
                 descripcion: element.descripcion,
                 direccion: element.direccion,
+                id_trabajo: element.id_trabajo,
                 id_cita: element.id,
                 id_certificado: element.id_certificado,
                 id_perito: element.id_perito,
                 id_tecnico: element.id_tecnico,
               }
+
               this.citas.push(cita);
             }
           }

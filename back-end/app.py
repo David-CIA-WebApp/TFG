@@ -649,7 +649,7 @@ def addMaterial():
 
 
 
-#Get all works
+#Get all Jobs
 @app.route('/trabajos', methods=['GET'])
 def getJobs():
     cur = mysql.connection.cursor()
@@ -675,9 +675,37 @@ def getJobs():
     else:
         return jsonify({'message': "Acceso denegado"})
 
-#Create Works Routes
+
+#Get a Job by its ID
+@app.route('/trabajos/<string:job_id>', methods=['GET'])
+def getJobByID(job_id):
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from trabajo where id LIKE "+job_id)
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        trabajo = {
+            "id": i[0],
+            "tipo": i[1],
+            "descripcion": i[2],
+            "direccion": i[3],
+            "id_cliente": i[4],
+            "id_certificado": i[5],
+            "id_cita": i[6]
+        }
+        
+        res.append(trabajo)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res[0])
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+#Create Jobs Routes
 @app.route('/addJobs', methods=['POST'])
-def addWorkers():
+def addJobs():
     #mysql data
     dni = request.json['dni']
     tipo = request.json['tipo']
@@ -697,24 +725,36 @@ def addWorkers():
         return jsonify({'message': "Acceso denegado"})
 
 
-#Edit Workers Routes
+#Edit Jobs Routes
 @app.route('/editJobs/<string:work_id>', methods=['PUT'])
-def editWorkers(work_id):
+def editJobs(work_id):
     tipo = request.json['tipo']
     descripcion = request.json['descripcion']
     direccion = request.json['direccion']
-    id_cliente = request.json['id_certificado']
     id_cita = request.json['id_cita']
     id_certificado = request.json['id_certificado']
     
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE trabajo SET tipo=%s, descripcion=%s, direccion=%s, id_cliente=%s, id_certificado=%s, id_cita=%s WHERE id=%s', (tipo, descripcion, direccion, id_cliente, id_certificado, id_cita, work_id))
+        cur.execute('UPDATE trabajo SET tipo=%s, descripcion=%s, direccion=%s, id_cliente=id_cliente, id_certificado=%s, id_cita=%s WHERE id=%s', (tipo, descripcion, direccion, id_certificado, id_cita, work_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajo editado correctamente"})
     else:
         return jsonify({'message': "Acceso denegado"})
+
+#Delete job from de DB
+@app.route('/deleteJob/<string:job_id>', methods=['DELETE'])
+def deleteJob(job_id):
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('DELETE from trabajo where id = {}'.format(job_id))
+        mysql.connection.commit()
+        return jsonify({"message": "Trabajo borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
 
 
 #Get all appointments
@@ -727,13 +767,14 @@ def getAgenda():
     for i in data:
         trabajo = {
             "id": i[0],
-            "descripcion": i[1],
-            "direccion": i[2],
-            "fecha": i[3],
-            "id_certificado": i[4],
-            "id_tecnico": i[5],
-            "id_perito": i[6],
-            "id_administrador": i[7]
+            "id_trabajo": i[1],
+            "fecha": i[2],
+            "id_certificado": i[3],
+            "id_tecnico": i[4],
+            "id_perito": i[5],
+            "id_administrador": i[6],
+            "descripcion": i[7],
+            "direccion": i[8]
         }
         
         res.append(trabajo)
@@ -743,8 +784,6 @@ def getAgenda():
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
-
-
 
 
 if __name__ == '__main__':

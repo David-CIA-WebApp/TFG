@@ -71,6 +71,14 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - tipo
 >Asocia al usuario con ese dni el tipo de trabajador y una contraseña
 
+**_/addJobs_**
+>Con un cuerpo que contenga: 
+- dni (el del cliente)
+- tipo
+- descripcion
+- direccion
+>Crea un trabajo en la base de datos
+
 ### PUTS
 **_/editUser/DNI_**
 >Cambiando DNI por el dni de una persona
@@ -105,6 +113,17 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - clientePotencial
 >Indica si es o no cliente potencial
 
+
+**_/editJobs/ID_**
+>Cambiando el ID por el id de un trabajo
+>Con un cuerpo que contenga: 
+- tipo
+- descripcion
+- direccion
+- id_cita
+- id_certificado
+>Edita un trabajo con los nuevos datos
+
 ### DELETES
 **_/deleteUser/DNI_**
 >Cambiando DNI por el dni de una persona
@@ -125,3 +144,7 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 **_/deleteManager/DNI_**
 >Cambiando DNI por el dni de una persona
 >Borra ese gestor
+
+**_/deleteJob/ID_**
+>Cambiando el ID por el id de un trabajo
+>Borra ese trabajo
