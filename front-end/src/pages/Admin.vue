@@ -93,6 +93,7 @@ export default {
         if (item == 'USUARIOS') this.redirectUser();
         else if (item == 'MATERIALES') this.redirectMaterial();
         else if (item == 'AGENDA') this.redirectAgenda();
+        else if (item == 'TRABAJOS') this.redirectJobs();
     },
     redirectUser() {
       this.$router.push('users');
@@ -103,6 +104,9 @@ export default {
     redirectAgenda() {
       this.$router.push('agenda');
     },
+    redirectJobs() {
+      this.$router.push('jobs');
+    }
   },
   mounted() {
     this.loadData();

@@ -29,6 +29,9 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 **_/trabajos_**
 >Devuelve una lista de todos los trabajos realizados por la empresa
 
+**_/trabajo/IDs_**
+>Cambiando ID por el ID de un trabajo, devuelve todos los datos de este
+
 **_/citas_**
 >Devuelve una lista de todas las citas concertadas
 

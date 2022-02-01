@@ -1,5 +1,5 @@
 <template>
-  <div id="materials">
+  <div id="jobs">
     <div id="menu" v-if="forceReload && logged">
       <button 
       v-if="logged"
@@ -17,17 +17,25 @@
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div v-if="forceReload && logged">
-      <table class="table table-striped" id="materials">
+      <table class="table table-striped" id="jobs">
         <thead>
           <tr>
-            <th>Material</th>
-            <th style="width: 10%;">Cantidad</th>
+            <th>Id</th>
+            <th>Tipo</th>
+            <th>Descripcion</th>
+            <th>Direccion</th>
+            <th>Cliente</th>
+            <th>Certificado</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(material,i) in materials" :key="i">
-            <td> {{material.nombre}} </td> 
-            <td style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
+          <tr v-for="(job,i) in jobs" :key="i">
+            <td> {{job.id}} </td> 
+            <td> {{job.tipo}} </td> 
+            <td> {{job.descripcion}} </td> 
+            <td> {{job.direccion}} </td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
+            <td> {{job.id_certificado}} </td>
           </tr>
         </tbody>
       </table>
@@ -44,22 +52,31 @@
 import axios from 'axios';
 
 export default {
-  name: 'Materials',
+  name: 'Jobs',
   components: {
     
   },
   data() {
     return {
       logged: false,
-      materials: [],
+      jobs: [],
       forceReload: false,
-      actualMaterial: {},
-      token: null
+      token: null,
+      thisUri: ""
     }
   },
   methods: {
-    loadMaterials() {
-      const path = `${process.env.VUE_APP_BACK_URL}/materials`;
+    loadJobs() {
+      var uri = window.location.href;
+      this.thisUri = uri.split("jobs/")[0];
+      var extension;
+      if (uri.split("jobs/")[1]) {
+        extension = "/trabajo/" + uri.split("jobs/")[1];
+      } else {
+        extension = "/trabajos";
+      }
+      const path = `${process.env.VUE_APP_BACK_URL}` + extension;
+      console.log(path);
       const config = {
         method: 'get',
         url: path,
@@ -73,7 +90,7 @@ export default {
       .then((res) => {
         for (let index = 0; index < res.data.length; index++) {
           var element = res.data[index];
-          this.materials[index] = element;
+          this.jobs[index] = element;
         }
         this.forceReload = true;
       });
@@ -99,7 +116,7 @@ export default {
             this.logged = true;
             this.userType = localStorage.userType;
             this.token = res.data.token;
-            this.loadMaterials();
+            this.loadJobs();
           }
           
           this.$emit("logging", this.logged);
@@ -112,28 +129,15 @@ export default {
     redirectHome() {
       this.$router.push({ path: '/admin' });
     },
+    redirectUser(userId) {
+      this.$router.push("/user/" + userId);
+    },
     closeSession() {
       localStorage.userMail = "";
       localStorage.userPass = "";
       localStorage.userType = "";
       this.redirectHome();
     },
-    reducirMaterial(index) {
-      this.materials[index].cantidad -= 1;
-
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 10);
-    },
-    aumentarMaterial(index) {
-      this.materials[index].cantidad += 1;
-
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 10);
-    }
   },
   mounted() {
     this.loadData();
@@ -150,22 +154,22 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-#materials {
+#jobs {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
 }
 
-#materials td, #materials th {
+#jobs td, #jobs th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#materials tr:nth-child(even){background-color: #f2f2f2;}
+#jobs tr:nth-child(even){background-color: #f2f2f2;}
 
-#materials tr:hover {background-color: #ddd;}
+#jobs tr:hover {background-color: #ddd;}
 
-#materials th {
+#jobs th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;

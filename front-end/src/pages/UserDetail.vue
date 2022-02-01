@@ -1,5 +1,5 @@
 <template>
-  <div id="materials">
+  <div id="users">
     <div id="menu" v-if="forceReload && logged">
       <button 
       v-if="logged"
@@ -15,26 +15,95 @@
       </button>
     </div>  
 
+    <br><br><br>
+
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="forceReload && logged">
-      <table class="table table-striped" id="materials">
+    <div v-if="logged">
+    <h3>USUARIO</h3>
+      <table class="table table-striped" id="users" v-if="usersLoaded">
         <thead>
           <tr>
-            <th>Material</th>
-            <th style="width: 10%;">Cantidad</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>DNI</th>
+            <th>Correo</th>
+            <th>Dirección</th>
+            <th>Telefono</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(material,i) in materials" :key="i">
-            <td> {{material.nombre}} </td> 
-            <td style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
+          <tr v-for="(user,i) in users" :key="i">
+            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
+            <td>{{ user.apellidos }}</td> 
+            <td>{{ user.dni }}</td> 
+            <td>{{ user.email }}</td> 
+            <td>{{ user.direccion }}</td> 
+            <td>{{ user.telefono }}</td> 
           </tr>
         </tbody>
+      <button
+      style="background-color: transparent; color: blue;"
+      @click="createUser('USUARIOS')">
+        Crear usuario
+      </button>
       </table>
     </div>
 
     <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
       <h1>Sorry! This page is not available</h1>
+    </div>
+
+    <div id="miModal" class="modal" v-if="forceReload">
+      <div class="modal-contenido">
+        <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
+        <h3 style="margin-bottom: -2%;">{{actualUser.nombre}} - {{actualUser.dni}}</h3>
+        <p>Nombre:</p>
+        <input v-model="actualUser.nombre"/>
+        <p>Apellidos:</p>
+        <input v-model="actualUser.apellidos"/>
+        <p>DNI:</p>
+        <input v-model="actualUser.dni"/>
+        <p>Dirección:</p>
+        <input v-model="actualUser.direccion"/>
+        <p>Teléfono:</p>
+        <input v-model="actualUser.telefono"/>
+        <p>Correo:</p>
+        <input v-model="actualUser.email"/>
+
+        <p v-if="actualUser.pass != null">Contraseña:</p>
+        <input v-if="actualUser.pass != null" v-model="actualUser.pass"/>
+
+        <p v-if="actualUser.tipo != null">Ocupación:</p>
+        <select
+          v-if="actualUser.tipo != null"
+          class="border rounded-sm ml-2 p-1"
+          v-model="actualUser.tipo"
+        >
+          <option value="Administrador">Administrador</option>
+          <option value="Técnico">Técnico</option>
+          <option value="Perito">Perito</option>
+        </select>
+
+        <p v-if="actualUser.ocupacion != null">Ocupación:</p>
+        <input v-if="actualUser.ocupacion != null" v-model="actualUser.ocupacion"/>
+
+      <br>
+      <button
+        v-if="userType == 'Administrador'"
+        class="button"
+        @click="actualizar(actualUser)"
+        href="#">
+          Actualizar
+      </button>
+      
+      <button
+        v-if="userType == 'Administrador'"
+        class="button red"
+        @click="eliminar(actualUser)"
+        href="#"  >
+          Eliminar
+      </button>
+      </div>  
     </div>
 
   </div>
@@ -44,25 +113,51 @@
 import axios from 'axios';
 
 export default {
-  name: 'Materials',
+  name: 'Users',
   components: {
     
   },
   data() {
     return {
       logged: false,
-      materials: [],
-      forceReload: false,
-      actualMaterial: {},
+      users: [],
+      workers: [],
+      externalWorkers: [],
+      economyManagers: [],
+      clients: [],
+      forceReload: true,
+      usersLoaded: false,
+      workersLoaded: false,
+      externalWorkersLoaded: false,
+      managersLoaded: false,
+      clientsLoaded: false,
+      actualUser: {},
+      userType: "",
+      dniArray: [],
+      dniSelected: null,
+      searchedUsers: [],
+      changeSearch: false,
       token: null
+      
     }
   },
   methods: {
-    loadMaterials() {
-      const path = `${process.env.VUE_APP_BACK_URL}/materials`;
+    loadUsers() {
+      this.users = [];
+      this.workers = [];
+      this.externalWorkers = [];
+      this.clients = [];
+      this.economyManagers = [];
+
+      var userId = window.location.href.split("user/")[1];
+      const path = `${process.env.VUE_APP_BACK_URL}/user/` + userId;
       const config = {
         method: 'get',
         url: path,
+        data: {
+          "mail": this.mail, 
+          "password": this.password
+        },
         headers: {
           "Content-Type": "application/JSON",
           "Access-Control-Allow-Origin": "*",
@@ -73,11 +168,16 @@ export default {
       .then((res) => {
         for (let index = 0; index < res.data.length; index++) {
           var element = res.data[index];
-          this.materials[index] = element;
+          this.users[index] = element;
+          this.dniArray.push(element.dni);
         }
-        this.forceReload = true;
+        this.usersLoaded = true;
       });
-
+      
+    },
+    setActualUser(user) {
+      this.actualUser = user;
+      this.actualUser.oldDNI = user.dni;
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
@@ -99,7 +199,7 @@ export default {
             this.logged = true;
             this.userType = localStorage.userType;
             this.token = res.data.token;
-            this.loadMaterials();
+            this.loadUsers();
           }
           
           this.$emit("logging", this.logged);
@@ -117,23 +217,11 @@ export default {
       localStorage.userPass = "";
       localStorage.userType = "";
       this.redirectHome();
+    }, 
+    reloadSite() {
+      this.$router.push('');
+      this.$router.go();
     },
-    reducirMaterial(index) {
-      this.materials[index].cantidad -= 1;
-
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 10);
-    },
-    aumentarMaterial(index) {
-      this.materials[index].cantidad += 1;
-
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 10);
-    }
   },
   mounted() {
     this.loadData();
@@ -150,22 +238,22 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-#materials {
+#users {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
 }
 
-#materials td, #materials th {
+#users td, #users th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#materials tr:nth-child(even){background-color: #f2f2f2;}
+#users tr:nth-child(even){background-color: #f2f2f2;}
 
-#materials tr:hover {background-color: #ddd;}
+#users tr:hover {background-color: #ddd;}
 
-#materials th {
+#users th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;

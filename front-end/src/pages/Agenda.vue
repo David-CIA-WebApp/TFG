@@ -31,6 +31,7 @@
             <th>Descripcion</th>
             <th>Direccion</th>
             <th>Hora</th>
+            <th>Trabajo</th>
           </tr>
         </thead>
         <tbody>
@@ -38,6 +39,7 @@
             <td>{{ cita.descripcion }}</td> 
             <td>{{ cita.direccion }}</td>
             <td>{{ cita.dates.toLocaleTimeString() }}</td> 
+            <td><a :href="'jobs/'+cita.id_trabajo">Ver trabajo</a></td> 
           </tr>
         </tbody>
       </table>
