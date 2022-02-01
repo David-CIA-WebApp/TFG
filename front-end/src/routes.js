@@ -1,7 +1,9 @@
 import App from "./App";
 import Admin from "./pages/Admin";
 import Users from "./pages/Users";
+import UserDetail from "./pages/UserDetail";
 import Materials from "./pages/Materials";
+import Jobs from "./pages/Jobs";
 import Agenda from "./pages/Agenda";
 
 const routes = [
@@ -24,10 +26,28 @@ const routes = [
         meta: { title: "David&CIA - Usuarios" },
     }, 
     {     
+        path: "/user/:id",
+        component: UserDetail,
+        name: "UserDetail",
+        meta: { title: "David&CIA - Usuario" },
+    }, 
+    {     
         path: "/materials",
         component: Materials,
         name: "Materials",
         meta: { title: "David&CIA - Materiales" },
+    }, 
+    {     
+        path: "/jobs",
+        component: Jobs,
+        name: "Jobs",
+        meta: { title: "David&CIA - Trabajos" },
+    }, 
+    {     
+        path: "/jobs/:id",
+        component: Jobs,
+        name: "Jobs",
+        meta: { title: "David&CIA - Trabajos" },
     }, 
     {     
         path: "/agenda",

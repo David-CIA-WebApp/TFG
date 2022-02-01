@@ -29,6 +29,11 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 **_/trabajos_**
 >Devuelve una lista de todos los trabajos realizados por la empresa
 
+**_/trabajo/IDs_**
+>Cambiando ID por el ID de un trabajo, devuelve todos los datos de este
+
+**_/citas_**
+>Devuelve una lista de todas las citas concertadas
 
 ### POSTS
 **_/addWorkers_**
@@ -79,6 +84,17 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - direccion
 >Crea un trabajo en la base de datos
 
+**_/addMeetings_**
+>Con un cuerpo que contenga: 
+- id_trabajo
+- fecha
+- id_tecnico
+- id_perito
+- id_administrador
+- descripcion
+- direccion
+>Crea una cita en la base de datos
+
 ### PUTS
 **_/editUser/DNI_**
 >Cambiando DNI por el dni de una persona
@@ -124,6 +140,19 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - id_certificado
 >Edita un trabajo con los nuevos datos
 
+**_/editMeetings/ID_**
+>Cambiando el ID por el id de una cita
+>Con un cuerpo que contenga: 
+- id_trabajo
+- fecha
+- id_tecnico
+- id_perito
+- id_administrador
+- descripcion
+- direccion
+- id_certificado
+>Edita una cita con los nuevos datos
+
 ### DELETES
 **_/deleteUser/DNI_**
 >Cambiando DNI por el dni de una persona
@@ -148,3 +177,7 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 **_/deleteJob/ID_**
 >Cambiando el ID por el id de un trabajo
 >Borra ese trabajo
+
+**_/deleteMeeting/ID_**
+>Cambiando el ID por el id de una cita
+>Borra esa cita
