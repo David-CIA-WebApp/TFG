@@ -41,13 +41,37 @@
             <td>{{ user.telefono }}</td> 
           </tr>
         </tbody>
-      <button
-      style="background-color: transparent; color: blue;"
-      @click="createUser('USUARIOS')">
-        Crear usuario
-      </button>
       </table>
     </div>
+
+    
+    <h3>TRABAJOS</h3>
+    <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div v-if="forceReload && logged">
+      <table class="table table-striped" id="jobs" v-if="jobsLoaded">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Tipo</th>
+            <th>Descripcion</th>
+            <th>Direccion</th>
+            <th>Certificado</th>
+            <th>Trabajo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(job,i) in jobs" :key="i">
+            <td> {{job.id}} </td> 
+            <td> {{job.tipo}} </td> 
+            <td> {{job.descripcion}} </td> 
+            <td> {{job.direccion}} </td> 
+            <td> {{job.id_certificado}} </td>
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectJob(job.id)">Ver trabajo</a></td> 
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
 
     <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
       <h1>Sorry! This page is not available</h1>
@@ -121,24 +145,17 @@ export default {
     return {
       logged: false,
       users: [],
-      workers: [],
-      externalWorkers: [],
-      economyManagers: [],
-      clients: [],
       forceReload: true,
       usersLoaded: false,
-      workersLoaded: false,
-      externalWorkersLoaded: false,
-      managersLoaded: false,
-      clientsLoaded: false,
       actualUser: {},
       userType: "",
       dniArray: [],
       dniSelected: null,
       searchedUsers: [],
       changeSearch: false,
-      token: null
-      
+      token: null,
+      jobs: [],
+      jobsLoaded: false,
     }
   },
   methods: {
@@ -174,6 +191,32 @@ export default {
         this.usersLoaded = true;
       });
       
+
+
+
+      const path2 = `${process.env.VUE_APP_BACK_URL}/trabajos/` + userId;
+      const config2 = {
+        method: 'get',
+        url: path2,
+        data: {
+          "mail": this.mail, 
+          "password": this.password
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      }
+      axios(config2)
+      .then((res) => {
+        for (let index = 0; index < res.data.length; index++) {
+          var element = res.data[index];
+          this.jobs[index] = element;
+        }
+        this.jobsLoaded = true;
+      });
+
     },
     setActualUser(user) {
       this.actualUser = user;
@@ -221,6 +264,9 @@ export default {
     reloadSite() {
       this.$router.push('');
       this.$router.go();
+    },
+    redirectJob(jobId) {
+      this.$router.push("/jobs/" + jobId);
     },
   },
   mounted() {

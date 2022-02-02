@@ -58,6 +58,7 @@
             <th>Correo</th>
             <th>Dirección</th>
             <th>Telefono</th>
+            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
@@ -68,6 +69,7 @@
             <td>{{ user.email }}</td> 
             <td>{{ user.direccion }}</td> 
             <td>{{ user.telefono }}</td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(user.id)">Ver usuario</a></td> 
           </tr>
         </tbody>
       <button
@@ -91,6 +93,7 @@
             <th>Telefono</th>
             <th>Contraseña</th>
             <th>Función</th>
+            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
@@ -103,6 +106,7 @@
             <td>{{ worker.telefono }}</td> 
             <td>{{ worker.pass }}</td> 
             <td>{{ worker.tipo }}</td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(worker.id)">Ver usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -128,6 +132,7 @@
             <th>Dirección</th>
             <th>Telefono</th>
             <th>Función</th>
+            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
@@ -139,6 +144,7 @@
             <td>{{ ew.direccion }}</td> 
             <td>{{ ew.telefono }}</td> 
             <td>{{ ew.ocupacion }}</td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(ew.id)">Ver usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -163,6 +169,7 @@
             <th>Correo</th>
             <th>Dirección</th>
             <th>Telefono</th>
+            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
@@ -173,6 +180,7 @@
             <td>{{ em.email }}</td> 
             <td>{{ em.direccion }}</td> 
             <td>{{ em.telefono }}</td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(em.id)">Ver usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -198,6 +206,7 @@
             <th>Dirección</th>
             <th>Telefono</th>
             <th>Cliente potencial</th>
+            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
@@ -209,6 +218,7 @@
             <td>{{ client.direccion }}</td> 
             <td>{{ client.telefono }}</td> 
             <td>{{ client.clientePotencial }}</td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(client.id)">Ver usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -622,7 +632,10 @@ export default {
           this.changeSearch = true;
         });
       }
-    }
+    },
+    redirectUser(userId) {
+      this.$router.push("/user/" + userId);
+    },
   },
   mounted() {
     this.loadData();

@@ -15,9 +15,10 @@
       </button>
     </div>  
 
+    <h3>TRABAJOS</h3>
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div v-if="forceReload && logged">
-      <table class="table table-striped" id="jobs">
+      <table class="table table-striped" id="jobs" v-if="jobsLoaded">
         <thead>
           <tr>
             <th>Id</th>
@@ -36,6 +37,27 @@
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
             <td> {{job.id_certificado}} </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>CITAS ASOCIADAS</h3>
+    <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div v-if="forceReload && logged">
+      <table class="table table-striped" id="jobs" v-if="meetingsLoaded">
+        <thead>
+          <tr>
+            <th>Descripcion</th>
+            <th>Direccion</th>
+            <th>Hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(cita,i) in citas" :key="i">
+            <td>{{ cita.descripcion }}</td> 
+            <td>{{ cita.direccion }}</td>
+            <td>{{ cita.dates.toLocaleTimeString() }}</td> 
           </tr>
         </tbody>
       </table>
@@ -62,7 +84,10 @@ export default {
       jobs: [],
       forceReload: false,
       token: null,
-      thisUri: ""
+      thisUri: "",
+      jobsLoaded: false,
+      citas: [],
+      meetingsLoaded: false,
     }
   },
   methods: {
@@ -70,10 +95,13 @@ export default {
       var uri = window.location.href;
       this.thisUri = uri.split("jobs/")[0];
       var extension;
+      var extCitas;
       if (uri.split("jobs/")[1]) {
         extension = "/trabajo/" + uri.split("jobs/")[1];
+        extCitas = "/citas/" + uri.split("jobs/")[1];
       } else {
         extension = "/trabajos";
+        extCitas = "/citas";
       }
       const path = `${process.env.VUE_APP_BACK_URL}` + extension;
       console.log(path);
@@ -93,8 +121,42 @@ export default {
           this.jobs[index] = element;
         }
         this.forceReload = true;
+        this.jobsLoaded = true;
       });
 
+
+      const path2 = `${process.env.VUE_APP_BACK_URL}` + extCitas;
+      console.log(path2);
+      const config2 = {
+        method: 'get',
+        url: path2,
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      }
+      axios(config2)
+      .then((res) => {
+        for (let index = 0; index < res.data.length; index++) {
+          var element = res.data[index];
+          
+          var cita = {
+            dot: true,
+            dates: new Date(element.fecha),
+            descripcion: element.descripcion,
+            direccion: element.direccion,
+            id_trabajo: element.id_trabajo,
+            id_cita: element.id,
+            id_certificado: element.id_certificado,
+            id_perito: element.id_perito,
+            id_tecnico: element.id_tecnico,
+          }
+          this.citas[index] = cita;
+        }
+        this.meetingsLoaded = true;
+        this.jobsLoaded = true;
+      });
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
