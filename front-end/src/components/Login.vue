@@ -35,6 +35,7 @@ export default {
   methods: {
     login() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;
+      console.log(process.env);
       const config = {
         method: 'post',
         url: path,

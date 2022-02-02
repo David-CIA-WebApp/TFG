@@ -582,6 +582,15 @@ def deleteManager(user_dni):
 
 
 
+
+
+
+
+
+
+
+
+
 #Login as admin
 @app.route('/login', methods=['POST'])
 def login():
@@ -754,7 +763,7 @@ def getJobById_cliente(id_cliente):
 
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        return jsonify(res[0])
+        return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
 
@@ -823,7 +832,7 @@ def getAgenda():
     data = cur.fetchall()
     res = []
     for i in data:
-        trabajo = {
+        cita = {
             "id": i[0],
             "id_trabajo": i[1],
             "fecha": i[2],
@@ -835,7 +844,37 @@ def getAgenda():
             "direccion": i[8]
         }
         
-        res.append(trabajo)
+        res.append(cita)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+
+#Get a Job by its client id
+@app.route('/citas/<string:id_trabajo>', methods=['GET'])
+def getMeetingById_trabajo(id_trabajo):
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from cita where id_trabajo LIKE "+id_trabajo)
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        cita = {
+            "id": i[0],
+            "id_trabajo": i[1],
+            "fecha": i[2],
+            "id_certificado": i[3],
+            "id_tecnico": i[4],
+            "id_perito": i[5],
+            "id_administrador": i[6],
+            "descripcion": i[7],
+            "direccion": i[8]
+        }
+        
+        res.append(cita)
 
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
