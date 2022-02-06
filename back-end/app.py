@@ -662,12 +662,34 @@ def addMaterial():
 
     if request.headers['Authorization'] == os.environ['TOKEN']:
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO materials (nombre, cantidad, stockSeguridad) VALUES (%s, %s, %s)', (nombre, cantidad, stockSeguridad))
+        
+        cur.execute("Select * from materials")
+        data = cur.fetchall()
+        if len(data) > 0:
+            return jsonify({'message': "Este material ya existe en la base de datos"})
+        else:
+            cur.execute('INSERT INTO materials (nombre, cantidad, stockSeguridad) VALUES (%s, %s, %s)', (nombre, cantidad, stockSeguridad))
         mysql.connection.commit()
         return jsonify({'message': "Material insertado en la base de datos"})
     else:
         return jsonify({'message': "Acceso denegado"})
 
+
+#Create a new material
+@app.route('/editMaterial', methods=['PUT'])
+def updateMaterial():
+    #mysql data
+    nombre = request.json['nombre']
+    cantidad = request.json['cantidad']
+    stockSeguridad = request.json['stockSeguridad']
+
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO materials (nombre, cantidad, stockSeguridad) VALUES (%s, %s, %s)', (nombre, cantidad, stockSeguridad))
+        mysql.connection.commit()
+        return jsonify({'message': "Material insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
 
 
 
@@ -894,6 +916,7 @@ def addMeetings():
     id_administrador = request.json['id_administrador']
     descripcion = request.json['descripcion']
     direccion = request.json['direccion']
+    
     
     cur = mysql.connection.cursor()
 

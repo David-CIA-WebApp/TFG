@@ -140,6 +140,9 @@ export default {
       .then((res) => {
         for (let index = 0; index < res.data.length; index++) {
           var element = res.data[index];
+
+          if (Date().includes("GMT+0100")) element.fecha += "+0100";
+          else if (Date().includes("GMT+0200")) element.fecha += "+0200";
           
           var cita = {
             dot: true,
