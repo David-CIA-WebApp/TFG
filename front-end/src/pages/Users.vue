@@ -110,10 +110,10 @@
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
-          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+          <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 50%;"
+        style="background-color: transparent; color: blue; width: 140px;"
         @click="createUser('TRABJADOR')">
           Crear trabajador
         </button>
@@ -148,10 +148,10 @@
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
-          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+          <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 50%;"
+        style="background-color: transparent; color: blue; width: 200px;"
         @click="createUser('TRABJADOR EXTERNO')">
           Crear trabajador externo
         </button>
@@ -184,10 +184,10 @@
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
-          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+          <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 50%;"
+        style="background-color: transparent; color: blue; width: 120px;"
         @click="createUser('GESTOR')">
           Crear gestor
         </button>
@@ -222,10 +222,10 @@
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
-          <option v-for="dni in dniArray" v-bind:key="dni" :value="dni">{{dni}}</option>
+          <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 50%;"
+        style="background-color: transparent; color: blue; width: 120px;"
         @click="createUser('CLIENTE')">
           Crear cliente
         </button>
