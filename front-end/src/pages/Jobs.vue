@@ -50,6 +50,7 @@
           <tr>
             <th>Descripcion</th>
             <th>Direccion</th>
+            <th>Fecha</th>
             <th>Hora</th>
           </tr>
         </thead>
@@ -57,6 +58,7 @@
           <tr v-for="(cita,i) in citas" :key="i">
             <td>{{ cita.descripcion }}</td> 
             <td>{{ cita.direccion }}</td>
+            <td>{{ cita.dates.getDay() }}/{{ cita.dates.getMonth() }}/{{ cita.dates.getFullYear() }}</td>
             <td>{{ cita.dates.toLocaleTimeString() }}</td> 
           </tr>
         </tbody>
