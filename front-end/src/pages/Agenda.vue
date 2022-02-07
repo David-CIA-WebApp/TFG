@@ -24,7 +24,7 @@
         <pre style="color: white; margin-left: 20px;">Descripcion:  <input v-model="cita.descripcion" style="width: 500px;"></pre>
         <pre style="color: white; margin-left: 20px;">Cliente:      <select @change="loadJobs" v-model="selectedUser"><option v-for="user in users" v-bind:key="user.user_id" :value="user.user_id">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option></select></pre>
         <pre style="color: white; margin-left: 20px;" v-if="loadedJobs">Trabajo:      <select v-model="selectedJob"><option v-for="job in jobs" v-bind:key="job.id" :value="job">{{job.descripcion}}</option></select></pre>
-        <pre style="color: white; margin-left: 20px;">Trabajador:   <select @change="loadJobs" v-model="selectedWorker"><option v-for="worker in workers" v-bind:key="worker.worker_id" :value="worker">{{worker.tipo}} - {{worker.nombre}} {{worker.apellidos}} - {{worker.dni}}</option></select></pre>
+        <pre style="color: white; margin-left: 20px;">Trabajador:   <select v-model="selectedWorker"><option v-for="worker in workers" v-bind:key="worker.worker_id" :value="worker">{{worker.tipo}} - {{worker.nombre}} {{worker.apellidos}} - {{worker.dni}}</option></select></pre>
         <button style="color: white; left: 570px; bottom: 30px;" @click="crearCita">CREAR CITA</button>
       </div>
     </div>
@@ -49,6 +49,7 @@
           <th>Direccion</th>
           <th>Hora</th>
           <th>Trabajo</th>
+          <th>Detalles</th>
         </tr>
       </thead>
       <tbody>
@@ -57,10 +58,47 @@
           <td>{{ cita.direccion }}</td>
           <td>{{ cita.dates.toLocaleTimeString() }}</td> 
           <td><a :href="'jobs/'+cita.id_trabajo">Ver trabajo</a></td> 
+          <td><a href="#miModal" @click="setActualMeeting(cita)"> Editar </a></td> 
         </tr>
       </tbody>
     </table>
 
+
+
+    <div id="miModal" class="modal" v-if="forceReload">
+      <div class="modal-contenido">
+        <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
+        <p>Descripcion:</p>
+        <input v-model="actualMeeting.descripcion"/>
+        <p>Direccion:</p>
+        <input v-model="actualMeeting.direccion"/>
+        <p>Encargado:</p>
+        <p v-if="actualMeeting.id_tecnico">{{actualMeeting.id_tecnico}}</p>
+        <p v-if="actualMeeting.id_administrador">{{actualMeeting.id_administrador}}</p>
+        <p v-if="actualMeeting.id_perito">{{actualMeeting.id_perito}}</p>
+        <p>Fecha y Hora:</p>
+        <input v-model="actualDatetime" type="datetime-local"/>
+
+      <br>
+
+      <button
+        class="button"
+        @click="actualizar(actualMeeting)"
+        href="#">
+          Actualizar
+      </button>
+      
+      <button
+        class="button red"
+        @click="eliminar(actualMeeting)"
+        href="#"  >
+          Eliminar
+      </button>
+      </div>  
+    </div>
+
+
+    
   </div>
 </template>
 
@@ -94,10 +132,91 @@
             hora: null,
             descripcion: null,
             direccion: null
-          }
+          },
+          actualMeeting: {},
+          actualDatetime: ""
         }
     },
     methods: {
+      actualizar() {
+        var newDatetime = (new Date(this.actualDatetime) + "").replace("GMT+0100", "GMT").replace("GMT+0200", "GMT");
+
+        const path = `${process.env.VUE_APP_BACK_URL}/editMeetings/${this.actualMeeting.id}`;
+        const config = {
+          method: 'put',
+          url: path,
+          data: {
+            "fecha": new Date(newDatetime),
+            "descripcion": this.actualMeeting.descripcion,
+            "direccion": this.actualMeeting.direccion,
+            "id_trabajo": this.actualMeeting.id_trabajo,
+            "id_tecnico": this.actualMeeting.id_tecnico,
+            "id_perito": this.actualMeeting.id_perito,
+            "id_administrador": null,
+            "id_certificado": null
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        };
+        axios(config)
+        .then((res) => {
+          if (res) { 
+            console.log(res);
+            this.reloadSite();
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+      },
+      eliminar() {
+      const config = {
+          method: 'delete',
+          url: "",
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        }
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteMeeting/${this.actualMeeting.id}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+      },
+      reloadSite() {
+        this.$router.push('agenda');
+        this.$router.go();
+      },
+      setActualMeeting(meeting) {
+        this.actualMeeting = meeting;
+        var year = this.actualMeeting.dates.toISOString().split("T")[0].split("-")[0];
+        var day = this.actualMeeting.dates.toISOString().split("T")[0].split("-")[1];
+        var month = this.actualMeeting.dates.toISOString().split("T")[0].split("-")[2];
+        var hour = this.actualMeeting.dates.toISOString().split("T")[1].split(":")[0];
+        var minutes = this.actualMeeting.dates.toISOString().split("T")[1].split(":")[1];
+        
+  
+        if (Date().includes("GMT+0100")) {
+          hour = (Number(hour) + 1) + "";
+        }
+        else if (Date().includes("GMT+0200")) {
+          hour = (Number(hour) + 2) + "";
+        }
+
+        if (hour < 10) hour = "0" + hour;
+        this.actualDatetime = year + "-" + day + "-" + month + "T" + hour + ":" + minutes;
+      },
       crearCita() {
         var tecnico;
         var administrador;
@@ -126,7 +245,7 @@
             "fecha": this.cita.hora,
             "descripcion": this.cita.descripcion,
             "direccion": this.cita.direccion,
-            "id_trabajo": this.selectedJob.id,
+            "id_trabajo": this.selectedJob == null ? null : this.selectedJob.id || null,
             "id_tecnico": tecnico,
             "id_perito": perito,
             "id_administrador": administrador
@@ -144,7 +263,6 @@
               const element = res.data[i];
               this.jobs[i] = element;
             }
-            this.loadedJobs = true;
           }
         })
         .catch((error) => {
@@ -181,7 +299,7 @@
         });
       },
       onDayClick: function () {
-          this.citasMostradas = [];
+        this.citasMostradas = [];
         for (let i = 0; i < this.citas.length; i++) {
           var cita = this.citas[i];
           if (this.date.getFullYear() == cita.dates.getFullYear() && this.date.getMonth() == cita.dates.getMonth() && this.date.getUTCDate() == cita.dates.getUTCDate()) {
@@ -241,6 +359,7 @@
               else if (Date().includes("GMT+0200")) element.fecha += "+0200";
 
               var cita = {
+                id: element.id,
                 dot: true,
                 dates: new Date(element.fecha),
                 descripcion: element.descripcion,
@@ -364,4 +483,36 @@
 pre {
   margin-top: -10px;
 }
+
+.modal-contenido{
+  background-color: #207fdd;
+  width:300px;
+  padding: 10px 20px;
+  margin: 1% auto;
+  position: relative;
+}
+.modal{
+  background-color: rgba(0,0,0,.8);
+  position:fixed;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  opacity:0;
+  pointer-events:none;
+  transition: all 1s;
+}
+#miModal:target{
+  opacity:1;
+  pointer-events:auto;
+}
+.modal-contenido p {
+  margin-top: 5%;
+  margin-bottom: 1%;
+  color: white;
+}
+.modal-contenido input {
+  width: 90%;
+}
+
 </style>

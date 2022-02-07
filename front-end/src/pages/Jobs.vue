@@ -42,14 +42,15 @@
       </table>
     </div>
 
-    <h3>CITAS ASOCIADAS</h3>
-    <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="forceReload && logged">
+    <h3 v-if="individualJob">CITAS ASOCIADAS</h3>
+    <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="individualJob && !forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div v-if="individualJob && forceReload && logged">
       <table class="table table-striped" id="jobs" v-if="meetingsLoaded">
         <thead>
           <tr>
             <th>Descripcion</th>
             <th>Direccion</th>
+            <th>Fecha</th>
             <th>Hora</th>
           </tr>
         </thead>
@@ -57,6 +58,7 @@
           <tr v-for="(cita,i) in citas" :key="i">
             <td>{{ cita.descripcion }}</td> 
             <td>{{ cita.direccion }}</td>
+            <td>{{ cita.dates.getDay() }}/{{ cita.dates.getMonth() }}/{{ cita.dates.getFullYear() }}</td>
             <td>{{ cita.dates.toLocaleTimeString() }}</td> 
           </tr>
         </tbody>
@@ -88,6 +90,7 @@ export default {
       jobsLoaded: false,
       citas: [],
       meetingsLoaded: false,
+      individualJob: false
     }
   },
   methods: {
@@ -97,6 +100,7 @@ export default {
       var extension;
       var extCitas;
       if (uri.split("jobs/")[1]) {
+        this.individualJob = true;
         extension = "/trabajo/" + uri.split("jobs/")[1];
         extCitas = "/citas/" + uri.split("jobs/")[1];
       } else {
