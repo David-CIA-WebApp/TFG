@@ -37,6 +37,7 @@
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
             <td> {{job.id_certificado}} </td>
+            <td><a href="#miModal" @click="setActualJob(job)"> Editar </a></td> 
           </tr>
         </tbody>
       </table>
@@ -65,6 +66,43 @@
       </table>
     </div>
 
+    
+    <div id="miModal" class="modal" v-if="forceReload">
+      <div class="modal-contenido">
+        <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
+        <p>Tipo:</p>
+        <select v-model="actualJob.tipo">
+          <option value="Instalacion de agua">Instalacion de agua</option>
+          <option value="Instalacion de gas">Instalacion de gas</option>
+          <option value="Revision de agua">Revision de agua</option>
+          <option value="Revision de gas">Revision de gas</option>
+          <option value="Reparacion">Reparacion</option>
+          <option value="otro">otro</option>
+        </select>
+        <p>Descripcion:</p>
+        <input v-model="actualJob.descripcion"/>
+        <p>Direccion:</p>
+        <input v-model="actualJob.direccion"/>
+
+      <br>
+
+      <button
+        class="button"
+        @click="actualizar(actualJob)"
+        href="#">
+          Actualizar
+      </button>
+      
+      <button
+        class="button red"
+        @click="eliminar(actualJob)"
+        href="#"  >
+          Eliminar
+      </button>
+      </div>  
+    </div>
+
+
     <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
       <h1>Sorry! This page is not available</h1>
     </div>
@@ -90,10 +128,24 @@ export default {
       jobsLoaded: false,
       citas: [],
       meetingsLoaded: false,
-      individualJob: false
+      individualJob: false,
+      actualJob: {}
     }
   },
   methods: {
+    reloadSite() {
+      this.$router.push(("/jobs/"+window.location.href.split("/jobs/")[1]).split("#")[0]);
+      this.$router.go();
+    },
+    actualizar() {
+
+    },
+    eliminar() {
+      
+    },
+    setActualJob(job) {
+      this.actualJob = job;
+    },
     loadJobs() {
       var uri = window.location.href;
       this.thisUri = uri.split("jobs/")[0];
@@ -108,7 +160,6 @@ export default {
         extCitas = "/citas";
       }
       const path = `${process.env.VUE_APP_BACK_URL}` + extension;
-      console.log(path);
       const config = {
         method: 'get',
         url: path,
@@ -130,7 +181,6 @@ export default {
 
 
       const path2 = `${process.env.VUE_APP_BACK_URL}` + extCitas;
-      console.log(path2);
       const config2 = {
         method: 'get',
         url: path2,

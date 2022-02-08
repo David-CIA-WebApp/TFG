@@ -49,7 +49,6 @@
           <th>Direccion</th>
           <th>Hora</th>
           <th>Trabajo</th>
-          <th>Detalles</th>
         </tr>
       </thead>
       <tbody>
