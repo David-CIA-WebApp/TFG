@@ -37,6 +37,7 @@
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
             <td> {{job.id_certificado}} </td>
+            <td><a href="#miModal" @click="editar(job)"> Editar </a></td> 
           </tr>
         </tbody>
       </table>
@@ -65,6 +66,60 @@
       </table>
     </div>
 
+    <br>
+    <a v-if="!individualJob" href="#miModal" @click="setActualJob(newJob)" style="background-color: transparent; color: blue; width: 120px;">Crear trabajo</a>
+
+    <div id="miModal" class="modal" v-if="forceReload">
+      <div class="modal-contenido">
+        <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
+        <p>Tipo:</p>
+        <select v-model="actualJob.tipo">
+          <option value="Instalacion de agua">Instalacion de agua</option>
+          <option value="Instalacion de gas">Instalacion de gas</option>
+          <option value="Revision de agua">Revision de agua</option>
+          <option value="Revision de gas">Revision de gas</option>
+          <option value="Reparacion">Reparacion</option>
+          <option value="otro">otro</option>
+        </select>
+        <p>Descripcion:</p>
+        <input v-model="actualJob.descripcion"/>
+        <p>Direccion:</p>
+        <input v-model="actualJob.direccion"/>
+
+        <p v-if="crear">Cliente:      </p>
+        <select v-if="crear" v-model="selectedUser"><option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option></select>
+
+
+      <br>
+
+      <button
+        v-if="!crear"
+        class="button"
+        @click="actualizar(actualJob)"
+        href="#">
+          Actualizar
+      </button>
+      
+      <button
+        v-if="!crear"
+        class="button red"
+        @click="eliminar(actualJob)"
+        href="#"  >
+          Eliminar
+      </button>
+
+      
+      <button
+        v-if="crear"
+        class="button"
+        @click="createJob"
+        href="#"  >
+          Crear
+      </button>
+      </div>  
+    </div>
+
+
     <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
       <h1>Sorry! This page is not available</h1>
     </div>
@@ -90,10 +145,115 @@ export default {
       jobsLoaded: false,
       citas: [],
       meetingsLoaded: false,
-      individualJob: false
+      individualJob: false,
+      newJob: {
+        new: true,
+        tipo: null,
+        descripcion: "",
+        direccion: "",
+        id_cliente: null,
+        id_certificado: null
+      },
+      actualJob: {},
+      users: [],
+      selectedUser: null,
+      crear: true
     }
   },
   methods: {
+    editar(job) {
+      this.crear = false;
+      this.setActualJob(job);
+    },
+    createJob() {
+      var path = "";
+        const config = {
+          method: 'post',
+          url: "",
+          data: {
+            "dni": this.selectedUser,
+            "tipo": this.actualJob.tipo,
+            "descripcion": this.actualJob.descripcion,
+            "direccion": this.actualJob.direccion
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        }
+
+      path = `${process.env.VUE_APP_BACK_URL}/addJobs`;
+
+      config.url = path;
+      axios(config)
+      .then((res) => {
+        console.log(res);
+        this.reloadSite();
+      });
+    },
+    reloadSite() {
+      var ruta = ("/jobs/"+window.location.href.split("/jobs/")[1]).split("#")[0];
+      if (ruta.includes("undefined")) {
+        ruta = "/jobs";
+      }
+      this.$router.push(ruta);
+      this.$router.go();
+    },
+    actualizar() {
+        const path = `${process.env.VUE_APP_BACK_URL}/editJobs/${this.actualJob.id}`;
+        const config = {
+          method: 'put',
+          url: path,
+          data: {
+            "tipo": this.actualJob.tipo,
+            "descripcion": this.actualJob.descripcion,
+            "direccion": this.actualJob.direccion,
+            "id_certificado": null
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        };
+        axios(config)
+        .then((res) => {
+          if (res) { 
+            console.log(res);
+            this.reloadSite();
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+
+    },
+    eliminar() {
+      const config = {
+          method: 'delete',
+          url: "",
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        }
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteJob/${this.actualJob.id}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+    },
+    setActualJob(job) {
+      this.actualJob = job;
+    },
     loadJobs() {
       var uri = window.location.href;
       this.thisUri = uri.split("jobs/")[0];
@@ -108,7 +268,6 @@ export default {
         extCitas = "/citas";
       }
       const path = `${process.env.VUE_APP_BACK_URL}` + extension;
-      console.log(path);
       const config = {
         method: 'get',
         url: path,
@@ -130,7 +289,6 @@ export default {
 
 
       const path2 = `${process.env.VUE_APP_BACK_URL}` + extCitas;
-      console.log(path2);
       const config2 = {
         method: 'get',
         url: path2,
@@ -164,6 +322,18 @@ export default {
         this.meetingsLoaded = true;
         this.jobsLoaded = true;
       });
+
+      
+      config.url = `${process.env.VUE_APP_BACK_URL}/clients`;
+      axios(config)
+      .then((res) => {
+        for (let index = 0; index < res.data.length; index++) {
+          var element = res.data[index];
+          this.users[index] = element;
+        }
+      });
+
+      
     },
     loadData() {
       const path = `${process.env.VUE_APP_BACK_URL}/login`;

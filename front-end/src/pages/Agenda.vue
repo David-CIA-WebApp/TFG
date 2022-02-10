@@ -49,7 +49,6 @@
           <th>Direccion</th>
           <th>Hora</th>
           <th>Trabajo</th>
-          <th>Detalles</th>
         </tr>
       </thead>
       <tbody>
@@ -174,7 +173,7 @@
         });
       },
       eliminar() {
-      const config = {
+        const config = {
           method: 'delete',
           url: "",
           data: {
@@ -221,21 +220,21 @@
         var tecnico;
         var administrador;
         var perito;
-        if (this.selectedWorker.tipo == "Técnico") {
-          tecnico = this.selectedWorker.worker_id;
-          administrador = null;
-          perito = null;
-        } else if (this.selectedWorker.tipo == "Perito") {
-          tecnico = null;
-          administrador = null;
-          perito = this.selectedWorker.worker_id;
-        } else {
-          tecnico = null;
-          administrador = this.selectedWorker.worker_id;
-          perito = null;
-        } 
-
-        
+        if (this.selectedWorker != null) {
+          if (this.selectedWorker.tipo == "Técnico") {
+            tecnico = this.selectedWorker.worker_id;
+            administrador = null;
+            perito = null;
+          } else if (this.selectedWorker.tipo == "Perito") {
+            tecnico = null;
+            administrador = null;
+            perito = this.selectedWorker.worker_id;
+          } else {
+            tecnico = null;
+            administrador = this.selectedWorker.worker_id;
+            perito = null;
+          } 
+        }
 
         const path = `${process.env.VUE_APP_BACK_URL}/addMeetings`;
         const config = {
@@ -264,6 +263,7 @@
               this.jobs[i] = element;
             }
           }
+          this.reloadSite();
         })
         .catch((error) => {
           // eslint-disable-next-line
