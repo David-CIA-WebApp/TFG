@@ -33,7 +33,7 @@ CREATE TABLE `cita` (
   `descripcion` varchar(100) DEFAULT NULL,
   `direccion` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
-INSERT INTO `cita` VALUES (1,1,'2022-02-11 09:10:00',NULL,NULL,4,NULL,'Revisión final','Calle Japon 2 6A'),(2,1,'2022-02-07 10:00:00',NULL,1,NULL,NULL,'Peritaje del trabajo','Calle Japon 2 6A'),(3,1,'2022-02-09 09:00:00',NULL,1,NULL,NULL,'Reparación completa','Calle Japon 5 4A');
+INSERT INTO `cita` VALUES (1,1,'2022-02-11 09:10:00',NULL,NULL,4,NULL,'Revisión final','Calle Japon 2 6A'),(2,1,'2022-02-07 10:00:00',NULL,1,NULL,NULL,'Peritaje del trabajo','Calle Japon 2 6A'),(3,1,'2022-02-09 09:00:00',NULL,1,NULL,NULL,'Reparación completa','Calle Japon 5 4A'),(4,NULL,'2022-02-15 09:00:00',NULL,1,NULL,NULL,'Peritaje nuevo','Calle de prueba');
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -248,4 +248,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-10 19:25:59
+-- Dump completed on 2022-02-11  0:29:38
