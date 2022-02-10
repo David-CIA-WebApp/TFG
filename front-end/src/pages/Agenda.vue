@@ -56,7 +56,8 @@
           <td>{{ cita.descripcion }}</td> 
           <td>{{ cita.direccion }}</td>
           <td>{{ cita.dates.toLocaleTimeString() }}</td> 
-          <td><a :href="'jobs/'+cita.id_trabajo">Ver trabajo</a></td> 
+          <td v-if="cita.id_trabajo == null">Sin trabajo asociado</td> 
+          <td v-if="cita.id_trabajo != null"><a :href="'jobs/'+cita.id_trabajo">Ver trabajo</a></td> 
           <td><a href="#miModal" @click="setActualMeeting(cita)"> Editar </a></td> 
         </tr>
       </tbody>
@@ -95,7 +96,6 @@
       </button>
       </div>  
     </div>
-
 
     
   </div>
@@ -302,7 +302,8 @@
         this.citasMostradas = [];
         for (let i = 0; i < this.citas.length; i++) {
           var cita = this.citas[i];
-          if (this.date.getFullYear() == cita.dates.getFullYear() && this.date.getMonth() == cita.dates.getMonth() && this.date.getUTCDate() == cita.dates.getUTCDate()) {
+          var fechaHoyCompleta = ("0" + this.date.getDate()).slice(-2) + "/" + ("0" + (this.date.getMonth() + 1)).slice(-2) + "/" +  this.date.getFullYear();
+          if (fechaHoyCompleta == cita.fechaCompleta) {
             this.citasMostradas.push(cita);
           }
         }
@@ -370,6 +371,8 @@
                 id_perito: element.id_perito,
                 id_tecnico: element.id_tecnico,
               }
+          
+              cita.fechaCompleta = ("0" + cita.dates.getDate()).slice(-2) + "/" + ("0" + (cita.dates.getMonth() + 1)).slice(-2) + "/" +  cita.dates.getFullYear();
 
               this.citas.push(cita);
             }

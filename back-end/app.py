@@ -874,6 +874,33 @@ def getAgenda():
     else:
         return jsonify({'message': "Acceso denegado"})
 
+@app.route('/citasSinAsociar', methods=['GET'])
+def getAgendaSinTrabajo():
+    cur = mysql.connection.cursor()
+    cur.execute("Select * from cita where id_trabajo IS null")
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        cita = {
+            "id": i[0],
+            "id_trabajo": i[1],
+            "fecha": i[2],
+            "id_certificado": i[3],
+            "id_tecnico": i[4],
+            "id_perito": i[5],
+            "id_administrador": i[6],
+            "descripcion": i[7],
+            "direccion": i[8]
+        }
+        
+        res.append(cita)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
 
 
 #Get a Job by its client id

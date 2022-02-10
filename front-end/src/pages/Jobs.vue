@@ -59,8 +59,32 @@
           <tr v-for="(cita,i) in citas" :key="i">
             <td>{{ cita.descripcion }}</td> 
             <td>{{ cita.direccion }}</td>
-            <td>{{ cita.dates.getDay() }}/{{ cita.dates.getMonth() }}/{{ cita.dates.getFullYear() }}</td>
+            <td>{{ cita.fechaCompleta }}</td>
             <td>{{ cita.dates.toLocaleTimeString() }}</td> 
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 v-if="individualJob">CITAS SIN ASOCIAR A NINGÚN TRABAJO</h3>
+    <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="individualJob && !forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div v-if="individualJob && forceReload && logged">
+      <table class="table table-striped" id="jobs" v-if="NAMeetingsLoaded">
+        <thead>
+          <tr>
+            <th>Descripcion</th>
+            <th>Direccion</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(citaSinAsociar,i) in citasSinAsociar" :key="i">
+            <td>{{ citaSinAsociar.descripcion }}</td> 
+            <td>{{ citaSinAsociar.direccion }}</td>
+            <td>{{ citaSinAsociar.fechaCompleta }}</td>
+            <td>{{ citaSinAsociar.dates.toLocaleTimeString() }}</td> 
+            <button style="background-color: #207fdd; color: white;" @click="asociarCita(citaSinAsociar)">Añadir cita a este trabajo</button>
           </tr>
         </tbody>
       </table>
@@ -124,6 +148,7 @@
       <h1>Sorry! This page is not available</h1>
     </div>
 
+
   </div>
 </template>
 
@@ -144,7 +169,9 @@ export default {
       thisUri: "",
       jobsLoaded: false,
       citas: [],
+      citasSinAsociar: [],
       meetingsLoaded: false,
+      NAMeetingsLoaded: false,
       individualJob: false,
       newJob: {
         new: true,
@@ -161,6 +188,42 @@ export default {
     }
   },
   methods: {
+    asociarCita(cita) {
+      var uri = window.location.href;
+      var newDatetime = (new Date(cita.dates) + "").replace("GMT+0100", "GMT").replace("GMT+0200", "GMT");
+
+      const path = `${process.env.VUE_APP_BACK_URL}/editMeetings/`+cita.id;
+      const config = {
+        method: 'put',
+        url: path,
+        data: {
+          "fecha": new Date(newDatetime),
+          "descripcion": cita.descripcion,
+          "direccion": cita.direccion,
+          "id_trabajo": uri.split("jobs/")[1],
+          "id_tecnico": cita.id_tecnico,
+          "id_perito": cita.id_perito,
+          "id_administrador": null,
+          "id_certificado": null
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      };
+      axios(config)
+      .then((res) => {
+        if (res) { 
+          console.log(res);
+          this.reloadSite();
+        }
+      })
+      .catch((error) => {
+        // eslint-disable-next-line
+        console.error(error);
+      });
+    },
     editar(job) {
       this.crear = false;
       this.setActualJob(job);
@@ -259,6 +322,7 @@ export default {
       this.thisUri = uri.split("jobs/")[0];
       var extension;
       var extCitas;
+      var NACitas = "/citasSinAsociar";
       if (uri.split("jobs/")[1]) {
         this.individualJob = true;
         extension = "/trabajo/" + uri.split("jobs/")[1];
@@ -317,10 +381,50 @@ export default {
             id_perito: element.id_perito,
             id_tecnico: element.id_tecnico,
           }
+
+          cita.fechaCompleta = ("0" + cita.dates.getDate()).slice(-2) + "/" + ("0" + (cita.dates.getMonth() + 1)).slice(-2) + "/" +  cita.dates.getFullYear();
           this.citas[index] = cita;
         }
         this.meetingsLoaded = true;
         this.jobsLoaded = true;
+      });
+
+      
+      const path3 = `${process.env.VUE_APP_BACK_URL}` + NACitas;
+      const config3 = {
+        method: 'get',
+        url: path3,
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      }
+      axios(config3)
+      .then((res) => {
+        for (let index = 0; index < res.data.length; index++) {
+          var element = res.data[index];
+
+          if (Date().includes("GMT+0100")) element.fecha += "+0100";
+          else if (Date().includes("GMT+0200")) element.fecha += "+0200";
+          
+          var cita = {
+            id: element.id,
+            dot: true,
+            dates: new Date(element.fecha),
+            descripcion: element.descripcion,
+            direccion: element.direccion,
+            id_trabajo: element.id_trabajo,
+            id_cita: element.id,
+            id_certificado: element.id_certificado,
+            id_perito: element.id_perito,
+            id_tecnico: element.id_tecnico,
+          }
+
+          cita.fechaCompleta = ("0" + cita.dates.getDate()).slice(-2) + "/" + ("0" + (cita.dates.getMonth() + 1)).slice(-2) + "/" +  cita.dates.getFullYear();
+          this.citasSinAsociar[index] = cita;
+        }
+        this.NAMeetingsLoaded = true;
       });
 
       
