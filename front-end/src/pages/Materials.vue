@@ -15,6 +15,7 @@
       </button>
     </div>  
 
+    <h3>MATERIALES</h3>
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div v-if="forceReload && logged">
       <table class="table table-striped" id="materials">
@@ -26,11 +27,41 @@
         </thead>
         <tbody>
           <tr v-for="(material,i) in materials" :key="i">
-            <td> {{material.nombre}} </td> 
+            <td> <a href="#miModal" @click="setMaterial(material)"> {{material.nombre}} </a> </td> 
             <td style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+
+    <div id="miModal" class="modal" v-if="forceReload">
+      <div class="modal-contenido">
+        <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
+        <p>Nombre:</p>
+        <input v-model="actualMaterial.nombre"/>
+        <p>Cantidad:</p>
+        <input v-model="actualMaterial.cantidad"/>
+        <p>Stock de seguridad:</p>
+        <input v-model="actualMaterial.stockSeguridad"/>
+        
+
+      <br>
+
+      <button
+        class="button"
+        @click="editMaterial(actualMaterial)"
+        href="#">
+          Actualizar
+      </button>
+      
+      <button
+        class="button red"
+        @click="eliminar(actualMaterial)"
+        href="#"  >
+          Eliminar
+      </button>
+      </div>  
     </div>
 
     <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
@@ -58,6 +89,36 @@ export default {
     }
   },
   methods: {
+    reloadSite() {
+      this.$router.push('materials');
+      this.$router.go();
+    },
+    eliminar(material) {
+      this.forceReload = false;
+      const path = `${process.env.VUE_APP_BACK_URL}/deleteMaterial`;
+        const config = {
+          method: 'delete',
+          url: path,
+          data: {
+            "nombre": material.nombre
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        };
+        axios(config)
+        .then((res) => {
+          if (res) { 
+            this.forceReload = true;
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
     loadMaterials() {
       const path = `${process.env.VUE_APP_BACK_URL}/materials`;
       const config = {
@@ -118,22 +179,51 @@ export default {
       localStorage.userType = "";
       this.redirectHome();
     },
+    editMaterial(material) {
+      this.forceReload = false;
+      const path = `${process.env.VUE_APP_BACK_URL}/editMaterial`;
+        const config = {
+          method: 'put',
+          url: path,
+          data: {
+            "antiguo_nombre": material.antiguo_nombre,
+            "nombre": material.nombre,
+            "cantidad": material.cantidad,
+            "stockSeguridad": material.stockSeguridad
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        };
+        axios(config)
+        .then((res) => {
+          if (res) { 
+            this.forceReload = true;
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
     reducirMaterial(index) {
       this.materials[index].cantidad -= 1;
+      this.materials[index].antiguo_nombre = this.materials[index].nombre;
 
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 10);
+      this.editMaterial(this.materials[index]);
     },
     aumentarMaterial(index) {
       this.materials[index].cantidad += 1;
+      this.materials[index].antiguo_nombre = this.materials[index].nombre;
 
-      this.forceReload = false;
-      setTimeout(() => {
-        this.forceReload = true;
-      }, 10);
-    }
+      this.editMaterial(this.materials[index]);
+    },
+    setMaterial(material) {
+      material.antiguo_nombre = material.nombre;
+      this.actualMaterial = material;
+    },
   },
   mounted() {
     this.loadData();
