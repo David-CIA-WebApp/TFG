@@ -663,7 +663,7 @@ def addMaterial():
     if request.headers['Authorization'] == os.environ['TOKEN']:
         cur = mysql.connection.cursor()
         
-        cur.execute("Select * from materials")
+        cur.execute("Select * from materials WHERE nombre="+nombre)
         data = cur.fetchall()
         if len(data) > 0:
             return jsonify({'message': "Este material ya existe en la base de datos"})
@@ -679,17 +679,32 @@ def addMaterial():
 @app.route('/editMaterial', methods=['PUT'])
 def updateMaterial():
     #mysql data
+    antiguo_nombre = request.json['antiguo_nombre']
     nombre = request.json['nombre']
     cantidad = request.json['cantidad']
     stockSeguridad = request.json['stockSeguridad']
 
     if request.headers['Authorization'] == os.environ['TOKEN']:
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO materials (nombre, cantidad, stockSeguridad) VALUES (%s, %s, %s)', (nombre, cantidad, stockSeguridad))
+        cur.execute('UPDATE materials SET nombre=%s, cantidad=%s, stockSeguridad=%s WHERE nombre=%s', (nombre, cantidad, stockSeguridad, antiguo_nombre))
         mysql.connection.commit()
-        return jsonify({'message': "Material insertado en la base de datos"})
+        return jsonify({'message': "Material editado correctamente"})
     else:
         return jsonify({'message': "Acceso denegado"})
+
+#Delete job from de DB
+@app.route('/deleteMaterial', methods=['DELETE'])
+def deleteMaterial():
+    nombre = request.json['nombre']
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('DELETE from materials where nombre = {}'.format(nombre))
+        mysql.connection.commit()
+        return jsonify({"message": "Material borrado correctamente"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
 
 
 
