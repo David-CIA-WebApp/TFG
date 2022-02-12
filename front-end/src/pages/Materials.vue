@@ -34,6 +34,9 @@
       </table>
     </div>
 
+    <br>
+    <a href="#miModal" @click="setMaterial(newMaterial)" style="background-color: transparent; color: blue; width: 120px;">Crear material</a>
+
 
     <div id="miModal" class="modal" v-if="forceReload">
       <div class="modal-contenido">
@@ -41,15 +44,16 @@
         <p>Nombre:</p>
         <input v-model="actualMaterial.nombre"/>
         <p>Cantidad:</p>
-        <input v-model="actualMaterial.cantidad"/>
+        <input v-model="actualMaterial.cantidad" type="number"/>
         <p>Stock de seguridad:</p>
-        <input v-model="actualMaterial.stockSeguridad"/>
+        <input v-model="actualMaterial.stockSeguridad" type="number"/>
         
 
       <br>
 
       <button
         class="button"
+        v-if="!crear"
         @click="editMaterial(actualMaterial)"
         href="#">
           Actualizar
@@ -57,9 +61,18 @@
       
       <button
         class="button red"
+        v-if="!crear"
         @click="eliminar(actualMaterial)"
         href="#"  >
           Eliminar
+      </button>
+      
+      <button
+        class="button"
+        v-if="crear"
+        @click="crearMaterial(actualMaterial)"
+        href="#"  >
+          Crear
       </button>
       </div>  
     </div>
@@ -84,11 +97,46 @@ export default {
       logged: false,
       materials: [],
       forceReload: false,
+      newMaterial: {
+        nombre: "",
+        cantidad: 0,
+        stockSeguridad: 0
+      },
+      crear: false,
       actualMaterial: {},
       token: null
     }
   },
   methods: {
+    crearMaterial(material) {
+      this.forceReload = false;
+      const path = `${process.env.VUE_APP_BACK_URL}/addMaterials`;
+        const config = {
+          method: 'post',
+          url: path,
+          data: {
+            "nombre": material.nombre,
+            "cantidad": material.cantidad,
+            "stockSeguridad": material.stockSeguridad
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        };
+        axios(config)
+        .then((res) => {
+          if (res) { 
+            this.forceReload = true;
+            this.reloadSite();
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
     reloadSite() {
       this.$router.push('materials');
       this.$router.go();
@@ -112,6 +160,7 @@ export default {
         .then((res) => {
           if (res) { 
             this.forceReload = true;
+            this.reloadSite();
           }
         })
         .catch((error) => {
@@ -221,6 +270,7 @@ export default {
       this.editMaterial(this.materials[index]);
     },
     setMaterial(material) {
+      if (!material.nombre) this.crear = true;
       material.antiguo_nombre = material.nombre;
       this.actualMaterial = material;
     },
