@@ -663,7 +663,7 @@ def addMaterial():
     if request.headers['Authorization'] == os.environ['TOKEN']:
         cur = mysql.connection.cursor()
         
-        cur.execute("Select * from materials WHERE nombre="+nombre)
+        cur.execute("Select * from materials WHERE nombre='" + nombre + "'")
         data = cur.fetchall()
         if len(data) > 0:
             return jsonify({'message': "Este material ya existe en la base de datos"})
@@ -699,7 +699,7 @@ def deleteMaterial():
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('DELETE from materials where nombre = {}'.format(nombre))
+        cur.execute('DELETE from materials where nombre="' + nombre + '"')
         mysql.connection.commit()
         return jsonify({"message": "Material borrado correctamente"})
     else:
