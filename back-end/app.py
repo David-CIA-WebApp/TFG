@@ -974,25 +974,23 @@ def addMeetings():
 #Edit Meetings Routes
 @app.route('/editMeetings/<string:meeting_id>', methods=['PUT'])
 def editMeetings(meeting_id):
-    return jsonify({'message': "Funcion no implementada"})
-    id_trabajo = request.json['id_trabajo']
     fecha = request.json['fecha']
+    descripcion = request.json['descripcion']
+    direccion = request.json['direccion']
+    id_trabajo = request.json['id_trabajo']
     id_tecnico = request.json['id_tecnico']
     id_perito = request.json['id_perito']
     id_administrador = request.json['id_administrador']
-    descripcion = request.json['descripcion']
-    direccion = request.json['direccion']
     id_certificado = request.json['id_certificado']  
-    
     
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE cita SET id_trabajo=%s, fecha=%s, id_certificado=%s, id_tecnico=%s, id_perito=%s, id_administrador=%s, descripcion=%s, direccion=%s WHERE id=%s', (id_trabajo, fecha, id_certificado, id_tecnico, id_perito, id_administrador, descripcion, direccion, meeting_id))
+        cur.execute('UPDATE cita SET fecha=%s, descripcion=%s, direccion=%s, id_trabajo=%s, id_tecnico=%s, id_perito=%s, id_administrador=%s, id_certificado=%s WHERE id=%s', (id_trabajo, fecha, id_certificado, id_tecnico, id_perito, id_administrador, descripcion, direccion, meeting_id))
         mysql.connection.commit()
         return jsonify({'message': "Cita editada correctamente"})
-    else:
-        return jsonify({'message': "Acceso denegado"})
+    
+    return jsonify({'message': "Acceso denegado"})
     
     
 #Delete meeting from de DB
