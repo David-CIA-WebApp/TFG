@@ -981,7 +981,8 @@ def editMeetings(meeting_id):
     id_administrador = request.json['id_administrador']
     descripcion = request.json['descripcion']
     direccion = request.json['direccion']
-    id_certificado = request.json['id_certificado']
+    id_certificado = request.json['id_certificado']  
+    
     
     cur = mysql.connection.cursor()
     
@@ -1012,4 +1013,4 @@ def deleteMeeting(meeting_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True)
