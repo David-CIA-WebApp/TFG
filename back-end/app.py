@@ -974,6 +974,7 @@ def addMeetings():
 #Edit Meetings Routes
 @app.route('/editMeetings/<string:meeting_id>', methods=['PUT'])
 def editMeetings(meeting_id):
+    return jsonify({'message': "Funcion no implementada"})
     id_trabajo = request.json['id_trabajo']
     fecha = request.json['fecha']
     id_tecnico = request.json['id_tecnico']
