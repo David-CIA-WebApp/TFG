@@ -986,7 +986,6 @@ def editMeetings(meeting_id):
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        return jsonify({'message': "Test"})
         cur.execute('UPDATE cita SET fecha=%s, descripcion=%s, direccion=%s, id_trabajo=%s, id_tecnico=%s, id_perito=%s, id_administrador=%s, id_certificado=%s where id=%s', (fecha, descripcion, direccion, id_trabajo, id_tecnico, id_perito, id_administrador, id_certificado, meeting_id))
         mysql.connection.commit()
         return jsonify({'message': "Cita editada correctamente"})
