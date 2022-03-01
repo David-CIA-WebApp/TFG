@@ -1,4 +1,4 @@
-import App from "./App";
+import Public from "./pages/Public";
 import Admin from "./pages/Admin";
 import Users from "./pages/Users";
 import UserDetail from "./pages/UserDetail";
@@ -9,8 +9,8 @@ import Agenda from "./pages/Agenda";
 const routes = [
     {     
         path: "/",
-        component: App,
-        name: "App",
+        component: Public,
+        name: "Public",
         meta: { title: "David&CIA" },
     }, 
     {     
