@@ -188,16 +188,34 @@ export default {
     }
   },
   methods: {
+    modifyDateTime(meeting) {
+        var year = meeting.dates.toISOString().split("T")[0].split("-")[0];
+        var day = meeting.dates.toISOString().split("T")[0].split("-")[1];
+        var month = meeting.dates.toISOString().split("T")[0].split("-")[2];
+        var hour = meeting.dates.toISOString().split("T")[1].split(":")[0];
+        var minutes = meeting.dates.toISOString().split("T")[1].split(":")[1];
+        
+  
+        if (Date().includes("GMT+0100")) {
+          hour = (Number(hour) + 1) + "";
+        }
+        else if (Date().includes("GMT+0200")) {
+          hour = (Number(hour) + 2) + "";
+        }
+
+        if (hour < 10) hour = "0" + hour;
+        var dateFormat =  year + "-" + day + "-" + month + "T" + hour + ":" + minutes;
+        return dateFormat;
+    },
     asociarCita(cita) {
       var uri = window.location.href;
-      var newDatetime = (new Date(cita.dates) + "").replace("GMT+0100", "GMT").replace("GMT+0200", "GMT");
 
       const path = `${process.env.VUE_APP_BACK_URL}/editMeetings/`+cita.id;
       const config = {
         method: 'put',
         url: path,
         data: {
-          "fecha": new Date(newDatetime),
+          "fecha": this.modifyDateTime(cita),
           "descripcion": cita.descripcion,
           "direccion": cita.direccion,
           "id_trabajo": uri.split("jobs/")[1],
