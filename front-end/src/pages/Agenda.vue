@@ -25,7 +25,8 @@
         <pre style="color: white; margin-left: 20px;">Cliente:      <select @change="loadJobs" v-model="selectedUser"><option v-for="user in users" v-bind:key="user.user_id" :value="user.user_id">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option></select></pre>
         <pre style="color: white; margin-left: 20px;" v-if="loadedJobs">Trabajo:      <select v-model="selectedJob"><option v-for="job in jobs" v-bind:key="job.id" :value="job">{{job.descripcion}}</option></select></pre>
         <pre style="color: white; margin-left: 20px;">Trabajador:   <select v-model="selectedWorker"><option v-for="worker in workers" v-bind:key="worker.worker_id" :value="worker">{{worker.tipo}} - {{worker.nombre}} {{worker.apellidos}} - {{worker.dni}}</option></select></pre>
-        <button style="color: white; left: 570px; bottom: 30px;" @click="crearCita">CREAR CITA</button>
+        <button style="color: white; left: 570px;" @click="crearCita">CREAR CITA</button>
+        <p v-if="errorInForm" style="color: red; margin-left: 20px;"> {{errorMessage}} </p>
       </div>
     </div>
         
@@ -133,7 +134,9 @@
             direccion: null
           },
           actualMeeting: {},
-          actualDatetime: ""
+          actualDatetime: "",
+          errorInForm: false,
+          errorMessage: "",
         }
     },
     methods: {
@@ -234,7 +237,6 @@
           } 
         }
 
-        console.log(this.cita.hora);
         const path = `${process.env.VUE_APP_BACK_URL}/addMeetings`;
         const config = {
           method: 'post',
@@ -254,20 +256,28 @@
             "Authorization": this.token
           }
         };
-        axios(config)
-        .then((res) => {
-          if (res.data) { 
-            for (let i = 0; i < res.data.length; i++) {
-              const element = res.data[i];
-              this.jobs[i] = element;
+        console.log(this.selectedWorker);
+
+        if (this.selectedWorker == null) {
+          this.errorInForm = true;
+          this.errorMessage = "Debe seleccionar un trabajor";
+        } else {
+          this.errorInForm = false;
+          axios(config)
+          .then((res) => {
+            if (res.data) { 
+              for (let i = 0; i < res.data.length; i++) {
+                const element = res.data[i];
+                this.jobs[i] = element;
+              }
             }
-          }
-          this.reloadSite();
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
+            this.reloadSite();
+          })
+          .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error);
+          });
+        }
       },
       loadJobs() {
         this.loadedJobs = false;
