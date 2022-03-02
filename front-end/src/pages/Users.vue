@@ -33,7 +33,7 @@
         </thead>
         <tbody>
           <tr v-for="(user,i) in searchedUsers" :key="i">
-            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(user.id)"> {{ user.nombre }} </a></td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
             <td>{{ user.email }}</td> 
@@ -58,18 +58,17 @@
             <th>Correo</th>
             <th>Dirección</th>
             <th>Telefono</th>
-            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(user,i) in users" :key="i">
-            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(user.id)"> {{ user.nombre }} </a></td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
             <td>{{ user.email }}</td> 
             <td>{{ user.direccion }}</td> 
             <td>{{ user.telefono }}</td> 
-            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(user.id)">Ver usuario</a></td> 
+            <td><a href="#miModal" @click="setActualUser(user)">Editar usuario</a></td> 
           </tr>
         </tbody>
       <button
@@ -92,19 +91,18 @@
             <th>Dirección</th>
             <th>Telefono</th>
             <th>Función</th>
-            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(worker,i) in workers" :key="i">
-            <td><a href="#miModal" @click="setActualUser(worker)"> {{ worker.nombre }} </a></td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(worker.id)"> {{ worker.nombre }} </a></td> 
             <td>{{ worker.apellidos }}</td> 
             <td>{{ worker.dni }}</td> 
             <td>{{ worker.email }}</td> 
             <td>{{ worker.direccion }}</td> 
             <td>{{ worker.telefono }}</td> 
             <td>{{ worker.tipo }}</td> 
-            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(worker.id)">Ver usuario</a></td> 
+            <td><a href="#miModal" @click="setActualUser(worker)">Editar usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -130,19 +128,18 @@
             <th>Dirección</th>
             <th>Telefono</th>
             <th>Función</th>
-            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(ew,i) in externalWorkers" :key="i">
-            <td><a href="#miModal" @click="setActualUser(ew)"> {{ ew.nombre }} </a></td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(ew.id)"> {{ ew.nombre }} </a></td> 
             <td>{{ ew.apellidos }}</td> 
             <td>{{ ew.dni }}</td> 
             <td>{{ ew.email }}</td> 
             <td>{{ ew.direccion }}</td> 
             <td>{{ ew.telefono }}</td> 
             <td>{{ ew.ocupacion }}</td> 
-            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(ew.id)">Ver usuario</a></td> 
+            <td><a href="#miModal" @click="setActualUser(ew)">Editar usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -167,18 +164,17 @@
             <th>Correo</th>
             <th>Dirección</th>
             <th>Telefono</th>
-            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(em,i) in economyManagers" :key="i">
-            <td><a href="#miModal" @click="setActualUser(em)"> {{ em.nombre }} </a></td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(em.id)"> {{ em.nombre }} </a></td> 
             <td>{{ em.apellidos }}</td> 
             <td>{{ em.dni }}</td> 
             <td>{{ em.email }}</td> 
             <td>{{ em.direccion }}</td> 
             <td>{{ em.telefono }}</td> 
-            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(em.id)">Ver usuario</a></td> 
+            <td><a href="#miModal" @click="setActualUser(em)">Editar usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
@@ -204,19 +200,18 @@
             <th>Dirección</th>
             <th>Telefono</th>
             <th>Cliente potencial</th>
-            <th>Detalles</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(client,i) in clients" :key="i">
-            <td><a href="#miModal" @click="setActualUser(client)"> {{ client.nombre }} </a></td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(client.id)"> {{ client.nombre }} </a></td> 
             <td>{{ client.apellidos }}</td> 
             <td>{{ client.dni }}</td> 
             <td>{{ client.email }}</td> 
             <td>{{ client.direccion }}</td> 
             <td>{{ client.telefono }}</td> 
             <td>{{ client.clientePotencial }}</td> 
-            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(client.id)">Ver usuario</a></td> 
+            <td><a href="#miModal" @click="setActualUser(client)">Editar usuario</a></td> 
           </tr>
         </tbody>
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">

@@ -33,12 +33,13 @@
         </thead>
         <tbody>
           <tr v-for="(user,i) in users" :key="i">
-            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
+            <td> {{ user.nombre }} </td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
             <td>{{ user.email }}</td> 
             <td>{{ user.direccion }}</td> 
             <td>{{ user.telefono }}</td> 
+            <td><a href="#miModal" @click="setActualUser(user)">Editar usuario</a></td> 
           </tr>
         </tbody>
       </table>
