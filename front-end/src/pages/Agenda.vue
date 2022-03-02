@@ -138,14 +138,12 @@
     },
     methods: {
       actualizar() {
-        var newDatetime = (new Date(this.actualDatetime) + "").replace("GMT+0100", "GMT").replace("GMT+0200", "GMT");
-
         const path = `${process.env.VUE_APP_BACK_URL}/editMeetings/${this.actualMeeting.id}`;
         const config = {
           method: 'put',
           url: path,
           data: {
-            "fecha": new Date(newDatetime),
+            "fecha": this.actualDatetime,
             "descripcion": this.actualMeeting.descripcion,
             "direccion": this.actualMeeting.direccion,
             "id_trabajo": this.actualMeeting.id_trabajo,
@@ -236,6 +234,7 @@
           } 
         }
 
+        console.log(this.cita.hora);
         const path = `${process.env.VUE_APP_BACK_URL}/addMeetings`;
         const config = {
           method: 'post',
