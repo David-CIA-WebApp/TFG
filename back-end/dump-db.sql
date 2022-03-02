@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.5.62, for Win64 (AMD64)
 --
--- Host: localhost    Database: users_api
+-- Host: 141.94.203.217    Database: db
 -- ------------------------------------------------------
--- Server version	5.5.5-10.1.32-MariaDB
+-- Server version	5.5.5-10.6.5-MariaDB-1:10.6.5+maria~focal
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `cita` (
   `descripcion` varchar(100) DEFAULT NULL,
   `direccion` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
-INSERT INTO `cita` VALUES (1,1,'2022-02-11 09:10:00',NULL,NULL,4,NULL,'Revisión final','Calle Japon 2 6A'),(2,1,'2022-02-07 10:00:00',NULL,1,NULL,NULL,'Peritaje del trabajo','Calle Japon 2 6A'),(3,1,'2022-02-09 09:00:00',NULL,1,NULL,NULL,'Reparación completa','Calle Japon 5 4A'),(4,NULL,'2022-02-15 09:00:00',NULL,1,NULL,NULL,'Peritaje nuevo','Calle de prueba');
+INSERT INTO `cita` VALUES (1,1,'2022-02-11 09:10:00',NULL,NULL,4,NULL,'Revisión final','Calle Japon 2 6A'),(2,1,'2022-02-07 10:00:00',NULL,1,NULL,NULL,'Peritaje del trabajo','Calle Japon 2 6A'),(3,1,'2022-02-09 09:00:00',NULL,1,NULL,NULL,'Reparación completa','Calle Japon 5 4A'),(4,NULL,'2022-02-15 09:00:00',NULL,1,NULL,NULL,'Peritaje nuevo','Calle de prueba'),(5,NULL,'2022-03-10 08:46:00',NULL,NULL,NULL,2,'Curva lactosa niña - planta 1','Hptal. Virgen Macarena');
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +60,7 @@ CREATE TABLE `clients` (
   PRIMARY KEY (`id_cliente`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,11 +83,11 @@ DROP TABLE IF EXISTS `externalworkers`;
 CREATE TABLE `externalworkers` (
   `id_ext` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `ocupacion` text COLLATE utf8_unicode_ci NOT NULL,
+  `ocupacion` text COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id_ext`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `externalworkers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `gestor` (
   PRIMARY KEY (`id_gestor`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `gestor_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `gestor` (
 
 LOCK TABLES `gestor` WRITE;
 /*!40000 ALTER TABLE `gestor` DISABLE KEYS */;
-INSERT INTO `gestor` VALUES (2,9);
+INSERT INTO `gestor` VALUES (2,9),(3,12);
 /*!40000 ALTER TABLE `gestor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,7 +138,7 @@ CREATE TABLE `materials` (
   `cantidad` int(11) NOT NULL,
   `stockSeguridad` int(11) NOT NULL,
   PRIMARY KEY (`nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +147,7 @@ CREATE TABLE `materials` (
 
 LOCK TABLES `materials` WRITE;
 /*!40000 ALTER TABLE `materials` DISABLE KEYS */;
-INSERT INTO `materials` VALUES ('Tubo',10,2),('Tuerca 10mm',28,5);
+INSERT INTO `materials` VALUES ('Arandelas',210,50),('Tubo',10,2),('Tuerca 10mm',28,5);
 /*!40000 ALTER TABLE `materials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,13 +160,13 @@ DROP TABLE IF EXISTS `trabajo`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `trabajo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tipo` enum('Instalacion de agua','Instalacion de gas','Revision de agua','Revision de gas','Reparacion','otro') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `tipo` enum('Instalacion de agua','Instalacion de gas','Revision de agua','Revision de gas','Reparacion','otro') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `descripcion` text NOT NULL,
   `direccion` text NOT NULL,
   `id_cliente` int(11) NOT NULL,
   `id_certificado` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,7 +175,7 @@ CREATE TABLE `trabajo` (
 
 LOCK TABLES `trabajo` WRITE;
 /*!40000 ALTER TABLE `trabajo` DISABLE KEYS */;
-INSERT INTO `trabajo` VALUES (1,'Instalacion de agua','Instalación de agua de cocina completa con grifo y salida para patio de exterior','Calle Japon 5 4A',11,NULL),(2,'Revision de agua','Revisión de la instalación','Calle Japon 5 4A',11,NULL);
+INSERT INTO `trabajo` VALUES (1,'Instalacion de agua','Instalación de agua de cocina completa con grifo y salida para patio de exterior','Calle Japon 5 4A',11,NULL),(2,'Revision de agua','Revisión de la instalación','Calle Japon 5 4A',11,NULL),(3,'Revision de agua','Esto es una prueba','jander clander',11,NULL);
 /*!40000 ALTER TABLE `trabajo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,14 +188,14 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id_persona` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` text COLLATE utf8_unicode_ci NOT NULL,
-  `apellidos` text COLLATE utf8_unicode_ci NOT NULL,
-  `dni` text COLLATE utf8_unicode_ci NOT NULL,
-  `email` text COLLATE utf8_unicode_ci NOT NULL,
-  `direccion` text COLLATE utf8_unicode_ci NOT NULL,
+  `nombre` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `apellidos` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `dni` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `email` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `direccion` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `telefono` bigint(20) NOT NULL,
   PRIMARY KEY (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +204,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (3,'David','Brincau Cano','29506399K','david.brincau@hotmail.com','Calle vedra Nº1',678623620),(4,'Admin','Admin User','00000000X','admin@david&cia.com','SE',999999999),(7,'Jesus','Aparicio','25978463P','troapasej@us.es','Calle de test',601072573),(9,'Gestor nombre','apellidos gestor','28497845Ñ','gestor@david&cia.com','Avda Reina Mercedes 2 2ºB',678542985),(11,'Carmen','Muñoz Perez','28675432P','carmunper1@alum.us.es','Calle Japon 2 6A',673600485);
+INSERT INTO `users` VALUES (3,'David','Brincau Cano','29506399K','david.brincau@hotmail.com','Calle vedra Nº1',678623620),(4,'Admin','Admin User','00000000X','admin@david&cia.com','SE',999999999),(7,'Jesus','Aparicio','25978463P','troapasej@us.es','Calle de test',601072573),(9,'Gestor nombre','apellidos gestor','28497845Ñ','gestor@david&cia.com','Avda Reina Mercedes 2 2ºB',678542985),(11,'Carmen','Muñoz Perez','28675432P','carmunper1@alum.us.es','Calle Japon 2 6A',673600485),(12,'Luis','Marin','24589678Ñ','sin mail','sin especificar',670123456);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,13 +217,13 @@ DROP TABLE IF EXISTS `workers`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `workers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pass` text COLLATE utf8_unicode_ci NOT NULL,
+  `pass` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `tipo` enum('Administrador','Perito','Técnico') COLLATE utf8_unicode_ci NOT NULL,
+  `tipo` enum('Administrador','Perito','Técnico') COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `workers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +237,7 @@ INSERT INTO `workers` VALUES (1,'0T234T6T897TcT11f5disKl21oñlPq17',3,'Técnico'
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'users_api'
+-- Dumping routines for database 'db'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -249,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-12 11:33:12
+-- Dump completed on 2022-03-02 11:40:05
