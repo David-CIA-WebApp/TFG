@@ -91,7 +91,6 @@
             <th>Correo</th>
             <th>Dirección</th>
             <th>Telefono</th>
-            <th>Contraseña</th>
             <th>Función</th>
             <th>Detalles</th>
           </tr>
@@ -104,7 +103,6 @@
             <td>{{ worker.email }}</td> 
             <td>{{ worker.direccion }}</td> 
             <td>{{ worker.telefono }}</td> 
-            <td>{{ worker.pass }}</td> 
             <td>{{ worker.tipo }}</td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(worker.id)">Ver usuario</a></td> 
           </tr>
