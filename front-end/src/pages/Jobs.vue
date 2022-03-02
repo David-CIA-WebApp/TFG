@@ -234,7 +234,7 @@ export default {
       .then((res) => {
         if (res) { 
           console.log(res);
-          //this.reloadSite();
+          this.reloadSite();
         }
       })
       .catch((error) => {
