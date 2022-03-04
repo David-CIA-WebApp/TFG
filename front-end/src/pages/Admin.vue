@@ -14,7 +14,6 @@
 
     <div id="login">
       <div v-if="!logged">
-        <p>ADMINISTRACIÓN</p>
         <Login @logging="loggingFunction"/>
         <p style="color: red;">{{messageAccess}}</p>
       </div>
