@@ -17,7 +17,7 @@
 
     <h3>TRABAJOS</h3>
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="forceReload && logged">
+    <div v-if="forceReload && logged" class="col-">
       <table class="table table-striped" id="jobs" v-if="jobsLoaded">
         <thead>
           <tr>
@@ -140,6 +140,7 @@
         href="#"  >
           Crear
       </button>
+      <p v-if="errorInForm" style="color: red;"> {{errorMessage}} </p>
       </div>  
     </div>
 
@@ -184,7 +185,9 @@ export default {
       actualJob: {},
       users: [],
       selectedUser: null,
-      crear: true
+      crear: true,
+      errorInForm: false,
+      errorMessage: "",
     }
   },
   methods: {
@@ -267,11 +270,18 @@ export default {
       path = `${process.env.VUE_APP_BACK_URL}/addJobs`;
 
       config.url = path;
-      axios(config)
-      .then((res) => {
-        console.log(res);
-        this.reloadSite();
-      });
+      if (this.selectedUser == null) {
+        this.errorInForm = true;
+        this.errorMessage = "Debe seleccionar un cliente";
+      } else {
+        this.errorInForm = false;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+      }
+      
     },
     reloadSite() {
       var ruta = ("/jobs/"+window.location.href.split("/jobs/")[1]).split("#")[0];

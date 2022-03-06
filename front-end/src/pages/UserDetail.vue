@@ -18,7 +18,7 @@
     <br><br><br>
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="logged">
+    <div v-if="logged" class="col-">
     <h3>USUARIO</h3>
       <table class="table table-striped" id="users" v-if="usersLoaded">
         <thead>
@@ -33,12 +33,13 @@
         </thead>
         <tbody>
           <tr v-for="(user,i) in users" :key="i">
-            <td><a href="#miModal" @click="setActualUser(user)"> {{ user.nombre }} </a></td> 
+            <td> {{ user.nombre }} </td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
             <td>{{ user.email }}</td> 
             <td>{{ user.direccion }}</td> 
             <td>{{ user.telefono }}</td> 
+            <td><a href="#miModal" @click="setActualUser(user)">Editar usuario</a></td> 
           </tr>
         </tbody>
       </table>
@@ -159,6 +160,109 @@ export default {
     }
   },
   methods: {
+    actualizar(actualUser) {  
+      if (actualUser.pass == null) {
+        actualUser.pass = "";
+      }
+      if (actualUser.tipo == null) {
+        actualUser.tipo = "";
+      }
+      if (actualUser.ocupacion == null) {
+        actualUser.ocupacion = "";
+      }
+
+      const path = `${process.env.VUE_APP_BACK_URL}/editUser/${actualUser.oldDNI}`;
+      const config = {
+        method: 'put',
+        url: path,
+        data: {
+          "apellidos": actualUser.apellidos,
+          "direccion": actualUser.direccion,
+          "dni": actualUser.dni,
+          "email": actualUser.email,
+          "nombre": actualUser.nombre,
+          "pass": actualUser.pass,
+          "telefono": actualUser.telefono,
+          "tipo": actualUser.tipo,
+          "ocupacion": actualUser.ocupacion,
+          "tabla":  actualUser.tabla,
+          "clientePotencial": false // TODO Aqui y en el formulario, añadir
+        },
+        headers: {
+          "Content-Type": "application/JSON",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      }
+      axios(config)
+      .then((res) => {
+        console.log(res);
+        if (this.actualUser.pass == "") {
+          this.actualUser.pass = null;
+        }
+        if (this.actualUser.tipo == "") {
+          this.actualUser.tipo = null;
+        }
+        if (this.actualUser.ocupacion == "") {
+          this.actualUser.ocupacion = null;
+        }
+        this.reloadSite();
+      });
+      
+      //this.$router.go();
+    },
+    eliminar(actualUser) {
+      const config = {
+          method: 'delete',
+          url: "",
+          data: {
+            
+          },
+          headers: {
+            "Content-Type": "application/JSON",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        }
+      if (actualUser.tabla == "trabajador") {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteWorker/${actualUser.dni}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+      }
+      else if (actualUser.tabla == "trabajador externo") {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteExternalWorker/${actualUser.dni}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+      } 
+      else if (actualUser.tabla == "gestor") {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteManager/${actualUser.dni}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+      }
+      else if (actualUser.tabla == "usuario") {
+        const path = `${process.env.VUE_APP_BACK_URL}/deleteUser/${actualUser.dni}`;
+        config.url = path;
+        axios(config)
+        .then((res) => {
+          console.log(res);
+          this.reloadSite();
+        });
+      }
+      
+      //this.$router.go();
+    },
     loadUsers() {
       this.users = [];
       this.workers = [];
