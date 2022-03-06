@@ -18,7 +18,7 @@
     <br><br><br>
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="logged">
+    <div v-if="logged" class="col-">
     <h3>USUARIO</h3>
       <table class="table table-striped" id="users" v-if="usersLoaded">
         <thead>

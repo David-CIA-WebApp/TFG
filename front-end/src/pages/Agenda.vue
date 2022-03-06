@@ -16,16 +16,16 @@
     </div>
     <br>
 
-    <div class="addM" v-if="usersLoaded && workersLoaded">
+    <div class="addM" v-if="usersLoaded && workersLoaded && !isMobile">
       <div style="position: absolute; background: #044ca9; width: 700px; border-radius: 25px;">
         <h2 style="color: white; margin-left: 20px;">Añadir cita</h2>
         <pre style="color: white; margin-left: 20px;">Fecha y Hora: <input v-model="cita.hora" type="datetime-local"></pre>
-        <pre style="color: white; margin-left: 20px;">Dirección:    <input v-model="cita.direccion" style="width: 500px;"></pre>
-        <pre style="color: white; margin-left: 20px;">Descripcion:  <input v-model="cita.descripcion" style="width: 500px;"></pre>
+        <pre style="color: white; margin-left: 20px;">Dirección:    <input v-model="cita.direccion" style="width: 70%;"></pre>
+        <pre style="color: white; margin-left: 20px;">Descripcion:  <input v-model="cita.descripcion" style="width: 70%;"></pre>
         <pre style="color: white; margin-left: 20px;">Cliente:      <select @change="loadJobs" v-model="selectedUser"><option v-for="user in users" v-bind:key="user.user_id" :value="user.user_id">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option></select></pre>
         <pre style="color: white; margin-left: 20px;" v-if="loadedJobs">Trabajo:      <select v-model="selectedJob"><option v-for="job in jobs" v-bind:key="job.id" :value="job">{{job.descripcion}}</option></select></pre>
         <pre style="color: white; margin-left: 20px;">Trabajador:   <select v-model="selectedWorker"><option v-for="worker in workers" v-bind:key="worker.worker_id" :value="worker">{{worker.tipo}} - {{worker.nombre}} {{worker.apellidos}} - {{worker.dni}}</option></select></pre>
-        <button style="color: white; left: 570px;" @click="crearCita">CREAR CITA</button>
+        <button style="margin-top: 15px; color: white; left: 570px; margin-bottom: 10px;" @click="crearCita">CREAR CITA</button>
         <p v-if="errorInForm" style="color: red; margin-left: 20px;"> {{errorMessage}} </p>
       </div>
     </div>
@@ -41,6 +41,20 @@
       @dayclick="onDayClick"
     >
     </v-date-picker>
+
+    <div v-if="usersLoaded && workersLoaded && isMobile" class="col-">
+      <div style="background: #044ca9; width: 100%; border-radius: 25px;">
+        <h2 style="color: white; margin-left: 20px; margin-top: 10px;">Añadir cita</h2>
+        <pre style="color: white; margin-left: 20px;">Fecha y Hora: <input v-model="cita.hora" type="datetime-local"></pre>
+        <pre style="color: white; margin-left: 20px;">Dirección:    <input v-model="cita.direccion" style="width: 50%;"></pre>
+        <pre style="color: white; margin-left: 20px;">Descripcion:  <input v-model="cita.descripcion" style="width: 50%;"></pre>
+        <pre style="color: white; margin-left: 20px;">Cliente:      <select @change="loadJobs" v-model="selectedUser"><option v-for="user in users" v-bind:key="user.user_id" :value="user.user_id">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option></select></pre>
+        <pre style="color: white; margin-left: 20px;" v-if="loadedJobs">Trabajo:      <select v-model="selectedJob"><option v-for="job in jobs" v-bind:key="job.id" :value="job">{{job.descripcion}}</option></select></pre>
+        <pre style="color: white; margin-left: 20px;">Trabajador:   <select v-model="selectedWorker"><option v-for="worker in workers" v-bind:key="worker.worker_id" :value="worker">{{worker.tipo}} - {{worker.nombre}} {{worker.apellidos}} - {{worker.dni}}</option></select></pre>
+        <button style="color: white; left: 78%; margin-bottom: 10px;" @click="crearCita">CREAR CITA</button>
+        <p v-if="errorInForm" style="color: red; margin-left: 20px;"> {{errorMessage}} </p>
+      </div>
+    </div>
 
     <br><br><br><br>
     <table class="table table-striped" id="users" v-if="citasMostradas.length != 0">
@@ -137,7 +151,12 @@
           actualDatetime: "",
           errorInForm: false,
           errorMessage: "",
+          windowWidth: window.innerWidth,
+          isMobile: false,
         }
+    },
+    watch() {
+      this.windowWidth = window.innerWidth;
     },
     methods: {
       actualizar() {
@@ -422,11 +441,26 @@
         localStorage.userPass = "";
         localStorage.userType = "";
         this.redirectHome();
-      }, 
+      },
+      onResize() {
+        this.windowWidth = window.innerWidth;
+        if (this.windowWidth < 768) {
+          this.isMobile = true;
+        }
+        else {
+          this.isMobile = false;
+        }
+      }
     },
     mounted() {
       this.loadData();
-    }
+      this.$nextTick(() => {
+        window.addEventListener('resize', this.onResize);
+      });
+    },
+    beforeDestroy() { 
+      window.removeEventListener('resize', this.onResize); 
+    },
   }
 </script>
 

@@ -17,7 +17,7 @@
 
     <h3>TRABAJOS</h3>
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="forceReload && logged">
+    <div v-if="forceReload && logged" class="col-">
       <table class="table table-striped" id="jobs" v-if="jobsLoaded">
         <thead>
           <tr>

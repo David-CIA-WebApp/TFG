@@ -26,9 +26,9 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>DNI</th>
-            <th>Correo</th>
-            <th>Dirección</th>
-            <th>Telefono</th>
+            <th v-if="!isMobile">Correo</th>
+            <th v-if="!isMobile">Dirección</th>
+            <th v-if="!isMobile">Telefono</th>
           </tr>
         </thead>
         <tbody>
@@ -36,9 +36,9 @@
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(user.id)"> {{ user.nombre }} </a></td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
-            <td>{{ user.email }}</td> 
-            <td>{{ user.direccion }}</td> 
-            <td>{{ user.telefono }}</td> 
+            <td v-if="!isMobile">{{ user.email }}</td> 
+            <td v-if="!isMobile">{{ user.direccion }}</td> 
+            <td v-if="!isMobile">{{ user.telefono }}</td> 
           </tr>
         </tbody>
       </table>
@@ -47,7 +47,7 @@
     <br><br><br>
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="logged">
+    <div v-if="logged" class="col-">
     <h3>USUARIOS</h3>
       <table class="table table-striped" id="users" v-if="usersLoaded">
         <thead>
@@ -55,9 +55,9 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>DNI</th>
-            <th>Correo</th>
-            <th>Dirección</th>
-            <th>Telefono</th>
+            <th v-if="!isMobile">Correo</th>
+            <th v-if="!isMobile">Dirección</th>
+            <th v-if="!isMobile">Telefono</th>
           </tr>
         </thead>
         <tbody>
@@ -65,9 +65,9 @@
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(user.id)"> {{ user.nombre }} </a></td> 
             <td>{{ user.apellidos }}</td> 
             <td>{{ user.dni }}</td> 
-            <td>{{ user.email }}</td> 
-            <td>{{ user.direccion }}</td> 
-            <td>{{ user.telefono }}</td> 
+            <td v-if="!isMobile">{{ user.email }}</td> 
+            <td v-if="!isMobile">{{ user.direccion }}</td> 
+            <td v-if="!isMobile">{{ user.telefono }}</td> 
             <td><a href="#miModal" @click="setActualUser(user)">Editar usuario</a></td> 
           </tr>
         </tbody>
@@ -85,10 +85,10 @@
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>DNI</th>
-            <th>Correo</th>
-            <th>Dirección</th>
+            <th v-if="!isMobile">Apellidos</th>
+            <th v-if="!isMobile">DNI</th>
+            <th v-if="!isMobile">Correo</th>
+            <th v-if="!isMobile">Dirección</th>
             <th>Telefono</th>
             <th>Función</th>
           </tr>
@@ -96,10 +96,10 @@
         <tbody>
           <tr v-for="(worker,i) in workers" :key="i">
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(worker.id)"> {{ worker.nombre }} </a></td> 
-            <td>{{ worker.apellidos }}</td> 
-            <td>{{ worker.dni }}</td> 
-            <td>{{ worker.email }}</td> 
-            <td>{{ worker.direccion }}</td> 
+            <td v-if="!isMobile">{{ worker.apellidos }}</td> 
+            <td v-if="!isMobile">{{ worker.dni }}</td> 
+            <td v-if="!isMobile">{{ worker.email }}</td> 
+            <td v-if="!isMobile">{{ worker.direccion }}</td> 
             <td>{{ worker.telefono }}</td> 
             <td>{{ worker.tipo }}</td> 
             <td><a href="#miModal" @click="setActualUser(worker)">Editar usuario</a></td> 
@@ -123,9 +123,9 @@
           <tr>
             <th>Nombre</th>
             <th>Apellidos</th>
-            <th>DNI</th>
-            <th>Correo</th>
-            <th>Dirección</th>
+            <th v-if="!isMobile">DNI</th>
+            <th v-if="!isMobile">Correo</th>
+            <th v-if="!isMobile">Dirección</th>
             <th>Telefono</th>
             <th>Función</th>
           </tr>
@@ -134,9 +134,9 @@
           <tr v-for="(ew,i) in externalWorkers" :key="i">
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(ew.id)"> {{ ew.nombre }} </a></td> 
             <td>{{ ew.apellidos }}</td> 
-            <td>{{ ew.dni }}</td> 
-            <td>{{ ew.email }}</td> 
-            <td>{{ ew.direccion }}</td> 
+            <td v-if="!isMobile">{{ ew.dni }}</td> 
+            <td v-if="!isMobile">{{ ew.email }}</td> 
+            <td v-if="!isMobile">{{ ew.direccion }}</td> 
             <td>{{ ew.telefono }}</td> 
             <td>{{ ew.ocupacion }}</td> 
             <td><a href="#miModal" @click="setActualUser(ew)">Editar usuario</a></td> 
@@ -159,20 +159,20 @@
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>DNI</th>
+            <th v-if="!isMobile">Apellidos</th>
+            <th v-if="!isMobile">DNI</th>
             <th>Correo</th>
-            <th>Dirección</th>
+            <th v-if="!isMobile">Dirección</th>
             <th>Telefono</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(em,i) in economyManagers" :key="i">
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(em.id)"> {{ em.nombre }} </a></td> 
-            <td>{{ em.apellidos }}</td> 
-            <td>{{ em.dni }}</td> 
+            <td v-if="!isMobile">{{ em.apellidos }}</td> 
+            <td v-if="!isMobile">{{ em.dni }}</td> 
             <td>{{ em.email }}</td> 
-            <td>{{ em.direccion }}</td> 
+            <td v-if="!isMobile">{{ em.direccion }}</td> 
             <td>{{ em.telefono }}</td> 
             <td><a href="#miModal" @click="setActualUser(em)">Editar usuario</a></td> 
           </tr>
@@ -195,22 +195,22 @@
           <tr>
             <th>Nombre</th>
             <th>Apellidos</th>
-            <th>DNI</th>
-            <th>Correo</th>
+            <th v-if="!isMobile">DNI</th>
+            <th v-if="!isMobile">Correo</th>
             <th>Dirección</th>
             <th>Telefono</th>
-            <th>Cliente potencial</th>
+            <th v-if="!isMobile">Cliente potencial</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(client,i) in clients" :key="i">
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(client.id)"> {{ client.nombre }} </a></td> 
             <td>{{ client.apellidos }}</td> 
-            <td>{{ client.dni }}</td> 
-            <td>{{ client.email }}</td> 
+            <td v-if="!isMobile">{{ client.dni }}</td> 
+            <td v-if="!isMobile">{{ client.email }}</td> 
             <td>{{ client.direccion }}</td> 
             <td>{{ client.telefono }}</td> 
-            <td>{{ client.clientePotencial }}</td> 
+            <td v-if="!isMobile">{{ client.clientePotencial }}</td> 
             <td><a href="#miModal" @click="setActualUser(client)">Editar usuario</a></td> 
           </tr>
         </tbody>
@@ -229,7 +229,7 @@
       <h1>Sorry! This page is not available</h1>
     </div>
 
-    <div id="miModal" class="modal" v-if="forceReload">
+    <div id="miModal" class="modal col-" v-if="forceReload">
       <div class="modal-contenido">
         <button style="background-color: rgba(21, 63, 117, 0.6); width: 8%; border: 2px solid #153f75; align-text: center;" @click="reloadSite">X</button>
         <h3 style="margin-bottom: -2%;">{{actualUser.nombre}} - {{actualUser.dni}}</h3>
@@ -313,9 +313,14 @@ export default {
       dniSelected: null,
       searchedUsers: [],
       changeSearch: false,
-      token: null
+      token: null,
+      windowWidth: window.innerWidth,
+      isMobile: false,
       
     }
+  },
+  watch() {
+    this.windowWidth = window.innerWidth;
   },
   methods: {
     loadUsers() {
@@ -629,10 +634,25 @@ export default {
     redirectUser(userId) {
       this.$router.push("/user/" + userId);
     },
+    onResize() {
+      this.windowWidth = window.innerWidth;
+      if (this.windowWidth < 768) {
+        this.isMobile = true;
+      }
+      else {
+        this.isMobile = false;
+      }
+    }
   },
   mounted() {
     this.loadData();
-  }
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    });
+  },
+  beforeDestroy() { 
+    window.removeEventListener('resize', this.onResize); 
+  },
 }
 </script>
 

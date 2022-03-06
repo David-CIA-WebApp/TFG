@@ -62,10 +62,12 @@ tellus bibendum senectus aliquet, himenaeos nullam
       <div class="addM box">
         <div style="position: absolute; background: #044ca9; width: 700px; border-radius: 25px;">
           <h2 style="color: white; margin-left: 20px;">CONTACTANOS</h2>
-          <pre style="color: white; margin-left: 20px;">Nombre: <input style="margin-left: 50px;" v-model="contacto.nombre"></pre>
-          <pre style="color: white; margin-left: 20px;">Correo:    <input style="margin-left: 26px;" v-model="contacto.correo"></pre>
-          <pre style="color: white; margin-left: 20px;">Descripcion:  <textarea style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" v-model="contacto.descripcion"></textarea></pre>
+          <form>
+          <pre style="color: white; margin-left: 20px;">Nombre: <input style="margin-left: 50px; width:30%;" v-model="contacto.nombre" required></pre>
+          <pre style="color: white; margin-left: 20px;">Correo:    <input style="margin-left: 26px; width:50%;" v-model="contacto.correo" type="email" required></pre>
+          <pre style="color: white; margin-left: 20px;">Descripcion:  <textarea style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" v-model="contacto.descripcion" required></textarea></pre>
           <button style="color: white; left: 570px; margin-bottom: 20px;" @click="crearContacto">ENVIAR</button>
+          </form>
         </div>
       </div>
     </div>
