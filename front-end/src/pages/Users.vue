@@ -47,8 +47,8 @@
     <br><br><br>
 
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-    <div v-if="logged" class="col-">
-    <h3>USUARIOS</h3>
+    <div id="tables-div" v-if="logged" class="col-">
+      <h3>USUARIOS</h3>
       <table class="table table-striped" id="users" v-if="usersLoaded">
         <thead>
           <tr>
@@ -71,14 +71,16 @@
             <td><a href="#miModal" @click="setActualUser(user)">Editar usuario</a></td> 
           </tr>
         </tbody>
-      <button
-      style="background-color: transparent; color: blue;"
-      @click="createUser('USUARIOS')">
-        Crear usuario
-      </button>
       </table>
+      <div :class="selects">
+        <button
+        style="background-color: transparent; color: blue;"
+        @click="createUser('USUARIOS')">
+          Crear usuario
+        </button>
+      </div>
 
-      <br><br>
+      <br><br><br><br>
 
       <h3>TRABAJADORES INTERNOS</h3>
       <table class="table table-striped" id="users" v-if="workersLoaded">
@@ -105,17 +107,19 @@
             <td><a href="#miModal" @click="setActualUser(worker)">Editar usuario</a></td> 
           </tr>
         </tbody>
-        <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
+      </table>
+      <div :class="selects">
+        <select v-model="dniSelected" id="dniSelected">
           <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 140px;"
+        style="background-color: transparent; color: blue;"
         @click="createUser('TRABJADOR')">
           Crear trabajador
         </button>
-      </table>
+      </div>
 
-      <br><br>
+      <br><br><br><br>
 
       <h3>TRABAJADORES EXTERNOS</h3>
       <table class="table table-striped" id="users" v-if="externalWorkersLoaded">
@@ -142,17 +146,19 @@
             <td><a href="#miModal" @click="setActualUser(ew)">Editar usuario</a></td> 
           </tr>
         </tbody>
+      </table>
+      <div :class="selects">
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
           <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 200px;"
+        style="background-color: transparent; color: blue;"
         @click="createUser('TRABJADOR EXTERNO')">
           Crear trabajador externo
         </button>
-      </table>
+      </div>
 
-      <br><br>
+      <br><br><br><br>
 
       <h3>GESTORES</h3>
       <table class="table table-striped" id="users" v-if="managersLoaded">
@@ -177,17 +183,20 @@
             <td><a href="#miModal" @click="setActualUser(em)">Editar usuario</a></td> 
           </tr>
         </tbody>
+      </table>
+
+      <div :class="selects">
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
           <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 120px;"
+        style="background-color: transparent; color: blue;"
         @click="createUser('GESTOR')">
           Crear gestor
         </button>
-      </table>
+      </div>
 
-      <br><br>
+      <br><br><br><br>
 
       <h3>CLIENTES</h3>
       <table class="table table-striped" id="users" v-if="clientsLoaded">
@@ -214,15 +223,17 @@
             <td><a href="#miModal" @click="setActualUser(client)">Editar usuario</a></td> 
           </tr>
         </tbody>
+      </table>
+      <div :class="selects">
         <select v-model="dniSelected" id="dniSelected" style="margin-top: 5px;">
           <option v-for="user in users" v-bind:key="user.dni" :value="user.dni">{{user.nombre}} {{user.apellidos}} - {{user.dni}}</option>
         </select>
         <button
-        style="background-color: transparent; color: blue; width: 120px;"
+        style="background-color: transparent; color: blue;"
         @click="createUser('CLIENTE')">
           Crear cliente
         </button>
-      </table>
+      </div>  
     </div>
 
     <div style="width: 420px; margin-left: auto; margin-right: auto; margin-top: 200px; font-size: 10px;" class="typewriter" v-if="!logged">
@@ -316,7 +327,7 @@ export default {
       token: null,
       windowWidth: window.innerWidth,
       isMobile: false,
-      
+      selects: "selectsNotMobile"
     }
   },
   watch() {
@@ -638,9 +649,11 @@ export default {
       this.windowWidth = window.innerWidth;
       if (this.windowWidth < 768) {
         this.isMobile = true;
+        this.selects = "selectsMobile";
       }
       else {
         this.isMobile = false;
+        this.selects = "selectsNotMobile";
       }
     }
   },
@@ -669,7 +682,6 @@ export default {
 #users {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
-  width: 100%;
 }
 
 #users td, #users th {
@@ -866,5 +878,11 @@ button {
     transform: rotate(360deg);
   }
 }
+
+.selectsNotMobile{
+  margin-top: -75px;
+}
+
+
 
 </style>
