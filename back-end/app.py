@@ -1,5 +1,5 @@
 from distutils.log import debug
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_cors.core import try_match
 from users import users
@@ -1010,9 +1010,9 @@ def deleteMeeting(meeting_id):
 
 
 
-@app.route('/certificados', methods=['GET'])
-def getCertificados():
-    return True
+@app.route('/certificados/<string:job_id>', methods=['GET'])
+def getCertificados(job_id):
+    return send_from_directory("./certificados/", "trabajo" + str(job_id) + ".pdf")
 
 
 

@@ -161,8 +161,17 @@ export default {
     }
   },
   methods: {
-    downloadPDF(certificado) {
-      console.log(certificado);
+    downloadPDF(job_id) {
+      axios.get(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      })
+      .then((response) => {
+        console.log(response);
+      });
     },
     previewFile(job_id) {
       var file = document.querySelector('#certificado');

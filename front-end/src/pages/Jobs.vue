@@ -37,7 +37,7 @@
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
             <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" @change="previewFile(job.id)" accept=".pdf"/> </td>
-            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.certificado)">Ver certificado</a> </td>
+            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id)">Ver certificado</a> </td>
             <td><a href="#miModal" @click="editar(job)"> Editar </a></td> 
           </tr>
         </tbody>
@@ -156,11 +156,11 @@
 
 <script>
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 export default {
   name: 'Jobs',
   components: {
-    
   },
   data() {
     return {
@@ -192,8 +192,22 @@ export default {
     }
   },
   methods: {
-    downloadPDF(certificado) {
-      console.log(certificado);
+    downloadPDF(job_id) {
+      axios.get(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      })
+      .then((response) => {
+        var pdf = response.data;    
+        console.log(pdf);
+        var file = new Blob([pdf], {type: 'application/pdf;charset-UTF-8'});
+        var fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+        saveAs(file, `trabajo${job_id}.pdf`);
+      });
     },
     previewFile(job_id) {
       var file = document.querySelector('#certificado');
