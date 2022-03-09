@@ -659,6 +659,7 @@ export default {
   },
   mounted() {
     this.loadData();
+    this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
