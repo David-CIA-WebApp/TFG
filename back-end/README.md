@@ -143,7 +143,7 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - descripcion
 - direccion
 - id_cita
-- id_certificado
+- certificado
 >Edita un trabajo con los nuevos datos
 
 **_/editMeetings/ID_**
@@ -156,7 +156,7 @@ En esta API hay varias llamadas para gestionar el control de datos de usuarios d
 - id_administrador
 - descripcion
 - direccion
-- id_certificado
+- certificado
 >Edita una cita con los nuevos datos
 
 ### DELETES
