@@ -172,7 +172,7 @@
             "id_tecnico": this.actualMeeting.id_tecnico,
             "id_perito": this.actualMeeting.id_perito,
             "id_administrador": null,
-            "id_certificado": null
+            "certificado": null
           },
           headers: {
             "Content-Type": "application/JSON",
@@ -395,7 +395,7 @@
                 direccion: element.direccion,
                 id_trabajo: element.id_trabajo,
                 id_cita: element.id,
-                id_certificado: element.id_certificado,
+                certificado: element.certificado,
                 id_perito: element.id_perito,
                 id_tecnico: element.id_tecnico,
               }

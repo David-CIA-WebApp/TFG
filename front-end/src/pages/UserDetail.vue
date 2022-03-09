@@ -66,7 +66,8 @@
             <td> {{job.tipo}} </td> 
             <td> {{job.descripcion}} </td> 
             <td> {{job.direccion}} </td> 
-            <td> {{job.id_certificado}} </td>
+            <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" @change="previewFile(job.id)" accept=".pdf"/> </td>
+            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.certificado)">Ver certificado</a> </td>
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectJob(job.id)">Ver trabajo</a></td> 
           </tr>
         </tbody>
@@ -160,6 +161,31 @@ export default {
     }
   },
   methods: {
+    downloadPDF(job_id) {
+      axios.get(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      })
+      .then((response) => {
+        console.log(response);
+      });
+    },
+    previewFile(job_id) {
+      var file = document.querySelector('#certificado');
+      var formData = new FormData();
+      formData.append("file", file.files[0]);
+      
+      axios.post(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      });
+    },
     actualizar(actualUser) {  
       if (actualUser.pass == null) {
         actualUser.pass = "";

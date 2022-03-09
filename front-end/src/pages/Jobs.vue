@@ -36,7 +36,8 @@
             <td> {{job.descripcion}} </td> 
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
-            <td> {{job.id_certificado}} </td>
+            <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" @change="previewFile(job.id)" accept=".pdf"/> </td>
+            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id)">Ver certificado</a> </td>
             <td><a href="#miModal" @click="editar(job)"> Editar </a></td> 
           </tr>
         </tbody>
@@ -155,11 +156,11 @@
 
 <script>
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 export default {
   name: 'Jobs',
   components: {
-    
   },
   data() {
     return {
@@ -180,7 +181,7 @@ export default {
         descripcion: "",
         direccion: "",
         id_cliente: null,
-        id_certificado: null
+        certificado: null
       },
       actualJob: {},
       users: [],
@@ -191,6 +192,36 @@ export default {
     }
   },
   methods: {
+    downloadPDF(job_id) {
+      axios.get(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      })
+      .then((response) => {
+        var pdf = response.data;    
+        console.log(pdf);
+        var file = new Blob([pdf], {type: 'application/pdf;charset-UTF-8'});
+        var fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+        saveAs(file, `trabajo${job_id}.pdf`);
+      });
+    },
+    previewFile(job_id) {
+      var file = document.querySelector('#certificado');
+      var formData = new FormData();
+      formData.append("file", file.files[0]);
+      
+      axios.post(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": this.token
+        }
+      });
+    },
     modifyDateTime(meeting) {
         var year = meeting.dates.toISOString().split("T")[0].split("-")[0];
         var day = meeting.dates.toISOString().split("T")[0].split("-")[1];
@@ -225,7 +256,7 @@ export default {
           "id_tecnico": cita.id_tecnico,
           "id_perito": cita.id_perito,
           "id_administrador": null,
-          "id_certificado": null
+          "certificado": null
         },
         headers: {
           "Content-Type": "application/JSON",
@@ -300,7 +331,7 @@ export default {
             "tipo": this.actualJob.tipo,
             "descripcion": this.actualJob.descripcion,
             "direccion": this.actualJob.direccion,
-            "id_certificado": null
+            "certificado": null
           },
           headers: {
             "Content-Type": "application/JSON",
@@ -405,7 +436,7 @@ export default {
             direccion: element.direccion,
             id_trabajo: element.id_trabajo,
             id_cita: element.id,
-            id_certificado: element.id_certificado,
+            certificado: element.certificado,
             id_perito: element.id_perito,
             id_tecnico: element.id_tecnico,
           }
@@ -444,7 +475,7 @@ export default {
             direccion: element.direccion,
             id_trabajo: element.id_trabajo,
             id_cita: element.id,
-            id_certificado: element.id_certificado,
+            certificado: element.certificado,
             id_perito: element.id_perito,
             id_tecnico: element.id_tecnico,
           }

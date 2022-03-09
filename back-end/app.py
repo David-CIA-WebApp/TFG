@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request
+from distutils.log import debug
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_cors.core import try_match
 from users import users
@@ -6,6 +7,7 @@ from flask_mysqldb import MySQL
 from encriptacion import *
 from token_generator import *
 import os
+import sys
 
 app = Flask(__name__)
 
@@ -740,7 +742,7 @@ def getJobs():
             "descripcion": i[2],
             "direccion": i[3],
             "id_cliente": i[4],
-            "id_certificado": i[5]
+            "certificado": i[5]
         }
         
         res.append(trabajo)
@@ -766,7 +768,7 @@ def getJobByID(job_id):
             "descripcion": i[2],
             "direccion": i[3],
             "id_cliente": i[4],
-            "id_certificado": i[5]
+            "certificado": i[5]
         }
         
         res.append(trabajo)
@@ -793,7 +795,7 @@ def getJobById_cliente(id_cliente):
             "descripcion": i[2],
             "direccion": i[3],
             "id_cliente": i[4],
-            "id_certificado": i[5]
+            "certificado": i[5]
         }
         
         res.append(trabajo)
@@ -820,7 +822,7 @@ def addJobs():
     user_id = data[0][0]
 
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('INSERT INTO trabajo (tipo, descripcion, direccion, id_cliente, id_certificado) VALUES (%s, %s, %s, %s, %s)', (tipo, descripcion, direccion, user_id, None))
+        cur.execute('INSERT INTO trabajo (tipo, descripcion, direccion, id_cliente, certificado) VALUES (%s, %s, %s, %s, %s)', (tipo, descripcion, direccion, user_id, None))
         mysql.connection.commit()
         return jsonify({'message': "Trabajo insertado en la base de datos"})
     else:
@@ -833,12 +835,12 @@ def editJobs(work_id):
     tipo = request.json['tipo']
     descripcion = request.json['descripcion']
     direccion = request.json['direccion']
-    id_certificado = request.json['id_certificado']
+    certificado = request.json['certificado']
     
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE trabajo SET tipo=%s, descripcion=%s, direccion=%s, id_cliente=id_cliente, id_certificado=%s WHERE id=%s', (tipo, descripcion, direccion, id_certificado, work_id))
+        cur.execute('UPDATE trabajo SET tipo=%s, descripcion=%s, direccion=%s, id_cliente=id_cliente, certificado=%s WHERE id=%s', (tipo, descripcion, direccion, certificado, work_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajo editado correctamente"})
     else:
@@ -873,7 +875,7 @@ def getAgenda():
             "id": i[0],
             "id_trabajo": i[1],
             "fecha": i[2],
-            "id_certificado": i[3],
+            "certificado": i[3],
             "id_tecnico": i[4],
             "id_perito": i[5],
             "id_administrador": i[6],
@@ -900,7 +902,7 @@ def getAgendaSinTrabajo():
             "id": i[0],
             "id_trabajo": i[1],
             "fecha": i[2],
-            "id_certificado": i[3],
+            "certificado": i[3],
             "id_tecnico": i[4],
             "id_perito": i[5],
             "id_administrador": i[6],
@@ -930,7 +932,7 @@ def getMeetingById_trabajo(id_trabajo):
             "id": i[0],
             "id_trabajo": i[1],
             "fecha": i[2],
-            "id_certificado": i[3],
+            "certificado": i[3],
             "id_tecnico": i[4],
             "id_perito": i[5],
             "id_administrador": i[6],
@@ -963,7 +965,7 @@ def addMeetings():
     cur = mysql.connection.cursor()
 
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('INSERT INTO cita (id_trabajo, fecha, id_certificado, id_tecnico, id_perito, id_administrador, descripcion, direccion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (id_trabajo, fecha, None, id_tecnico, id_perito, id_administrador, descripcion, direccion))
+        cur.execute('INSERT INTO cita (id_trabajo, fecha, certificado, id_tecnico, id_perito, id_administrador, descripcion, direccion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (id_trabajo, fecha, None, id_tecnico, id_perito, id_administrador, descripcion, direccion))
         mysql.connection.commit()
         return jsonify({'message': "Cita insertada en la base de datos"})
     else:
@@ -981,12 +983,12 @@ def editMeetings(meeting_id):
     id_tecnico = request.json['id_tecnico']
     id_perito = request.json['id_perito']
     id_administrador = request.json['id_administrador']
-    id_certificado = request.json['id_certificado']  
+    certificado = request.json['certificado']  
     
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE cita SET fecha=%s, descripcion=%s, direccion=%s, id_trabajo=%s, id_tecnico=%s, id_perito=%s, id_administrador=%s, id_certificado=%s where id=%s', (fecha, descripcion, direccion, id_trabajo, id_tecnico, id_perito, id_administrador, id_certificado, meeting_id))
+        cur.execute('UPDATE cita SET fecha=%s, descripcion=%s, direccion=%s, id_trabajo=%s, id_tecnico=%s, id_perito=%s, id_administrador=%s, certificado=%s where id=%s', (fecha, descripcion, direccion, id_trabajo, id_tecnico, id_perito, id_administrador, certificado, meeting_id))
         mysql.connection.commit()
         return jsonify({'message': "Cita editada correctamente"})
     
@@ -1005,6 +1007,39 @@ def deleteMeeting(meeting_id):
     else:
         return jsonify({'message': "Acceso denegado"})
 
+
+
+
+@app.route('/certificados/<string:job_id>', methods=['GET'])
+def getCertificados(job_id):
+    return send_from_directory("./certificados/", "trabajo" + str(job_id) + ".pdf")
+
+
+
+@app.route('/certificados/<string:job_id>', methods=['POST'])
+def sendCertificados(job_id):
+    uploaded_file = request.files['file']
+    
+    cur = mysql.connection.cursor()
+
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        if uploaded_file.filename != '':
+            uploaded_file.filename = "trabajo" + str(job_id) + ".pdf"
+            uploaded_file.save("./certificados/"+uploaded_file.filename)
+            
+            cur.execute('UPDATE trabajo SET certificado=%s WHERE id=%s', ("trabajo" + str(job_id) + ".pdf", job_id))
+            mysql.connection.commit()
+            return jsonify({'message': "Certificado subido correctamente"})
+        return jsonify({'message': "Hubo un error en el archivo"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+        
+
+
+
+@app.route('/certificados', methods=['DELETE'])
+def deleteCertificados():
+    return True
 
 
 
