@@ -67,7 +67,7 @@
             <td> {{job.descripcion}} </td> 
             <td> {{job.direccion}} </td> 
             <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" @change="previewFile(job.id)" accept=".pdf"/> </td>
-            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.certificado)">Ver certificado</a> </td>
+            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id)">Ver certificado</a> </td>
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectJob(job.id)">Ver trabajo</a></td> 
           </tr>
         </tbody>
