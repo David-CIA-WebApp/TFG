@@ -1012,7 +1012,9 @@ def deleteMeeting(meeting_id):
 
 @app.route('/certificados/<string:job_id>', methods=['GET'])
 def getCertificados(job_id):
-    return send_from_directory("./certificados/", "trabajo" + str(job_id) + ".pdf")
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return send_from_directory("./certificados/", "trabajo" + str(job_id) + ".pdf", as_attachment=True)
+    return jsonify({'message': "Acceso denegado"})
 
 
 
