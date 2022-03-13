@@ -81,9 +81,9 @@ export default {
   data() {
     return {
       logo: "https://i.ibb.co/YpKv3mr/LOGO-DAVID-CIA.png",
-      quienesSomos: false,
+      quienesSomos: true,
       experiencia: false,
-      contactanos: true,
+      contactanos: false,
       contacto: {
         nombre: "",
         correo: "",
