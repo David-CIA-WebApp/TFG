@@ -1039,9 +1039,15 @@ def sendCertificados(job_id):
 
 
 
-@app.route('/certificados', methods=['DELETE'])
-def deleteCertificados():
-    return True
+@app.route('/certificados/<string:job_id>', methods=['DELETE'])
+def deleteCertificados(job_id):
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        os.remove("./certificados/trabajo" + str(job_id) + ".pdf")
+        cur.execute('UPDATE trabajo SET certificado=%s WHERE id=%s', (None, job_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Certificado borrado correctamente"})
+    return jsonify({'message': "Acceso denegado"})
 
 
 
