@@ -31,7 +31,7 @@
         </thead>
         <tbody>
           <tr v-for="(job,i) in jobs" :key="i">
-            <td> {{job.id}} </td> 
+            <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectJob(job.id)"> {{job.id}} </a></td> 
             <td> {{job.tipo}} </td> 
             <td> {{job.descripcion}} </td> 
             <td> {{job.direccion}} </td> 
@@ -191,6 +191,10 @@ export default {
     }
   },
   methods: {
+    redirectJob(jobId) {
+      this.$router.push("/jobs/" + jobId);
+      this.$router.go();
+    },
     borrarCertificado(job_id) {
       axios.delete(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
         headers: {
