@@ -16,29 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `certificados`
---
-
-DROP TABLE IF EXISTS `certificados`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `certificados` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ruta` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `certificados`
---
-
-LOCK TABLES `certificados` WRITE;
-/*!40000 ALTER TABLE `certificados` DISABLE KEYS */;
-/*!40000 ALTER TABLE `certificados` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `cita`
 --
 
@@ -56,7 +33,7 @@ CREATE TABLE `cita` (
   `descripcion` varchar(100) DEFAULT NULL,
   `direccion` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,8 +165,9 @@ CREATE TABLE `trabajo` (
   `direccion` text NOT NULL,
   `id_cliente` int(11) NOT NULL,
   `certificado` text,
+  `presupuesto` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +176,7 @@ CREATE TABLE `trabajo` (
 
 LOCK TABLES `trabajo` WRITE;
 /*!40000 ALTER TABLE `trabajo` DISABLE KEYS */;
-INSERT INTO `trabajo` VALUES (1,'Instalacion de agua','Instalación de agua de cocina completa con grifo y salida para patio de exterior','Calle Japon 5 4A',11,NULL),(2,'Revision de agua','Revisión de la instalación','Calle Japón 5 4A',11,NULL),(3,'Revision de agua','esto es una prueba','jander clander',11,NULL);
+INSERT INTO `trabajo` VALUES (1,'Instalacion de agua','Instalación de agua de cocina completa con grifo y salida para patio de exterior','Calle Japon 5 4A',11,NULL,NULL),(2,'Revision de agua','Revisión de la instalación','Calle Japón 5 4A',11,NULL,NULL),(3,'Revision de agua','esto es una prueba','jander clander',11,NULL,NULL);
 /*!40000 ALTER TABLE `trabajo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -272,4 +250,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-09 17:15:36
+-- Dump completed on 2022-03-20 13:02:41
