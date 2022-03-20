@@ -57,6 +57,7 @@
             <th>Descripcion</th>
             <th>Direccion</th>
             <th>Certificado</th>
+            <th>Presupuesto</th>
             <th>Trabajo</th>
           </tr>
         </thead>
@@ -66,8 +67,10 @@
             <td> {{job.tipo}} </td> 
             <td> {{job.descripcion}} </td> 
             <td> {{job.direccion}} </td> 
-            <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" ref="certificado" @change="uploadFile(job.id, i)" accept=".pdf"/> </td>
-            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id)">Ver certificado</a> <a @click="borrarCertificado(job.id)"> <svg viewBox="0 0 15 20" width="16" height="15"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
+            <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" ref="certificado" @change="uploadFile(job.id, i, 'certificado')" accept=".pdf"/> </td>
+            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id, 'certificado')">Ver certificado</a> <a @click="borrarDocumento(job.id, 'certificado')"> <svg viewBox="0 0 15 20" width="16" height="15"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
+            <td v-if="job.presupuesto == null"> <input type="file" id="presupuesto" name="presupuesto" ref="presupuesto" @change="uploadFile(job.id, i, 'presupuesto')" accept=".pdf"/> </td>
+            <td v-if="job.presupuesto != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id, 'presupuesto')">Ver presupuesto</a> <a @click="borrarDocumento(job.id, 'presupuesto')"> <svg viewBox="0 0 15 20" width="16" height="15"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectJob(job.id)">Ver trabajo</a></td> 
           </tr>
         </tbody>
@@ -161,55 +164,110 @@ export default {
     }
   },
   methods: {
-    borrarCertificado(job_id) {
-      axios.delete(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": this.token
-        },
-      })
-      .then(response => {
-        console.log(response);
-          this.reloadSite();
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    borrarDocumento(job_id, tipo) {
+      if (tipo == "certificado") {
+        axios.delete(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          },
+        })
+        .then(response => {
+          console.log(response);
+            this.reloadSite();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      } else if (tipo == "presupuesto") {
+        axios.delete(`${process.env.VUE_APP_BACK_URL}/presupuestos/${job_id}`, {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          },
+        })
+        .then(response => {
+          console.log(response);
+            this.reloadSite();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      }
+      
     },
-    downloadPDF(job_id) {
-      axios.get(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
-        headers: {
-          'Content-Type': 'application/pdf',
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": this.token
-        },
-        responseType: 'blob',
-        Accept: 'application/pdf'
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `trabajo${job_id}.pdf`); //or any other extension
-        document.body.appendChild(link);
-        link.click();
-      });
+    downloadPDF(job_id, tipo) {
+      if (tipo == "certificado") {
+        axios.get(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          },
+          responseType: 'blob',
+          Accept: 'application/pdf'
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `certificado-trabajo${job_id}.pdf`); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+        });
+      } else if (tipo == "presupuesto") {
+        axios.get(`${process.env.VUE_APP_BACK_URL}/presupuestos/${job_id}`, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          },
+          responseType: 'blob',
+          Accept: 'application/pdf'
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `certificado-trabajo${job_id}.pdf`); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+        });
+      }
     },
-    uploadFile(job_id, index) {
-      var file = this.$refs.certificado;
+    uploadFile(job_id, index, tipo) {
       var formData = new FormData();
-      formData.append("file", file[index].files[0]);
-      axios.post(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": this.token
-        }
-      }).then(() => {
-        this.reloadSite();
-      }).catch((err) => {
-        console.log(err);
-      });
+      var file;
+      if (tipo == "certificado") {
+        file = this.$refs.certificado;
+        formData.append("file", file[index].files[0]);
+        axios.post(`${process.env.VUE_APP_BACK_URL}/certificados/${job_id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        }).then(() => {
+          this.reloadSite();
+        }).catch((err) => {
+          console.log(err);
+        });
+      } else if (tipo == "presupuesto") {
+        file = this.$refs.presupuesto;
+        formData.append("file", file[index].files[0]);
+        axios.post(`${process.env.VUE_APP_BACK_URL}/presupuestos/${job_id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": this.token
+          }
+        }).then(() => {
+          this.reloadSite();
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+      
     },
     actualizar(actualUser) {  
       if (actualUser.pass == null) {
