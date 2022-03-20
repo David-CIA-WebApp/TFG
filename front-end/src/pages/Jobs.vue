@@ -36,7 +36,7 @@
             <td> {{job.descripcion}} </td> 
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
-            <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" ref="certificado" @change="previewFile(job.id, i)" accept=".pdf"/> </td>
+            <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" ref="certificado" @change="uploadFile(job.id, i)" accept=".pdf"/> </td>
             <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id)">Ver certificado</a> <a @click="borrarCertificado(job.id)"> <svg viewBox="0 0 15 20" width="16" height="15"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
             <td><a href="#miModal" @click="editar(job)"> Editar </a></td> 
           </tr>
@@ -229,7 +229,7 @@ export default {
         link.click();
       });
     },
-    previewFile(job_id, index) {
+    uploadFile(job_id, index) {
       var file = this.$refs.certificado;
       var formData = new FormData();
       formData.append("file", file[index].files[0]);
