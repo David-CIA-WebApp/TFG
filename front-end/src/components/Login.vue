@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login" style="width: 60%; margin-top: -50px;">
       <div>
         <img v-bind:src="logo" alt="" />
         <input v-model="mail" type="text" placeholder="correo"/>
@@ -9,6 +9,7 @@
         <br>
       <button
       class="button"
+      style="width: 80%; margin: auto; margin-bottom: 10px;"
       @click="login()">
         Entrar
       </button>
