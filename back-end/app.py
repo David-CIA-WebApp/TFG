@@ -1118,7 +1118,8 @@ def getAlerts():
             "descripcion": i[1],
             "fecha": i[2],
             "tipoAlerta": i[3],
-            "activa": i[4]
+            "activa": i[4],
+            "id_access": i[5]
         }
         
         res.append(alerta)
@@ -1136,11 +1137,12 @@ def createAlerts():#mysql data
     fecha = request.json['fecha']
     tipoAlerta = request.json['tipoAlerta']
     activa = request.json['activa']
+    id_access = request.json['id_access']
     
     cur = mysql.connection.cursor()
 
     if request.headers['Authorization'] == os.environ['TOKEN'] or tipoAlerta == "Contacto":
-        cur.execute('INSERT INTO alertas (descripcion, fecha, tipoAlerta, activa) VALUES (%s, %s, %s, %s)', (descripcion, fecha, tipoAlerta, activa))
+        cur.execute('INSERT INTO alertas (descripcion, fecha, tipoAlerta, activa, id_access) VALUES (%s, %s, %s, %s, %s)', (descripcion, fecha, tipoAlerta, activa, id_access))
         mysql.connection.commit()
         return jsonify({'message': "Alerta insertada en la base de datos"})
     else:
@@ -1174,6 +1176,30 @@ def createConsultas():#mysql data
     cur.execute('INSERT INTO consultas (nombre, descripcion, correo) VALUES (%s, %s, %s)', (nombre, descripcion, correo))
     mysql.connection.commit()
     return jsonify({'message': "Consulta insertada en la base de datos"})
+
+
+@app.route('/consultas', methods=['GET'])
+def getConsultas():#mysql data
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM consultas')
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        consulta = {
+            "id": i[0],
+            "nombre": i[1],
+            "correo": i[2],
+            "descripcion": i[3]
+        }
+        
+        res.append(consulta)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
 
 
 

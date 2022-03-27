@@ -93,6 +93,7 @@ export default {
         else if (item == 'MATERIALES') this.redirectMaterial();
         else if (item == 'AGENDA') this.redirectAgenda();
         else if (item == 'TRABAJOS') this.redirectJobs();
+        else if (item == 'CONSULTAS') this.redirectConsults();
     },
     redirectUser() {
       this.$router.push('users');
@@ -105,6 +106,9 @@ export default {
     },
     redirectJobs() {
       this.$router.push('jobs');
+    },
+    redirectConsults() {
+      this.$router.push('consultas');
     }
   },
   mounted() {

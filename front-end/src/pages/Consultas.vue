@@ -1,5 +1,5 @@
 <template>
-    <div id="alertas" v-if="logged">
+    <div id="consultas" v-if="logged">
         <div id="menu" v-if="forceReload && logged">
         <button 
         v-if="logged"
@@ -18,8 +18,8 @@
         </div>
         <br>
 
-        <div v-for="alerta in alertas" v-bind:key="alerta">
-            <p class="alert">{{alerta.descripcion[0]}} {{alerta.id_access}} {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" checked> <input v-else type="checkbox"></p>
+        <div v-for="consulta in consultas" v-bind:key="consulta">
+            <p class="alert">{{consulta}}</p>
         </div>
     </div>
 </template>
@@ -34,30 +34,23 @@ export default {
             forceReload: false,
             token: null,
             userType: null,
-            alertas: []
+            consultas: []
         }
     },
     methods: {
-        loadAlerts() {
-            this.alertas = [];
-            axios.get(`${process.env.VUE_APP_BACK_URL}/alertas`, {headers:{
+        loadConsultas() {
+            this.consultas = [];
+            axios.get(`${process.env.VUE_APP_BACK_URL}/consultas`, {headers:{
                 "Content-Type": "application/JSON",
                 "Access-Control-Allow-Origin": "*",
                 "Authorization": this.token
             }}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
                     var element = response.data[i];
-                    element.fecha = new Date(element.fecha);
-                    if (element.fecha.getMonth() + 1 < 10) {
-                        element.fecha = element.fecha.getDate() + "/0" + (element.fecha.getMonth() + 1) + "/" + element.fecha.getFullYear();
-                    } else {
-                        element.fecha = element.fecha.getDate() + "/" + (element.fecha.getMonth() + 1) + "/" + element.fecha.getFullYear();
-                    }
-                    element.descripcion = element.descripcion.split("X");
-                    this.alertas.push(element);
+                    this.consultas.push(element);
                 }
                 
-                this.alertas.sort((a, b) => a.tipoAlerta.localeCompare(b.tipoAlerta) || new Date(b.fecha.split('/').reverse().join("-")) - new Date(a.fecha.split('/').reverse().join("-")));
+                this.consultas.sort((a, b) => parseInt(a.id) < parseInt(b.id));
             });
         },
         loadData() {
@@ -81,7 +74,7 @@ export default {
                 this.forceReload = true;
                 this.userType = localStorage.userType;
                 this.token = res.data.token;
-                this.loadAlerts();
+                this.loadConsultas();
             }
             
             this.$emit("logging", this.logged);
