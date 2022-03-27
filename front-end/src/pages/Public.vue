@@ -69,6 +69,7 @@ tellus bibendum senectus aliquet, himenaeos nullam
 </template>
 
 <script>
+import axios from 'axios';
 //import axios from 'axios';
 
 export default {
@@ -82,7 +83,8 @@ export default {
         nombre: "",
         correo: "",
         descripcion: ""
-      }
+      },
+      errorMessage: ""
     }
   },
   methods: {
@@ -101,8 +103,54 @@ export default {
       this.experiencia = false;
       this.contactanos = true;
     },
+    validateEmail(email) {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+    },
     crearContacto() {
-      console.log(this.contacto);
+      var dateToday = new Date(Date.now());
+      if (!this.validateEmail(this.contacto.correo)) {
+        this.errorMessage += "El correo no es valido\n";
+      } if (this.contacto.nombre == "") {
+        this.errorMessage += "El nombre es requerido\n";
+      } if (this.contacto.descripcion == "") {
+        this.errorMessage += "La descripción no puede estar vacia\n";
+      } 
+      if (this.errorMessage != "") {
+        alert(this.errorMessage);
+        this.errorMessage = "";
+      }
+      else {
+        this.errorMessage = "";
+        axios.post(`${process.env.VUE_APP_BACK_URL}/consultas`, {"nombre": this.contacto.nombre, "descripcion": this.contacto.descripcion, "correo": this.contacto.correo}, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(response => {
+          console.log(response);
+          this.contacto = {
+            nombre: "",
+            correo: "",
+            descripcion: ""
+          }
+          
+          axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": dateToday.getFullYear() + "-" + dateToday.getMonth() + "-" + dateToday.getDate(), "activa": 1}, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': ''
+            }
+          }).then(response => {
+            console.log(response);
+          }).catch(error => {
+            console.log(error);
+          });
+        }).catch(error => {
+          console.log(error);
+        });
+      }
     }
   },
 };

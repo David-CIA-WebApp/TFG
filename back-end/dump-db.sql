@@ -16,6 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `alertas`
+--
+
+DROP TABLE IF EXISTS `alertas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `alertas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(500) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `tipoAlerta` enum('Revisión','Contacto','Inventario') DEFAULT NULL,
+  `activa` tinyint(1) DEFAULT NULL,
+  `id_access` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `alertas`
+--
+
+LOCK TABLES `alertas` WRITE;
+/*!40000 ALTER TABLE `alertas` DISABLE KEYS */;
+INSERT INTO `alertas` VALUES (1,'El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica','2022-03-27','Revisión',1,NULL),(2,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-26','Contacto',1,NULL),(3,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-24','Contacto',1,NULL),(4,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-27','Contacto',1,NULL),(5,'Queda poca cantidad de X, debería ser repuesto','2022-03-26','Inventario',1,NULL);
+/*!40000 ALTER TABLE `alertas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `cita`
 --
 
@@ -250,4 +278,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-20 13:02:41
+-- Dump completed on 2022-03-27 19:46:08

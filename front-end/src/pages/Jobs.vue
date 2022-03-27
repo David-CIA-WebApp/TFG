@@ -7,6 +7,8 @@
       @click="redirectHome">
         INICIO
       </button>
+      <a href="/alertas" class="alertas"><svg viewBox="0 0 15 1" width="32" height="30"><path id="lineBC" d="M 1 1 L 1 2 L 11 2 L 11 1 L 10 0 C 9 -8 3 -8 2 0 L 1 1 M 6 3 A 1 1 0 0 0 6 6 A 1 1 0 0 0 6 3" stroke="black" stroke-width="0.01"  /></svg></a>
+
       <button 
       v-if="logged"
       style="background-color: transparent; color: red; margin-top: 0px; float: right;"
@@ -38,9 +40,9 @@
             <td> {{job.direccion}} </td> 
             <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="redirectUser(job.id_cliente)">Ver cliente</a></td> 
             <td v-if="job.certificado == null"> <input type="file" id="certificado" name="certificado" ref="certificado" @change="uploadFile(job.id, i, 'certificado')" accept=".pdf"/> </td>
-            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id, 'certificado')">Ver certificado</a> <a @click="borrarDocumento(job.id, 'certificado')"> <svg viewBox="0 0 15 20" width="16" height="15"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
+            <td v-if="job.certificado != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id, 'certificado')">Ver certificado</a> <a @click="borrarDocumento(job.id, 'certificado')"> <svg viewBox="0 0 15 20" width="20" height="20"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
             <td v-if="job.presupuesto == null"> <input type="file" id="presupuesto" name="presupuesto" ref="presupuesto" @change="uploadFile(job.id, i, 'presupuesto')" accept=".pdf"/> </td>
-            <td v-if="job.presupuesto != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id, 'presupuesto')">Ver presupuesto</a> <a @click="borrarDocumento(job.id, 'presupuesto')"> <svg viewBox="0 0 15 20" width="16" height="15"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
+            <td v-if="job.presupuesto != null"> <a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="downloadPDF(job.id, 'presupuesto')">Ver presupuesto</a> <a @click="borrarDocumento(job.id, 'presupuesto')"> <svg viewBox="0 0 15 20" width="20" height="20"><path id="lineBC" d="M 3 4 L 3 16 C 3 19 3 19 6 19 L 11 19 C 14 19 14 19 14 16 L 14 4 L 12 4 L 12 16 L 11 16 L 11 4 L 9 4 L 9 16 L 8 16 L 8 4 L 6 4 L 6 16 L 5 16 L 5 4 L 3 4 M 3 3 L 14 3 L 14 2 C 10 0 7 0 3 2 L 3 3" stroke="black" stroke-width="0.01"  /></svg></a> </td>
             <td><a href="#miModal" @click="editar(job)"> Editar </a></td> 
           </tr>
         </tbody>
@@ -838,4 +840,20 @@ button {
   }
 }
 
+.alertas {
+    position: absolute;
+    top: 7px;
+    left: 120px;
+    margin-top: 0px;
+    margin-right: 0px;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
 </style>

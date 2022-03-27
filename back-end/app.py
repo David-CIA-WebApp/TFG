@@ -1106,5 +1106,76 @@ def deletePresupuestos(job_id):
 
 
 
+@app.route('/alertas', methods=['GET'])
+def getAlerts():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM alertas')
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        alerta = {
+            "id": i[0],
+            "descripcion": i[1],
+            "fecha": i[2],
+            "tipoAlerta": i[3],
+            "activa": i[4]
+        }
+        
+        res.append(alerta)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+    
+    
+@app.route('/alertas', methods=['POST'])
+def createAlerts():#mysql data
+    descripcion = request.json['descripcion']
+    fecha = request.json['fecha']
+    tipoAlerta = request.json['tipoAlerta']
+    activa = request.json['activa']
+    
+    cur = mysql.connection.cursor()
+
+    if request.headers['Authorization'] == os.environ['TOKEN'] or tipoAlerta == "Contacto":
+        cur.execute('INSERT INTO alertas (descripcion, fecha, tipoAlerta, activa) VALUES (%s, %s, %s, %s)', (descripcion, fecha, tipoAlerta, activa))
+        mysql.connection.commit()
+        return jsonify({'message': "Alerta insertada en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/editAlert/<string:alert_id>', methods=['PUT'])
+def editAlerts(alert_id):
+    activa = request.json['activa']
+    
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('UPDATE alertas SET activa=%s where id=%s', (activa, alert_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Cita editada correctamente"})
+    
+    return jsonify({'message': "Acceso denegado"})
+
+
+
+
+@app.route('/consultas', methods=['POST'])
+def createConsultas():#mysql data
+    nombre = request.json['nombre']
+    descripcion = request.json['descripcion']
+    correo = request.json['correo']
+    
+    cur = mysql.connection.cursor()
+
+    cur.execute('INSERT INTO consultas (nombre, descripcion, correo) VALUES (%s, %s, %s)', (nombre, descripcion, correo))
+    mysql.connection.commit()
+    return jsonify({'message': "Consulta insertada en la base de datos"})
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
