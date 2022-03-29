@@ -19,7 +19,7 @@
         <br>
 
         <div v-for="alerta in alertas" v-bind:key="alerta">
-            <p class="alert">{{alerta.descripcion[0]}} {{alerta.id_access}} {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" checked> <input v-else type="checkbox"></p>
+            <p class="alert">{{alerta.descripcion[0]}} {{alerta.id_access}} {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> <input v-else type="checkbox" @click="updateAlert(alerta)" ></p>
         </div>
     </div>
 </template>
@@ -38,6 +38,24 @@ export default {
         }
     },
     methods: {
+        updateAlert(alerta) {
+            axios.put(`${process.env.VUE_APP_BACK_URL}/editAlert/`+alerta.id, {
+                activa: !alerta.activa,
+                fecha: new Date(alerta.fecha.split('/').reverse().join("-"))
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': this.token
+                }
+            })
+            .then(response => {
+                console.log(response);
+                this.reloadSite();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
         loadAlerts() {
             this.alertas = [];
             axios.get(`${process.env.VUE_APP_BACK_URL}/alertas`, {headers:{
@@ -48,31 +66,36 @@ export default {
                 for (let i = 0; i < response.data.length; i++) {
                     var element = response.data[i];
                     element.fecha = new Date(element.fecha);
+                    var dia = element.fecha.getDate();
                     if (element.fecha.getMonth() + 1 < 10) {
                         element.fecha = element.fecha.getDate() + "/0" + (element.fecha.getMonth() + 1) + "/" + element.fecha.getFullYear();
                     } else {
                         element.fecha = element.fecha.getDate() + "/" + (element.fecha.getMonth() + 1) + "/" + element.fecha.getFullYear();
                     }
+                    if (dia + 1 < 10) {
+                        element.fecha = "0/" + element.fecha;
+                    }
+
                     element.descripcion = element.descripcion.split("X");
                     this.alertas.push(element);
                 }
                 
-                this.alertas.sort((a, b) => a.tipoAlerta.localeCompare(b.tipoAlerta) || new Date(b.fecha.split('/').reverse().join("-")) - new Date(a.fecha.split('/').reverse().join("-")));
+                this.alertas.sort((a, b) => !a.activa || b.activa && (a.tipoAlerta.localeCompare(b.tipoAlerta) || new Date(b.fecha.split('/').reverse().join("-")) - new Date(a.fecha.split('/').reverse().join("-"))));
             });
         },
         loadData() {
             const path = `${process.env.VUE_APP_BACK_URL}/login`;
             const config = {
-            method: 'post',
-            url: path,
-            data: {
-                "mail": localStorage.userMail, 
-                "password": localStorage.userPass
-            },
-            headers: {
-                "Content-Type": "application/JSON",
-                "Access-Control-Allow-Origin": "*"
-            }
+                method: 'post',
+                url: path,
+                data: {
+                    "mail": localStorage.userMail, 
+                    "password": localStorage.userPass
+                },
+                headers: {
+                    "Content-Type": "application/JSON",
+                    "Access-Control-Allow-Origin": "*"
+                }
             };
             axios(config)
             .then((res) => {
@@ -99,6 +122,10 @@ export default {
             localStorage.userPass = "";
             localStorage.userType = "";
             this.redirectHome();
+        },
+        reloadSite() {
+            this.$router.push('alertas');
+            this.$router.go();
         },
     },
       

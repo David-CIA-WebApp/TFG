@@ -16,6 +16,7 @@
             Cerrar Sesión
         </button>
         </div>
+        
         <br>
 
         <div v-for="consulta in consultas" v-bind:key="consulta">
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+import axios from 'axios';
 
 export default {
     data() {

@@ -59,7 +59,7 @@ tellus bibendum senectus aliquet, himenaeos nullam
           <form>
           <pre style="color: white; margin-left: 20px;">Nombre: <input style="margin-left: 50px; width:30%;" v-model="contacto.nombre" required></pre>
           <pre style="color: white; margin-left: 20px;">Correo:    <input style="margin-left: 26px; width:50%;" v-model="contacto.correo" type="email" required></pre>
-          <pre style="color: white; margin-left: 20px;">Descripcion:  <textarea style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" v-model="contacto.descripcion" required></textarea></pre>
+          <pre style="color: white; margin-left: 20px;">Descripcion:  <textarea style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" v-model="contacto.descripcion"></textarea></pre>
           <button style="color: white; left: 570px; margin-bottom: 10px; margin-top: -5px;" @click="crearContacto">ENVIAR</button>
           </form>
         </div>
@@ -110,46 +110,50 @@ export default {
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
     },
-    crearContacto() {
+    postConsulta() {
       var dateToday = new Date(Date.now());
-      if (!this.validateEmail(this.contacto.correo)) {
-        this.errorMessage += "El correo no es valido\n";
-      } if (this.contacto.nombre == "") {
-        this.errorMessage += "El nombre es requerido\n";
-      } if (this.contacto.descripcion == "") {
-        this.errorMessage += "La descripción no puede estar vacia\n";
-      } 
-      if (this.errorMessage != "") {
-        alert(this.errorMessage);
-        this.errorMessage = "";
-      }
-      else {
-        this.errorMessage = "";
-        axios.post(`${process.env.VUE_APP_BACK_URL}/consultas`, {"nombre": this.contacto.nombre, "descripcion": this.contacto.descripcion, "correo": this.contacto.correo}, {
+      this.errorMessage = "";
+      axios.post(`${process.env.VUE_APP_BACK_URL}/consultas`, {"nombre": this.contacto.nombre, "descripcion": this.contacto.descripcion, "correo": this.contacto.correo}, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        console.log(response);
+        this.contacto = {
+          nombre: "",
+          correo: "",
+          descripcion: ""
+        }
+        
+        axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": new Date(dateToday.getFullYear() + "-" + dateToday.getMonth() + "-" + dateToday.getDate()), "activa": 1, "id_access": this.contacto.correo}, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': ''
           }
         }).then(response => {
           console.log(response);
-          this.contacto = {
-            nombre: "",
-            correo: "",
-            descripcion: ""
-          }
-          
-          axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": dateToday.getFullYear() + "-" + dateToday.getMonth() + "-" + dateToday.getDate(), "activa": 1}, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': ''
-            }
-          }).then(response => {
-            console.log(response);
-          }).catch(error => {
-            console.log(error);
-          });
         }).catch(error => {
           console.log(error);
         });
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    crearContacto() {
+      if (!this.validateEmail(this.contacto.correo)) {
+        this.errorMessage += "El correo no es valido\n";
+      } 
+      if (this.contacto.nombre == "") {
+        this.errorMessage += "El nombre es requerido\n";
+      } 
+      if (this.contacto.descripcion == "") {
+        this.errorMessage += "La descripción no puede estar vacia\n";
+      } 
+      if (this.errorMessage == "") {
+        this.postConsulta();
+      } else {
+        alert(this.errorMessage);
+        this.errorMessage = "";
       }
     }
   },

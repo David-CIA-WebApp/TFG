@@ -1152,13 +1152,14 @@ def createAlerts():#mysql data
 @app.route('/editAlert/<string:alert_id>', methods=['PUT'])
 def editAlerts(alert_id):
     activa = request.json['activa']
+    fecha = request.json['fecha']
     
     cur = mysql.connection.cursor()
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE alertas SET activa=%s where id=%s', (activa, alert_id))
+        cur.execute('UPDATE alertas SET activa=%s, fecha=%s where id=%s', (activa, fecha, alert_id))
         mysql.connection.commit()
-        return jsonify({'message': "Cita editada correctamente"})
+        return jsonify({'message': "Alerta editada correctamente"})
     
     return jsonify({'message': "Acceso denegado"})
 
