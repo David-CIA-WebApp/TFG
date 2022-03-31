@@ -250,7 +250,58 @@ export default {
         };
         axios(config)
         .then((res) => {
-          if (res) { 
+          if (res) {            
+            var dateToday = new Date(Date.now());
+            var fechaAEnviar = "";
+            if ((dateToday.getMonth()+1) < 10) {
+              if (dateToday.getDate() < 10) {
+                fechaAEnviar = dateToday.getFullYear() + "-0" + (dateToday.getMonth()+1) + "-0" + dateToday.getDate();
+              } else {
+                fechaAEnviar = dateToday.getFullYear() + "-0" + (dateToday.getMonth()+1) + "-" + dateToday.getDate();
+              }
+            }
+            if (material.cantidad < material.stockSeguridad) {
+              axios.get(`${process.env.VUE_APP_BACK_URL}/alertas`, {headers:{
+                "Content-Type": "application/JSON",
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": this.token
+              }}).then((res) => {
+                var materialEncontrado = false;
+                for (var i = 0; i < res.data.length; i++) {
+                  if (res.data[i].id_access == material.nombre) {
+                    materialEncontrado = true;
+                    
+                    axios.put(`${process.env.VUE_APP_BACK_URL}/editAlert/${res.data[i].id}`, {
+                      "activa": 1,
+                      "fecha": new Date(fechaAEnviar)
+                    }, {
+                      headers: {
+                        "Content-Type": "application/JSON",
+                        "Access-Control-Allow-Origin": "*",
+                        "Authorization": this.token
+                      }
+                    }).then((res) => {
+                      console.log(res);
+                    });
+                    
+                    break;
+                  }
+                }
+                if (!materialEncontrado) {
+                  axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Inventario", "descripcion": "Queda poca cantidad de X que debería ser repuesto", "fecha": new Date(fechaAEnviar), "activa": 1, "id_access": material.nombre}, {
+                    headers: {
+                        "Content-Type": "application/JSON",
+                        "Access-Control-Allow-Origin": "*",
+                        "Authorization": this.token
+                    }
+                  }).then(response => {
+                    console.log(response);
+                  }).catch(error => {
+                    console.log(error);
+                  });
+                }
+              });
+            }
             this.forceReload = true;
           }
         })

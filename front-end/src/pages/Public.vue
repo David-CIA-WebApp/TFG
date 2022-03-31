@@ -59,7 +59,7 @@ tellus bibendum senectus aliquet, himenaeos nullam
           <form>
           <pre style="color: white; margin-left: 20px;">Nombre: <input style="margin-left: 50px; width:30%;" v-model="contacto.nombre" required></pre>
           <pre style="color: white; margin-left: 20px;">Correo:    <input style="margin-left: 26px; width:50%;" v-model="contacto.correo" type="email" required></pre>
-          <pre style="color: white; margin-left: 20px;">Descripcion:  <textarea style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" v-model="contacto.descripcion"></textarea></pre>
+          <pre style="color: white; margin-left: 20px;">Descripcion:  <input style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" /></pre>
           <button style="color: white; left: 570px; margin-bottom: 10px; margin-top: -5px;" @click="crearContacto">ENVIAR</button>
           </form>
         </div>
@@ -112,6 +112,14 @@ export default {
     },
     postConsulta() {
       var dateToday = new Date(Date.now());
+      var fechaAEnviar = "";
+      if ((dateToday.getMonth()+1) < 10) {
+        if (dateToday.getDate() < 10) {
+          fechaAEnviar = dateToday.getFullYear() + "-0" + (dateToday.getMonth()+1) + "-0" + dateToday.getDate();
+        } else {
+          fechaAEnviar = dateToday.getFullYear() + "-0" + (dateToday.getMonth()+1) + "-" + dateToday.getDate();
+        }
+      }
       this.errorMessage = "";
       axios.post(`${process.env.VUE_APP_BACK_URL}/consultas`, {"nombre": this.contacto.nombre, "descripcion": this.contacto.descripcion, "correo": this.contacto.correo}, {
         headers: {
@@ -125,7 +133,7 @@ export default {
           descripcion: ""
         }
         
-        axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": new Date(dateToday.getFullYear() + "-" + dateToday.getMonth() + "-" + dateToday.getDate()), "activa": 1, "id_access": this.contacto.correo}, {
+        axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": new Date(fechaAEnviar), "activa": 1, "id_access": this.contacto.correo}, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': ''
@@ -140,6 +148,8 @@ export default {
       });
     },
     crearContacto() {
+      console.log(this.contacto);
+      /*
       if (!this.validateEmail(this.contacto.correo)) {
         this.errorMessage += "El correo no es valido\n";
       } 
@@ -155,6 +165,7 @@ export default {
         alert(this.errorMessage);
         this.errorMessage = "";
       }
+      */
     }
   },
 };
