@@ -19,7 +19,8 @@
         <br>
 
         <div v-for="alerta in alertas" v-bind:key="alerta">
-            <p class="alert">{{alerta.descripcion[0]}} {{alerta.id_access}} {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> <input v-else type="checkbox" @click="updateAlert(alerta)" ></p>
+            <p class="alert" v-if="alerta.activa">{{alerta.descripcion[0]}} <a href="">{{alerta.id_access}}</a> {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> <input v-else type="checkbox" @click="updateAlert(alerta)" ></p>
+            <p class="alert2" v-if="!alerta.activa">{{alerta.descripcion[0]}} <a href="">{{alerta.id_access}}</a> {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> <input v-else type="checkbox" @click="updateAlert(alerta)" ></p>
         </div>
     </div>
 </template>
@@ -138,6 +139,12 @@ export default {
 <style scoped>
 .alert {
     background-color: #aaccfd;
+    color: rgb(0, 0, 0);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+.alert {
+    background-color: #d5e7ff;
     color: rgb(0, 0, 0);
     padding: 15px;
     margin-bottom: 15px;
