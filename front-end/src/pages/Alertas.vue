@@ -29,8 +29,7 @@
                 </p1>
                 <p1 style="position: absolute; right: 300px">{{alerta.fecha}}</p1>
                 <p1 style="position: absolute; right: 40px">{{alerta.tipoAlerta}}</p1>
-                <input style="position: absolute; right: 20px" v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> 
-                <input style="position: absolute; right: 20px" v-else type="checkbox" @click="updateAlert(alerta)" >
+                <input style="position: absolute; right: 20px" type="checkbox" @click="updateAlert(alerta)" checked> 
             </p>
             <p class="alert2" v-if="!alerta.activa">
                 <p1>
@@ -42,8 +41,7 @@
                 </p1>
                 <p1 style="position: absolute; right: 300px">{{alerta.fecha}}</p1>
                 <p1 style="position: absolute; right: 40px">{{alerta.tipoAlerta}}</p1>
-                <input style="position: absolute; right: 20px" v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> 
-                <input style="position: absolute; right: 20px" v-else type="checkbox" @click="updateAlert(alerta)" >
+                <input style="position: absolute; right: 20px" type="checkbox" @click="updateAlert(alerta)" >
             </p>
         </div>
     </div>
