@@ -56,12 +56,12 @@ tellus bibendum senectus aliquet, himenaeos nullam
       <div class="addM box">
         <div style="position: absolute; background: #044ca9; width: 700px; border-radius: 25px;">
           <h2 style="color: white; margin-left: 20px;">CONTACTANOS</h2>
-          <form>
+
           <pre style="color: white; margin-left: 20px;">Nombre: <input style="margin-left: 50px; width:30%;" v-model="contacto.nombre" required></pre>
           <pre style="color: white; margin-left: 20px;">Correo:    <input style="margin-left: 26px; width:50%;" v-model="contacto.correo" type="email" required></pre>
-          <pre style="color: white; margin-left: 20px;">Descripcion:  <input style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';" /></pre>
+          <pre style="color: white; margin-left: 20px;">Descripcion:  <textarea v-model="contacto.descripcion" style="margin-left: 3px; width:70%; max-width:70%; resize: none; rows='4';"></textarea></pre>
           <button style="color: white; left: 570px; margin-bottom: 10px; margin-top: -5px;" @click="crearContacto">ENVIAR</button>
-          </form>
+
         </div>
       </div>
     </div>
@@ -148,8 +148,6 @@ export default {
       });
     },
     crearContacto() {
-      console.log(this.contacto);
-      /*
       if (!this.validateEmail(this.contacto.correo)) {
         this.errorMessage += "El correo no es valido\n";
       } 
@@ -165,7 +163,6 @@ export default {
         alert(this.errorMessage);
         this.errorMessage = "";
       }
-      */
     }
   },
 };

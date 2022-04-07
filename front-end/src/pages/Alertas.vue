@@ -19,8 +19,32 @@
         <br>
 
         <div v-for="alerta in alertas" v-bind:key="alerta">
-            <p class="alert" v-if="alerta.activa">{{alerta.descripcion[0]}} <a href="">{{alerta.id_access}}</a> {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> <input v-else type="checkbox" @click="updateAlert(alerta)" ></p>
-            <p class="alert2" v-if="!alerta.activa">{{alerta.descripcion[0]}} <a href="">{{alerta.id_access}}</a> {{alerta.descripcion[1]}} {{alerta.fecha}} {{alerta.tipoAlerta}}<input v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> <input v-else type="checkbox" @click="updateAlert(alerta)" ></p>
+            <p class="alert" v-if="alerta.activa">
+                <p1>
+                    {{alerta.descripcion[0]}} 
+                    <a v-if="alerta.tipoAlerta=='Inventario'" href="/materials">{{alerta.id_access}}</a> 
+                    <a v-if="alerta.tipoAlerta=='Contacto'" href="/consultas">{{alerta.id_access}}</a> 
+                    <a v-if="alerta.tipoAlerta=='Revisión'" href="/jobs">{{alerta.id_access}}</a> 
+                    {{alerta.descripcion[1]}} 
+                </p1>
+                <p1 style="position: absolute; right: 300px">{{alerta.fecha}}</p1>
+                <p1 style="position: absolute; right: 40px">{{alerta.tipoAlerta}}</p1>
+                <input style="position: absolute; right: 20px" v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> 
+                <input style="position: absolute; right: 20px" v-else type="checkbox" @click="updateAlert(alerta)" >
+            </p>
+            <p class="alert2" v-if="!alerta.activa">
+                <p1>
+                    {{alerta.descripcion[0]}} 
+                    <a v-if="alerta.tipoAlerta=='Inventario'" href="/materials">{{alerta.id_access}}</a> 
+                    <a v-if="alerta.tipoAlerta=='Contacto'" href="/consultas">{{alerta.id_access}}</a> 
+                    <a v-if="alerta.tipoAlerta=='Revisión'" href="/jobs">{{alerta.id_access}}</a> 
+                    {{alerta.descripcion[1]}} 
+                </p1>
+                <p1 style="position: absolute; right: 300px">{{alerta.fecha}}</p1>
+                <p1 style="position: absolute; right: 40px">{{alerta.tipoAlerta}}</p1>
+                <input style="position: absolute; right: 20px" v-if="alerta.activa" type="checkbox" @click="updateAlert(alerta)" checked> 
+                <input style="position: absolute; right: 20px" v-else type="checkbox" @click="updateAlert(alerta)" >
+            </p>
         </div>
     </div>
 </template>
