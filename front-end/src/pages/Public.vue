@@ -127,11 +127,6 @@ export default {
         }
       }).then(response => {
         console.log(response);
-        this.contacto = {
-          nombre: "",
-          correo: "",
-          descripcion: ""
-        }
         
         axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": new Date(fechaAEnviar), "activa": 1, "id_access": this.contacto.correo}, {
           headers: {
@@ -140,6 +135,12 @@ export default {
           }
         }).then(response => {
           console.log(response);
+          
+          this.contacto = {
+            nombre: "",
+            correo: "",
+            descripcion: ""
+          }
         }).catch(error => {
           console.log(error);
         });

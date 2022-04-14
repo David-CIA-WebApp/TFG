@@ -1129,7 +1129,7 @@ def getAlerts():
         return jsonify(res)
     else:
         return jsonify({'message': "Acceso denegado"})
-    
+
     
 @app.route('/alertas', methods=['POST'])
 def createAlerts():#mysql data
@@ -1201,6 +1201,65 @@ def getConsultas():#mysql data
     else:
         return jsonify({'message': "Acceso denegado"})
 
+
+
+
+@app.route('/proveedores', methods=['GET'])
+def getProveedores():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM proveedores')
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        proveedor = {
+            "nombre": i[0],
+            "email": i[1],
+            "direccion": i[2],
+            "telefono": i[3],
+            "id": i[4]
+        }
+        
+        res.append(proveedor)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/proveedores', methods=['POST'])
+def createProveedores():#mysql data
+    nombre = request.json['nombre']
+    email = request.json['email']
+    direccion = request.json['direccion']
+    telefono = request.json['telefono']
+    
+    cur = mysql.connection.cursor()
+
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('INSERT INTO proveedores (nombre, email, direccion, telefono) VALUES (%s, %s, %s, %s)', (nombre, email, direccion, telefono))
+        mysql.connection.commit()
+        return jsonify({'message': "Proveedor insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/editProveedor/<string:proveedor_id>', methods=['PUT'])
+def editProveedores(proveedor_id):
+    nombre = request.json['nombre']
+    email = request.json['email']
+    direccion = request.json['direccion']
+    telefono = request.json['telefono']
+    
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('UPDATE proveedores SET nombre=%s, email=%s, direccion=%s, telefono=%s where id=%s', (nombre, email, direccion, telefono, proveedor_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Proveedor editada correctamente"})
+    
+    return jsonify({'message': "Acceso denegado"})
 
 
 
