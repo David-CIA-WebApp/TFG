@@ -1261,6 +1261,15 @@ def editProveedores(proveedor_id):
     
     return jsonify({'message': "Acceso denegado"})
 
+@app.route('/proveedores/<string:proveedor_id>', methods=['DELETE'])
+def deleteProveedores(proveedor_id):
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('DELETE from proveedores where id = {}'.format(proveedor_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Proveedor borrado correctamente"})
+    return jsonify({'message': "Acceso denegado"})
+
 
 
 if __name__ == '__main__':

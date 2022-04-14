@@ -27,8 +27,15 @@
                 <th>Email</th>
                 <th>Telefono</th>
             </thead>
-            <tbody v-for="proveedor in proveedores" v-bind:key="proveedor">
+            <tbody>
                 <tr>
+                    <td><input class="inputClass" v-model="proveedorActual.nombre"/></td>
+                    <td><input class="inputClass" v-model="proveedorActual.direccion"/></td>
+                    <td><input class="inputClass" v-model="proveedorActual.email"/></td>
+                    <td><input class="inputClass" v-model="proveedorActual.telefono"/></td>
+                    <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="crearProveedor(proveedorActual)"> Crear Proveedor </a></td> 
+                </tr>
+                <tr v-for="proveedor in proveedores" v-bind:key="proveedor">
                     <td>{{ proveedor.nombre }}</td>
                     <td>{{ proveedor.direccion }}</td>
                     <td>{{ proveedor.email }}</td>
@@ -50,10 +57,26 @@
             <p>Email:</p>
             <input v-model="proveedorActual.email"/>
             <p>Telefono:</p>
-            <input v-model="proveedorActual.telefono"/>
+            <input maxlength="12" v-model="proveedorActual.telefono"/>
 
 
             <br>
+            
+            <button
+                class="button"
+                v-if="!crear"
+                @click="actualizar()"
+                href="#">
+                Actualizar
+            </button>
+            
+            <button
+                class="button red"
+                v-if="!crear"
+                @click="eliminar()"
+                href="#"  >
+                Eliminar
+            </button>
         </div>  
         </div>
 
@@ -80,6 +103,96 @@ export default {
         }
     },
     methods: {
+        crearProveedor() {
+            axios.post(`${process.env.VUE_APP_BACK_URL}/proveedores`, {"nombre": this.proveedorActual.nombre, "direccion": this.proveedorActual.direccion, "email": this.proveedorActual.email, "telefono": this.proveedorActual.telefono}, {
+            headers: {
+                'Content-Type': 'application/json',
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": this.token
+            }
+            }).then(response => {
+                console.log(response);            
+                this.proveedorActual= {
+                    nombre: '',
+                    direccion: '',
+                    email: '',
+                    telefono: ''
+                }
+                this.reloadSite();
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        actualizar() {
+            this.forceReload = false;
+            const path = `${process.env.VUE_APP_BACK_URL}/editProveedor/${this.proveedorActual.id}`;
+            const config = {
+            method: 'PUT',
+            url: path,
+            data: {
+                "nombre": this.proveedorActual.nombre,
+                "direccion": this.proveedorActual.direccion,
+                "email": this.proveedorActual.email,
+                "telefono": this.proveedorActual.telefono
+            },
+            headers: {
+                "Content-Type": "application/JSON",
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": this.token
+            }
+            };
+            axios(config)
+            .then((res) => {
+            if (res) { 
+                this.forceReload = true;
+            
+                this.proveedorActual= {
+                    nombre: '',
+                    direccion: '',
+                    email: '',
+                    telefono: ''
+                }
+                this.reloadSite();
+            }
+            })
+            .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error);
+            });
+        },
+        eliminar() {
+            this.forceReload = false;
+            const path = `${process.env.VUE_APP_BACK_URL}/proveedores/${this.proveedorActual.id}`;
+            const config = {
+            method: 'delete',
+            url: path,
+            data: {
+            },
+            headers: {
+                "Content-Type": "application/JSON",
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": this.token
+            }
+            };
+            axios(config)
+            .then((res) => {
+            if (res) { 
+                this.forceReload = true;
+            
+                this.proveedorActual= {
+                    nombre: '',
+                    direccion: '',
+                    email: '',
+                    telefono: ''
+                }
+                this.reloadSite();
+            }
+            })
+            .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error);
+            });
+        },
         reloadSite() {
             this.$router.push('');
             this.$router.go();
@@ -152,5 +265,11 @@ export default {
 </script>
 
 <style scoped>
-
+.inputClass {
+    position: relative;
+    padding: 0;
+    display: inline-block;
+    height: 200%;
+    width: 98%;
+}
 </style>
