@@ -1,3 +1,4 @@
+from datetime import datetime
 from distutils.log import debug
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS, cross_origin
@@ -1279,6 +1280,24 @@ def getCitasMayor5Anyos():
         data = cur.fetchall()
         return jsonify({"Result":data})
     return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/citasCumplidas', methods=['POST'])
+def postCitasMayor5Anyos():
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('SELECT * FROM trabajo JOIN cita WHERE trabajo.tipo LIKE "Instalacion de gas" and cita.id_trabajo LIKE trabajo.id AND timestampdiff(day, sysdate(), cita.fecha)*-1 > 1800')
+        data = cur.fetchall()
+        cur.execute('SELECT id_access FROM alertas')
+        data2 = cur.fetchall()
+        for i in data:
+            if i[0] not in data2:
+                cur.execute('INSERT INTO alertas (descripcion, fecha, tipoAlerta, activa, id_access) VALUES (%s, %s, %s, %s, %s)', ("El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica", datetime.now(), "Revisión", 1, i[0]))
+                mysql.connection.commit()
+        
+        return jsonify({"Result":data})
+    return jsonify({'message': "Acceso denegado"})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

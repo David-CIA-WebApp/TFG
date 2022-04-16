@@ -23,13 +23,13 @@ setInterval(function(){
     var h = d.getHours();
     var m = d.getMinutes();
     var s = d.getSeconds();
-    if (h == 13 && m == 3 && s == 30) {
+    if (h == 12 && m == 0 && s == 0) {
         axios(config)
         .then((res) => {
             if (res.data.accepted) { 
                 const path2 = `${process.env.VUE_APP_BACK_URL}/citasCumplidas`;
                 const config2 = {
-                    method: 'get',
+                    method: 'post',
                     url: path2,
                     headers: {
                         "Content-Type": "application/JSON",
@@ -38,11 +38,7 @@ setInterval(function(){
                     }
                 }
                 axios(config2).then((res) => {
-                    for (let index = 0; index < res.data.Result.length; index++) {
-                        var element = res.data.Result[index];
-                        citasCumplidas.push(element);
-                    }
-                    console.log(citasCumplidas);
+                    console.log(res);
                 })
                 .catch((err) => {
                     console.log("TError:",err);
