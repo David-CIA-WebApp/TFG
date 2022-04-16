@@ -6,53 +6,79 @@
           <img class="logo" v-bind:src="logo" alt="" />
         </div>
         <div class="column">
-          <a @click="quienesSomosF" class="btn btn-primary">¿Quiénes somos?</a>
-          <a @click="experienciaF" class="btn btn-primary">Experiencia</a>
+          <a @click="quienesSomosF" class="btn btn-primary">Conocenos</a>
+          <a @click="valoracionesF" class="btn btn-primary">Valoraciones</a>
           <a @click="contactanosF" class="btn btn-primary">Contactanos</a>
         </div>
       </div>
     </div>
     <div id="quienesSomos" v-if="quienesSomos">
       <h1>¿Quiénes somos?</h1>
-<pre style="font-size: 12px;">
-   Somos una empresa con más de 20 años de experiencia en el sector 
-del agua y el gas, con titulación oficial. Tenemos colaboradores para 
-llevar a cabo todo tipo de trabajos de albañilería, pintura y aluminio. 
-Ponemos a su disposición nuestra formación y experiencia asesorandole en 
-sus reformas.
 
-    Nuestra experiencia nos permite ofrecerle un servicio de calidad y
-confiabilidad, con una amplia gama de trabajos realizados en el sector
-de la construcción. Realizamos desde reparaciones hasta instalaciones
-de gas, agua y electricidad. Así mismo, contamos con una amplia gama de
-trabajos de albañilería, pintura y aluminio, gracias a los cuales, puede 
-contar con nosotros para obras de gran envergadura.
-</pre>
-    </div>
-    <div id="experiencia" v-if="experiencia">
-      <h1>Experiencia</h1>
-<pre>
-   Lorem ipsum dolor sit amet consectetur adipiscing elit, 
-nibh nullam eget sapien proin auctor aliquet, quam turpis 
-et praesent enim tempus. Congue purus odio bibendum 
-inceptos tristique blandit ornare parturient cras cubilia, 
-senectus tincidunt leo ultricies egestas sodales ante netus 
-fusce, himenaeos justo eleifend donec felis tempor magnis 
-volutpat praesent. Himenaeos eleifend ac potenti 
-condimentum semper suscipit sapien, fringilla conubia 
-aenean cubilia scelerisque odio lobortis, porta justo 
-tincidunt praesent vestibulum lectus. 
+      <div class="column2">
+        <pre style="font-size: 18px;">
+          Somos una empresa con más de 20 años de valoraciones en el sector 
+        del agua y el gas, con titulación oficial. Tenemos colaboradores para 
+        llevar a cabo todo tipo de trabajos de albañilería, pintura y aluminio. 
+        Ponemos a su disposición nuestra formación y valoraciones asesorandole en 
+        sus reformas.
 
-  Natoque himenaeos aptent in commodo est per 
-elementum senectus viverra gravida, congue nascetur 
-ligula maecenas quis diam faucibus aliquet. Neque 
-hendrerit a consequat vulputate curabitur taciti torquent, 
-posuere nullam cras sed varius justo, ac duis non natoque 
-ligula tellus. Nulla parturient iaculis dui eros dictumst, vitae 
-tellus bibendum senectus aliquet, himenaeos nullam 
-</pre>
+        <img src="@/assets/Fontaneria3.jpg"  style="width: 485px;" />
+        </pre>
+      </div>
+      <div class="column2">
+        <pre style="font-size: 18px;">
+          Nuestra valoraciones nos permite ofrecerle un servicio de calidad y
+        confiabilidad, con una amplia gama de trabajos realizados en el sector
+        de la construcción. Realizamos desde reparaciones hasta instalaciones
+        de gas, agua y electricidad. Así mismo, contamos con una amplia gama de
+        trabajos de albañilería, pintura y aluminio, gracias a los cuales, puede 
+        contar con nosotros para obras de gran envergadura.
+
+        <img src="@/assets/foto1.jpg"  style="" />
+        </pre>
+      </div>
+      
     </div>
-    <div id="contactanos" v-if="contactanos" style="margin-top: 130px;">
+    <div id="valoraciones" v-if="valoraciones">
+      <h1>Valoraciones</h1>
+      <div>
+        <div class="column">
+          <img src="@/assets/JavierEugenio.jpeg" style="width: 200px; margin-bottom: -50px;" />
+        </div>
+        <div class="column">
+          <h2>Javier Eugenio</h2>
+          <pre style="font-size: 15px;">
+"Como fontaneros los considero el número 1, 
+reúnen todos los requisitos. Buen trato 
+hacia sus clientes y una gran dedicación."
+          </pre>
+        </div>
+        <div class="column">
+          <img src="@/assets/AntoniodeDiego.jpeg" style="width: 200px; margin-bottom: -50px;" />
+        </div>
+        <div class="column">
+          <h2>Antonio de Diego</h2>
+          <pre style="font-size: 15px;">
+"¡Gran profesionalidad! Están al tanto 
+de las últimas teconologías, materiales 
+y herramientas tanto de gas como de agua."
+          </pre>
+        </div>
+        <div class="column">
+          <img src="@/assets/HEBRA.png" style="width: 200px; margin-bottom: -50px;" />
+        </div>
+        <div class="column">
+          <h2>HEBRA</h2>
+          <pre style="font-size: 15px;">
+"Unos trabajadores excelentes y 
+comprometidos. Máxima transparencia, 
+eficiencia y calidad."
+          </pre>
+        </div>
+      </div>
+    </div>
+    <div id="contactanos" v-if="contactanos" style="margin-top: 200px;">
       <div class="addM box">
         <div style="position: absolute; background: #044ca9; width: 700px; border-radius: 25px;">
           <h2 style="color: white; margin-left: 20px;">CONTACTANOS</h2>
@@ -77,7 +103,7 @@ export default {
     return {
       logo: "https://i.ibb.co/YpKv3mr/LOGO-DAVID-CIA.png",
       quienesSomos: true,
-      experiencia: false,
+      valoraciones: false,
       contactanos: false,
       contacto: {
         nombre: "",
@@ -90,17 +116,17 @@ export default {
   methods: {
     quienesSomosF() {
       this.quienesSomos = true;
-      this.experiencia = false;
+      this.valoraciones = false;
       this.contactanos = false;
     },
-    experienciaF() {
+    valoracionesF() {
       this.quienesSomos = false;
-      this.experiencia = true;
+      this.valoraciones = true;
       this.contactanos = false;
     },
     contactanosF() {
       this.quienesSomos = false;
-      this.experiencia = false;
+      this.valoraciones = false;
       this.contactanos = true;
     },
     validateEmail(email) {
@@ -213,6 +239,12 @@ export default {
   display: block;
   text-decoration: none;
   text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+}
+.column2 {
+  display: block;
+  text-decoration: none;
   padding: 1rem 0;
   margin-bottom: 1rem;
 }
