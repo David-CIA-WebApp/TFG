@@ -1271,6 +1271,14 @@ def deleteProveedores(proveedor_id):
     return jsonify({'message': "Acceso denegado"})
 
 
+@app.route('/citasCumplidas', methods=['GET'])
+def getCitasMayor5Anyos():
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('SELECT * FROM trabajo JOIN cita WHERE trabajo.tipo LIKE "Instalacion de gas" and cita.id_trabajo LIKE trabajo.id AND timestampdiff(day, sysdate(), cita.fecha)*-1 > 1800')
+        data = cur.fetchall()
+        return jsonify({"Result":data})
+    return jsonify({'message': "Acceso denegado"})
 
 if __name__ == '__main__':
     app.run(debug=True)

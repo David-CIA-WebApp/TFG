@@ -1,14 +1,15 @@
 const axios = require('axios');
+require('dotenv').config()
 
-var trabajos = [];
+var citasCumplidas = [];
 
 const path = `${process.env.VUE_APP_BACK_URL}/login`;
 const config = {
     method: 'post',
     url: path,
     data: {
-        "mail": `${process.env.user}`, 
-        "password": `${process.env.password}`
+        "mail": `${process.env.USER}`, 
+        "password": `${process.env.PASSWORD}`
     },
     headers: {
         "Content-Type": "application/JSON",
@@ -22,11 +23,11 @@ setInterval(function(){
     var h = d.getHours();
     var m = d.getMinutes();
     var s = d.getSeconds();
-    if (h == 12 && m == 0 && s == 0) {
+    if (h == 13 && m == 3 && s == 30) {
         axios(config)
         .then((res) => {
             if (res.data.accepted) { 
-                const path2 = `${process.env.VUE_APP_BACK_URL}/trabajos`;
+                const path2 = `${process.env.VUE_APP_BACK_URL}/citasCumplidas`;
                 const config2 = {
                     method: 'get',
                     url: path2,
@@ -37,10 +38,11 @@ setInterval(function(){
                     }
                 }
                 axios(config2).then((res) => {
-                    for (let index = 0; index < res.data.length; index++) {
-                        var element = res.data[index];
-                        trabajos[index] = element;
+                    for (let index = 0; index < res.data.Result.length; index++) {
+                        var element = res.data.Result[index];
+                        citasCumplidas.push(element);
                     }
+                    console.log(citasCumplidas);
                 })
                 .catch((err) => {
                     console.log("TError:",err);
@@ -50,7 +52,6 @@ setInterval(function(){
         .catch((err) => {
             console.log("LError:",err);
         });
-        console.log(trabajos);
     } else {
         console.log(h + ":" + m + ":" + s);
     }
