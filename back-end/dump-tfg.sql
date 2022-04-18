@@ -30,7 +30,7 @@ CREATE TABLE `alertas` (
   `activa` tinyint(1) DEFAULT NULL,
   `id_access` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `alertas` (
 
 LOCK TABLES `alertas` WRITE;
 /*!40000 ALTER TABLE `alertas` DISABLE KEYS */;
-INSERT INTO `alertas` VALUES (1,'El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica','2022-03-27','Revisión',1,'X'),(2,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-26','Contacto',1,'X'),(3,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-24','Contacto',1,'X'),(4,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-27','Contacto',1,'X'),(5,'Queda poca cantidad de X que debería ser repuesto','2022-03-26','Inventario',1,'X'),(9,'Queda poca cantidad de X que debería ser repuesto','2022-03-31','Inventario',0,'Tubo'),(10,'Queda poca cantidad de X que debería ser repuesto','2022-03-31','Inventario',0,'Tuerca 10mm'),(12,'Un nuevo usuario con correo X te ha contactado desde la web','2022-04-14','Contacto',0,'david.brincau@hotmail.com'),(13,'Un nuevo usuario con correo X te ha contactado desde la web','2022-04-14','Contacto',1,'correodeprueba@us.es');
+INSERT INTO `alertas` VALUES (1,'El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica','2022-03-27','Revisión',1,'X'),(2,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-26','Contacto',1,'X'),(3,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-24','Contacto',1,'X'),(4,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-27','Contacto',1,'X'),(5,'Queda poca cantidad de X que debería ser repuesto','2022-03-26','Inventario',1,'X'),(9,'Queda poca cantidad de X que debería ser repuesto','2022-03-31','Inventario',0,'Tubo'),(10,'Queda poca cantidad de X que debería ser repuesto','2022-03-31','Inventario',0,'Tuerca 10mm'),(12,'Un nuevo usuario con correo X te ha contactado desde la web','2022-04-14','Contacto',0,'david.brincau@hotmail.com'),(13,'Un nuevo usuario con correo X te ha contactado desde la web','2022-04-14','Contacto',1,'correodeprueba@us.es'),(14,'El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica','2022-04-16','Revisión',1,'3');
 /*!40000 ALTER TABLE `alertas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +93,7 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
-INSERT INTO `cita` VALUES (1,1,'2022-02-11 09:10:00',NULL,NULL,4,NULL,'Revisión final','Calle Japon 2 6A'),(2,1,'2022-02-07 10:00:00',NULL,1,NULL,NULL,'Peritaje del trabajo','Calle Japon 2 6A'),(3,1,'2022-02-09 09:00:00',NULL,1,NULL,NULL,'Reparación completa','Calle Japon 5 4A'),(4,NULL,'2022-02-15 09:00:00',NULL,1,NULL,NULL,'Peritaje nuevo','Calle de prueba'),(5,NULL,'2022-03-10 08:46:00',NULL,NULL,NULL,NULL,'Curva lactosa niña - planta 1','Hptal. Virgen Macarena');
+INSERT INTO `cita` VALUES (1,1,'2022-02-11 09:10:00',NULL,NULL,4,NULL,'Revisión final','Calle Japon 2 6A'),(2,1,'2022-02-07 10:00:00',NULL,1,NULL,NULL,'Peritaje del trabajo','Calle Japon 2 6A'),(3,1,'2022-02-09 09:00:00',NULL,1,NULL,NULL,'Reparación completa','Calle Japon 5 4A'),(4,3,'2016-02-15 09:00:00',NULL,1,NULL,NULL,'Peritaje nuevo','Calle de prueba'),(5,NULL,'2022-03-10 08:46:00',NULL,NULL,NULL,NULL,'Curva lactosa niña - planta 1','Hptal. Virgen Macarena');
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +280,7 @@ CREATE TABLE `trabajo` (
 
 LOCK TABLES `trabajo` WRITE;
 /*!40000 ALTER TABLE `trabajo` DISABLE KEYS */;
-INSERT INTO `trabajo` VALUES (1,'Instalacion de agua','Instalación de agua de cocina completa con grifo y salida para patio de exterior','Calle Japon 5 4A',11,NULL,NULL),(2,'Revision de agua','Revisión de la instalación','Calle Japón 5 4A',11,NULL,NULL),(3,'Revision de agua','esto es una prueba','jander clander',11,NULL,NULL);
+INSERT INTO `trabajo` VALUES (1,'Instalacion de agua','Instalación de agua de cocina completa con grifo y salida para patio de exterior','Calle Japon 5 4A',11,NULL,NULL),(2,'Revision de agua','Revisión de la instalación','Calle Japón 5 4A',11,NULL,NULL),(3,'Instalacion de gas','esto es una prueba','jander clander',11,NULL,NULL);
 /*!40000 ALTER TABLE `trabajo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,4 +354,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-15  1:59:52
+-- Dump completed on 2022-04-16 13:19:19
