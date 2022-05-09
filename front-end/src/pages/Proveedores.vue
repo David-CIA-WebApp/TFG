@@ -19,7 +19,40 @@
         
         <br>
 
+
+        <div>
+        <p>Buscar proveedor: </p>
+        <input type="text" id="myInput" @input="searchProveedor()">
+        </div>
+        <div v-if="forceReload && logged && searchedText" class="col-">
+            <table class="table table-striped" id="users">
+                <thead>
+                    <th>Comercio</th>
+                    <th>Direccion</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input class="inputClass" v-model="proveedorActual.nombre"/></td>
+                        <td><input class="inputClass" v-model="proveedorActual.direccion"/></td>
+                        <td><input class="inputClass" v-model="proveedorActual.email"/></td>
+                        <td><input class="inputClass" v-model="proveedorActual.telefono"/></td>
+                        <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="crearProveedor(proveedorActual)"> Crear Proveedor </a></td> 
+                    </tr>
+                    <tr v-for="proveedor in searchedProviders" v-bind:key="proveedor">
+                        <td v-if="proveedor!=null">{{ proveedor.nombre }}</td>
+                        <td v-if="proveedor!=null">{{ proveedor.direccion }}</td>
+                        <td v-if="proveedor!=null">{{ proveedor.email }}</td>
+                        <td v-if="proveedor!=null">{{ proveedor.telefono }}</td>
+                        <td v-if="proveedor!=null"><a href="#miModal" @click="editarProveedor(proveedor)"> Editar </a></td> 
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         
+        <br><br>
+
         <table class="table table-striped" id="users">
             <thead>
                 <th>Comercio</th>
@@ -99,10 +132,31 @@ export default {
                 direccion: '',
                 email: '',
                 telefono: ''
-            }
+            },
+            searchedProviders: [],
+            searchedText: "",
+            changeSearch: false,
         }
     },
     methods: {
+        searchProveedor() {
+        this.changeSearch = false;
+        
+        this.searchedProviders = [];
+        this.searchedText = document.getElementById("myInput").value;
+        if (this.searchedText != "") {
+            for (let index = 0; index < this.proveedores.length; index++) {
+                var element = this.proveedores[index];
+                if (element.nombre.toLowerCase().includes(this.searchedText.toLowerCase())) {
+                    this.searchedProviders[index] = element;
+                }
+            }
+
+            this.searchedProviders.sort((a, b) => a.nombre >= b.nombre);
+        }
+        this.changeSearch = true;
+        
+        },
         crearProveedor() {
             axios.post(`${process.env.VUE_APP_BACK_URL}/proveedores`, {"nombre": this.proveedorActual.nombre, "direccion": this.proveedorActual.direccion, "email": this.proveedorActual.email, "telefono": this.proveedorActual.telefono}, {
             headers: {
