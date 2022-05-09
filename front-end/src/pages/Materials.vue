@@ -17,6 +17,28 @@
       </button>
     </div>  
 
+    <div>
+      <p>Buscar material: </p>
+      <input type="text" id="myInput" @input="searchMaterial()">
+    </div>
+    <div v-if="forceReload && logged && searchedText" class="col-">
+      <table class="table table-striped" id="materials">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th style="width: 10%;">Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(material,i) in searchedMaterials" :key="i">
+            <td v-if="material!=null"> <a href="#miModal" @click="setMaterial(material)"> {{material.nombre}} </a> </td> 
+            <td v-if="material!=null" style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
     <h3>MATERIALES</h3>
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     <div v-if="forceReload && logged" class="col-">
@@ -31,7 +53,7 @@
           <tr v-for="(material,i) in materials" :key="i">
             <td> <a href="#miModal" @click="setMaterial(material)"> {{material.nombre}} </a> </td> 
             <td style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
-          </tr>
+          </tr> 
         </tbody>
       </table>
     </div>
@@ -106,10 +128,31 @@ export default {
       },
       crear: false,
       actualMaterial: {},
-      token: null
+      token: null,
+      changeSearch: false,
+      searchedMaterials: [],
+      searchedText: ""
     }
   },
   methods: {
+    searchMaterial() {
+      this.changeSearch = false;
+      
+      this.searchedMaterials = [];
+      this.searchedText = document.getElementById("myInput").value;
+      if (this.searchedText != "") {
+        for (let index = 0; index < this.materials.length; index++) {
+          var element = this.materials[index];
+          if (element.nombre.toLowerCase().includes(this.searchedText.toLowerCase())) {
+            this.searchedMaterials[index] = element;
+          }
+        }
+
+        this.searchedMaterials.sort((a, b) => a.nombre >= b.nombre);
+      }
+      this.changeSearch = true;
+      
+    },
     crearMaterial(material) {
       this.forceReload = false;
       const path = `${process.env.VUE_APP_BACK_URL}/addMaterials`;
@@ -187,6 +230,8 @@ export default {
           var element = res.data[index];
           this.materials[index] = element;
         }
+        
+        this.materials.sort((a, b) => a.nombre >= b.nombre);
         this.forceReload = true;
       });
 
