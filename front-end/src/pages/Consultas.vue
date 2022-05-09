@@ -20,7 +20,7 @@
         <br>
 
         <div v-for="consulta in consultas" v-bind:key="consulta">
-            <p class="alert">{{consulta}}</p>
+            <p class="alert">El usuario <strong>{{consulta.nombre}}</strong> con correo electrónico <strong>{{consulta.correo}}</strong> ha dicho: <strong>{{consulta.descripcion}}</strong></p>
         </div>
     </div>
 </template>
