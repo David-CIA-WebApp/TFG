@@ -83,7 +83,7 @@ def getWorkers():
             "direccion": i[5],
             "telefono": i[6],
             "worker_id": i[7],
-            "pass": i[8],
+            "pass": "",
             "user_id": i[9],
             "tipo": i[10],
             "tabla": "trabajador"
@@ -209,7 +209,7 @@ def searchWorkers(word):
             "direccion": i[5],
             "telefono": i[6],
             "worker_id": i[7],
-            "pass": i[8],
+            "pass": "",
             "user_id": i[9],
             "tipo": i[10],
             "tabla": "trabajador"
@@ -293,7 +293,7 @@ def searchUserid(user_id):
 @app.route('/addWorkers', methods=['POST'])
 def addWorkers():
     #mysql data
-    passw = request.json['pass']
+    password = request.json['pass']
     dni = request.json['dni']
     tipo = request.json['tipo']
     
@@ -303,7 +303,7 @@ def addWorkers():
     user_id = data[0][0]
 
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (passw, user_id, tipo))
+        cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (encrypt_password(password), user_id, tipo))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador insertado en la base de datos"})
     else:
@@ -403,7 +403,7 @@ def editUsers(user_dni):
     email = request.json['email']
     direccion = request.json['direccion']
     telefono = request.json['telefono']
-    passswd = request.json['pass']
+    password = request.json['pass']
     tipo = request.json['tipo']
     ocupacion = request.json['ocupacion'] 
     clientePotencial = request.json['clientePotencial']
@@ -418,7 +418,10 @@ def editUsers(user_dni):
         cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, new_dni, email, direccion, telefono, user_id))
         mysql.connection.commit()
         try:
-            cur.execute('UPDATE workers SET pass = %s, tipo = %s where user_id = %s', (passswd, tipo, user_id))
+            if password != "":
+                cur.execute('UPDATE workers SET pass = %s, tipo = %s where user_id = %s', (encrypt_password(password), tipo, user_id))
+            else:
+                cur.execute('UPDATE workers SET tipo = %s where user_id = %s', (tipo, user_id))
             mysql.connection.commit()
         except:
             try:
@@ -438,7 +441,7 @@ def editUsers(user_dni):
 #Edit Workers Routes
 @app.route('/editWorker/<string:user_dni>', methods=['PUT'])
 def editWorkers(user_dni):
-    passswd = request.json['pass']
+    password = request.json['pass']
     
     cur = mysql.connection.cursor()
     cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
@@ -446,7 +449,8 @@ def editWorkers(user_dni):
     user_id = data[0][0]
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, user_id))
+        if password != "":
+            cur.execute('UPDATE workers SET pass = %s where user_id = %s', (encrypt_password(password), user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador editado correctamente"})
     else:
@@ -603,7 +607,7 @@ def login():
     cur.execute('SELECT * FROM `users` JOIN `workers` WHERE id_persona LIKE user_id AND email LIKE "{}"'.format(mail))
     data = cur.fetchall()
     if len(data) != 0:
-        if data[0][8] == password:
+        if data[0][8] == encrypt_password(password):
             os.environ['TOKEN'] = token_generator() + ""
             return jsonify({ "message": "Login accepted", "status": 200, "accepted": True, "user": data[0], "token": os.environ['TOKEN'] })
         else:

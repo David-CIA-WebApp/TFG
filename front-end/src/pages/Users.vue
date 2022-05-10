@@ -261,6 +261,8 @@
 
         <p v-if="actualUser.pass != null">Contraseña:</p>
         <input v-if="actualUser.pass != null" v-model="actualUser.pass"/>
+        <p v-if="actualUser.pass != null">Repita Contraseña:</p>
+        <input v-if="actualUser.pass != null" v-model="actualUser.repitpass"/>
 
         <p v-if="actualUser.tipo != null">Ocupación:</p>
         <select
@@ -411,9 +413,10 @@ export default {
     setActualUser(user) {
       this.actualUser = user;
       this.actualUser.oldDNI = user.dni;
+      if (this.actualUser.pass == "") this.actualUser.repitpass = "";
     },
     actualizar(actualUser) {  
-      if (actualUser.pass == null) {
+      if (actualUser.pass != actualUser.repitpass || actualUser.pass == null) {
         actualUser.pass = "";
       }
       if (actualUser.tipo == null) {
