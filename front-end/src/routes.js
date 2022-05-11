@@ -5,6 +5,9 @@ import UserDetail from "./pages/UserDetail";
 import Materials from "./pages/Materials";
 import Jobs from "./pages/Jobs";
 import Agenda from "./pages/Agenda";
+import Alertas from "./pages/Alertas";
+import Consultas from "./pages/Consultas";
+import Proveedores from "./pages/Proveedores";
 
 const routes = [
     {     
@@ -54,6 +57,24 @@ const routes = [
         component: Agenda,
         name: "Agenda",
         meta: { title: "David&CIA - Agenda" },
+    }, 
+    {     
+        path: "/alertas",
+        component: Alertas,
+        name: "Alertas",
+        meta: { title: "David&CIA - Alertas" },
+    }, 
+    {     
+        path: "/consultas",
+        component: Consultas,
+        name: "Consultas",
+        meta: { title: "David&CIA - Consultas" },
+    }, 
+    {     
+        path: "/proveedores",
+        component: Proveedores,
+        name: "Proveedores",
+        meta: { title: "David&CIA - Proveedores" },
     }, 
 ];
 export default routes;

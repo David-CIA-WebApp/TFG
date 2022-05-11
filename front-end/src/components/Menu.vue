@@ -27,7 +27,7 @@ export default {
   },
   data () {
     return {
-      items: ['AGENDA', 'USUARIOS', 'MATERIALES', 'TRABAJOS', 'PRESUPUESTOS', 'PROVEEDORES']
+      items: ['AGENDA', 'USUARIOS', 'MATERIALES', 'TRABAJOS', 'PROVEEDORES', 'CONSULTAS']
     }
   },
   methods: {

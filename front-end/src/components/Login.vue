@@ -53,7 +53,7 @@ export default {
           if (res.data.accepted) { 
             this.logged = true;
             localStorage.userMail = res.data.user[4];
-            localStorage.userPass = res.data.user[8];
+            localStorage.userPass = this.password;
             localStorage.userType = res.data.user[10];
             this.token = res.data.token;
           }

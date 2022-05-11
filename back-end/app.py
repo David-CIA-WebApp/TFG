@@ -1,3 +1,4 @@
+from datetime import datetime
 from distutils.log import debug
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS, cross_origin
@@ -82,7 +83,7 @@ def getWorkers():
             "direccion": i[5],
             "telefono": i[6],
             "worker_id": i[7],
-            "pass": i[8],
+            "pass": "",
             "user_id": i[9],
             "tipo": i[10],
             "tabla": "trabajador"
@@ -208,7 +209,7 @@ def searchWorkers(word):
             "direccion": i[5],
             "telefono": i[6],
             "worker_id": i[7],
-            "pass": i[8],
+            "pass": "",
             "user_id": i[9],
             "tipo": i[10],
             "tabla": "trabajador"
@@ -292,7 +293,7 @@ def searchUserid(user_id):
 @app.route('/addWorkers', methods=['POST'])
 def addWorkers():
     #mysql data
-    passw = request.json['pass']
+    password = request.json['pass']
     dni = request.json['dni']
     tipo = request.json['tipo']
     
@@ -302,7 +303,7 @@ def addWorkers():
     user_id = data[0][0]
 
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (passw, user_id, tipo))
+        cur.execute('INSERT INTO workers (pass, user_id, tipo) VALUES (%s, %s, %s)', (encrypt_password(password), user_id, tipo))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador insertado en la base de datos"})
     else:
@@ -402,7 +403,7 @@ def editUsers(user_dni):
     email = request.json['email']
     direccion = request.json['direccion']
     telefono = request.json['telefono']
-    passswd = request.json['pass']
+    password = request.json['pass']
     tipo = request.json['tipo']
     ocupacion = request.json['ocupacion'] 
     clientePotencial = request.json['clientePotencial']
@@ -417,7 +418,10 @@ def editUsers(user_dni):
         cur.execute('UPDATE users SET nombre = %s, apellidos = %s, dni = %s, email = %s, direccion = %s, telefono = %s where id_persona = %s', (nombre, apellidos, new_dni, email, direccion, telefono, user_id))
         mysql.connection.commit()
         try:
-            cur.execute('UPDATE workers SET pass = %s, tipo = %s where user_id = %s', (passswd, tipo, user_id))
+            if password != "":
+                cur.execute('UPDATE workers SET pass = %s, tipo = %s where user_id = %s', (encrypt_password(password), tipo, user_id))
+            else:
+                cur.execute('UPDATE workers SET tipo = %s where user_id = %s', (tipo, user_id))
             mysql.connection.commit()
         except:
             try:
@@ -437,7 +441,7 @@ def editUsers(user_dni):
 #Edit Workers Routes
 @app.route('/editWorker/<string:user_dni>', methods=['PUT'])
 def editWorkers(user_dni):
-    passswd = request.json['pass']
+    password = request.json['pass']
     
     cur = mysql.connection.cursor()
     cur.execute("Select * from users WHERE dni LIKE '" + user_dni + "'")
@@ -445,7 +449,8 @@ def editWorkers(user_dni):
     user_id = data[0][0]
     
     if request.headers['Authorization'] == os.environ['TOKEN']:
-        cur.execute('UPDATE workers SET pass = %s where user_id = %s', (passswd, user_id))
+        if password != "":
+            cur.execute('UPDATE workers SET pass = %s where user_id = %s', (encrypt_password(password), user_id))
         mysql.connection.commit()
         return jsonify({'message': "Trabajador editado correctamente"})
     else:
@@ -602,7 +607,7 @@ def login():
     cur.execute('SELECT * FROM `users` JOIN `workers` WHERE id_persona LIKE user_id AND email LIKE "{}"'.format(mail))
     data = cur.fetchall()
     if len(data) != 0:
-        if data[0][8] == password:
+        if data[0][8] == encrypt_password(password):
             os.environ['TOKEN'] = token_generator() + ""
             return jsonify({ "message": "Login accepted", "status": 200, "accepted": True, "user": data[0], "token": os.environ['TOKEN'] })
         else:
@@ -1104,6 +1109,198 @@ def deletePresupuestos(job_id):
 
 
 
+
+
+@app.route('/alertas', methods=['GET'])
+def getAlerts():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM alertas')
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        alerta = {
+            "id": i[0],
+            "descripcion": i[1],
+            "fecha": i[2],
+            "tipoAlerta": i[3],
+            "activa": i[4],
+            "id_access": i[5]
+        }
+        
+        res.append(alerta)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+    
+@app.route('/alertas', methods=['POST'])
+def createAlerts():#mysql data
+    descripcion = request.json['descripcion']
+    fecha = request.json['fecha']
+    tipoAlerta = request.json['tipoAlerta']
+    activa = request.json['activa']
+    id_access = request.json['id_access']
+    
+    cur = mysql.connection.cursor()
+
+    if request.headers['Authorization'] == os.environ['TOKEN'] or tipoAlerta == "Contacto":
+        cur.execute('INSERT INTO alertas (descripcion, fecha, tipoAlerta, activa, id_access) VALUES (%s, %s, %s, %s, %s)', (descripcion, fecha, tipoAlerta, activa, id_access))
+        mysql.connection.commit()
+        return jsonify({'message': "Alerta insertada en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/editAlert/<string:alert_id>', methods=['PUT'])
+def editAlerts(alert_id):
+    activa = request.json['activa']
+    fecha = request.json['fecha']
+    
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('UPDATE alertas SET activa=%s, fecha=%s where id=%s', (activa, fecha, alert_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Alerta editada correctamente"})
+    
+    return jsonify({'message': "Acceso denegado"})
+
+
+
+
+@app.route('/consultas', methods=['POST'])
+def createConsultas():#mysql data
+    nombre = request.json['nombre']
+    descripcion = request.json['descripcion']
+    correo = request.json['correo']
+    
+    cur = mysql.connection.cursor()
+
+    cur.execute('INSERT INTO consultas (nombre, descripcion, correo) VALUES (%s, %s, %s)', (nombre, descripcion, correo))
+    mysql.connection.commit()
+    return jsonify({'message': "Consulta insertada en la base de datos"})
+
+
+@app.route('/consultas', methods=['GET'])
+def getConsultas():#mysql data
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM consultas')
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        consulta = {
+            "id": i[0],
+            "nombre": i[1],
+            "correo": i[2],
+            "descripcion": i[3]
+        }
+        
+        res.append(consulta)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+
+
+@app.route('/proveedores', methods=['GET'])
+def getProveedores():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM proveedores')
+    data = cur.fetchall()
+    res = []
+    for i in data:
+        proveedor = {
+            "nombre": i[0],
+            "email": i[1],
+            "direccion": i[2],
+            "telefono": i[3],
+            "id": i[4]
+        }
+        
+        res.append(proveedor)
+
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        return jsonify(res)
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/proveedores', methods=['POST'])
+def createProveedores():#mysql data
+    nombre = request.json['nombre']
+    email = request.json['email']
+    direccion = request.json['direccion']
+    telefono = request.json['telefono']
+    
+    cur = mysql.connection.cursor()
+
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('INSERT INTO proveedores (nombre, email, direccion, telefono) VALUES (%s, %s, %s, %s)', (nombre, email, direccion, telefono))
+        mysql.connection.commit()
+        return jsonify({'message': "Proveedor insertado en la base de datos"})
+    else:
+        return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/editProveedor/<string:proveedor_id>', methods=['PUT'])
+def editProveedores(proveedor_id):
+    nombre = request.json['nombre']
+    email = request.json['email']
+    direccion = request.json['direccion']
+    telefono = request.json['telefono']
+    
+    cur = mysql.connection.cursor()
+    
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('UPDATE proveedores SET nombre=%s, email=%s, direccion=%s, telefono=%s where id=%s', (nombre, email, direccion, telefono, proveedor_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Proveedor editada correctamente"})
+    
+    return jsonify({'message': "Acceso denegado"})
+
+@app.route('/proveedores/<string:proveedor_id>', methods=['DELETE'])
+def deleteProveedores(proveedor_id):
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('DELETE from proveedores where id = {}'.format(proveedor_id))
+        mysql.connection.commit()
+        return jsonify({'message': "Proveedor borrado correctamente"})
+    return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/citasCumplidas', methods=['GET'])
+def getCitasMayor5Anyos():
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('SELECT * FROM trabajo JOIN cita WHERE trabajo.tipo LIKE "Instalacion de gas" and cita.id_trabajo LIKE trabajo.id AND timestampdiff(day, sysdate(), cita.fecha)*-1 > 1800')
+        data = cur.fetchall()
+        return jsonify({"Result":data})
+    return jsonify({'message': "Acceso denegado"})
+
+
+@app.route('/citasCumplidas', methods=['POST'])
+def postCitasMayor5Anyos():
+    cur = mysql.connection.cursor()
+    if request.headers['Authorization'] == os.environ['TOKEN']:
+        cur.execute('SELECT * FROM trabajo JOIN cita WHERE trabajo.tipo LIKE "Instalacion de gas" and cita.id_trabajo LIKE trabajo.id AND timestampdiff(day, sysdate(), cita.fecha)*-1 > 1800')
+        data = cur.fetchall()
+        cur.execute('SELECT id_access FROM alertas')
+        data2 = cur.fetchall()
+        for i in data:
+            if i[0] not in data2:
+                cur.execute('INSERT INTO alertas (descripcion, fecha, tipoAlerta, activa, id_access) VALUES (%s, %s, %s, %s, %s)', ("El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica", datetime.now(), "Revisión", 1, i[0]))
+                mysql.connection.commit()
+        
+        return jsonify({"Result":data})
+    return jsonify({'message': "Acceso denegado"})
 
 
 if __name__ == '__main__':

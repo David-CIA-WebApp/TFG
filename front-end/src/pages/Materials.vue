@@ -7,6 +7,8 @@
       @click="redirectHome">
         INICIO
       </button>
+      <a href="/alertas" class="alertas"><svg viewBox="0 0 15 1" width="32" height="30"><path id="lineBC" d="M 1 1 L 1 2 L 11 2 L 11 1 L 10 0 C 9 -8 3 -8 2 0 L 1 1 M 6 3 A 1 1 0 0 0 6 6 A 1 1 0 0 0 6 3" stroke="black" stroke-width="0.01"  /></svg></a>
+
       <button 
       v-if="logged"
       style="background-color: transparent; color: red; margin-top: 0px; float: right;"
@@ -14,6 +16,28 @@
         Cerrar Sesión
       </button>
     </div>  
+
+    <div>
+      <p>Buscar material: </p>
+      <input type="text" id="myInput" @input="searchMaterial()">
+    </div>
+    <div v-if="forceReload && logged && searchedText" class="col-">
+      <table class="table table-striped" id="materials">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th style="width: 10%;">Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(material,i) in searchedMaterials" :key="i">
+            <td v-if="material!=null"> <a href="#miModal" @click="setMaterial(material)"> {{material.nombre}} </a> </td> 
+            <td v-if="material!=null" style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
 
     <h3>MATERIALES</h3>
     <div class="lds-roller" style="position: absolute; margin-left: auto; left: 50%; top: 40%;" v-if="!forceReload"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
@@ -29,7 +53,7 @@
           <tr v-for="(material,i) in materials" :key="i">
             <td> <a href="#miModal" @click="setMaterial(material)"> {{material.nombre}} </a> </td> 
             <td style="text-align: center;"><button @click="reducirMaterial(i)" style="background: transparent; width: 30%; font-size: 16 px;">—</button> {{material.cantidad}} <button @click="aumentarMaterial(i)" style="background: transparent; width: 30%; font-size: 20px;">+</button></td>
-          </tr>
+          </tr> 
         </tbody>
       </table>
     </div>
@@ -104,10 +128,31 @@ export default {
       },
       crear: false,
       actualMaterial: {},
-      token: null
+      token: null,
+      changeSearch: false,
+      searchedMaterials: [],
+      searchedText: ""
     }
   },
   methods: {
+    searchMaterial() {
+      this.changeSearch = false;
+      
+      this.searchedMaterials = [];
+      this.searchedText = document.getElementById("myInput").value;
+      if (this.searchedText != "") {
+        for (let index = 0; index < this.materials.length; index++) {
+          var element = this.materials[index];
+          if (element.nombre.toLowerCase().includes(this.searchedText.toLowerCase())) {
+            this.searchedMaterials[index] = element;
+          }
+        }
+
+        this.searchedMaterials.sort((a, b) => a.nombre >= b.nombre);
+      }
+      this.changeSearch = true;
+      
+    },
     crearMaterial(material) {
       this.forceReload = false;
       const path = `${process.env.VUE_APP_BACK_URL}/addMaterials`;
@@ -185,6 +230,8 @@ export default {
           var element = res.data[index];
           this.materials[index] = element;
         }
+        
+        this.materials.sort((a, b) => a.nombre >= b.nombre);
         this.forceReload = true;
       });
 
@@ -248,7 +295,58 @@ export default {
         };
         axios(config)
         .then((res) => {
-          if (res) { 
+          if (res) {            
+            var dateToday = new Date(Date.now());
+            var fechaAEnviar = "";
+            if ((dateToday.getMonth()+1) < 10) {
+              if (dateToday.getDate() < 10) {
+                fechaAEnviar = dateToday.getFullYear() + "-0" + (dateToday.getMonth()+1) + "-0" + dateToday.getDate();
+              } else {
+                fechaAEnviar = dateToday.getFullYear() + "-0" + (dateToday.getMonth()+1) + "-" + dateToday.getDate();
+              }
+            }
+            if (material.cantidad < material.stockSeguridad) {
+              axios.get(`${process.env.VUE_APP_BACK_URL}/alertas`, {headers:{
+                "Content-Type": "application/JSON",
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": this.token
+              }}).then((res) => {
+                var materialEncontrado = false;
+                for (var i = 0; i < res.data.length; i++) {
+                  if (res.data[i].id_access == material.nombre) {
+                    materialEncontrado = true;
+                    
+                    axios.put(`${process.env.VUE_APP_BACK_URL}/editAlert/${res.data[i].id}`, {
+                      "activa": 1,
+                      "fecha": new Date(fechaAEnviar)
+                    }, {
+                      headers: {
+                        "Content-Type": "application/JSON",
+                        "Access-Control-Allow-Origin": "*",
+                        "Authorization": this.token
+                      }
+                    }).then((res) => {
+                      console.log(res);
+                    });
+                    
+                    break;
+                  }
+                }
+                if (!materialEncontrado) {
+                  axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Inventario", "descripcion": "Queda poca cantidad de X que debería ser repuesto", "fecha": new Date(fechaAEnviar), "activa": 1, "id_access": material.nombre}, {
+                    headers: {
+                        "Content-Type": "application/JSON",
+                        "Access-Control-Allow-Origin": "*",
+                        "Authorization": this.token
+                    }
+                  }).then(response => {
+                    console.log(response);
+                  }).catch(error => {
+                    console.log(error);
+                  });
+                }
+              });
+            }
             this.forceReload = true;
           }
         })
@@ -491,4 +589,20 @@ button {
   }
 }
 
+.alertas {
+    position: absolute;
+    top: 7px;
+    left: 120px;
+    margin-top: 0px;
+    margin-right: 0px;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
 </style>

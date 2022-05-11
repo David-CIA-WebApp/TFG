@@ -7,6 +7,8 @@
       @click="redirectHome">
         INICIO
       </button>
+      <a href="/alertas" class="alertas"><svg viewBox="0 0 15 1" width="32" height="30"><path id="lineBC" d="M 1 1 L 1 2 L 11 2 L 11 1 L 10 0 C 9 -8 3 -8 2 0 L 1 1 M 6 3 A 1 1 0 0 0 6 6 A 1 1 0 0 0 6 3" stroke="black" stroke-width="0.01"  /></svg></a>
+
       <button 
       v-if="logged"
       style="background-color: transparent; color: red; margin-top: 0px; float: right;"
@@ -259,6 +261,8 @@
 
         <p v-if="actualUser.pass != null">Contraseña:</p>
         <input v-if="actualUser.pass != null" v-model="actualUser.pass"/>
+        <p v-if="actualUser.pass != null">Repita Contraseña:</p>
+        <input v-if="actualUser.pass != null" v-model="actualUser.repitpass"/>
 
         <p v-if="actualUser.tipo != null">Ocupación:</p>
         <select
@@ -409,9 +413,10 @@ export default {
     setActualUser(user) {
       this.actualUser = user;
       this.actualUser.oldDNI = user.dni;
+      if (this.actualUser.pass == "") this.actualUser.repitpass = "";
     },
     actualizar(actualUser) {  
-      if (actualUser.pass == null) {
+      if (actualUser.pass != actualUser.repitpass || actualUser.pass == null) {
         actualUser.pass = "";
       }
       if (actualUser.tipo == null) {
@@ -883,6 +888,22 @@ button {
   margin-top: -75px;
 }
 
+.alertas {
+    position: absolute;
+    top: 7px;
+    left: 120px;
+    margin-top: 0px;
+    margin-right: 0px;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
 
 
 </style>
