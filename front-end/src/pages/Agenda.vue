@@ -90,9 +90,7 @@
         <p>Direccion:</p>
         <input v-model="actualMeeting.direccion"/>
         <p>Encargado:</p>
-        <p v-if="actualMeeting.id_tecnico">{{actualMeeting.id_tecnico}}</p>
-        <p v-if="actualMeeting.id_administrador">{{actualMeeting.id_administrador}}</p>
-        <p v-if="actualMeeting.id_perito">{{actualMeeting.id_perito}}</p>
+        <p v-if="actualMeeting.worker" style="color: black;">{{actualMeeting.worker.nombre}} {{actualMeeting.worker.apellidos}} - {{actualMeeting.worker.dni}}</p>
         <p>Fecha y Hora:</p>
         <input v-model="actualDatetime" type="datetime-local"/>
 
@@ -221,6 +219,20 @@
       },
       setActualMeeting(meeting) {
         this.actualMeeting = meeting;
+        var inidice = 0;
+        if (this.actualMeeting.id_tecnico) {
+          inidice = this.actualMeeting.id_tecnico;
+        } else if (this.actualMeeting.id_administrador) {
+          inidice = this.actualMeeting.id_administrador;
+        } else if (this.actualMeeting.id_perito) {
+          inidice = this.actualMeeting.id_perito;
+        }
+        this.workers.forEach(worker => {
+          if (worker.worker_id == inidice) {
+            this.actualMeeting.worker = worker;
+          }
+        });
+        
         var year = this.actualMeeting.dates.toISOString().split("T")[0].split("-")[0];
         var day = this.actualMeeting.dates.toISOString().split("T")[0].split("-")[1];
         var month = this.actualMeeting.dates.toISOString().split("T")[0].split("-")[2];

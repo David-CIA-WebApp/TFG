@@ -32,7 +32,7 @@
         <option @click="searchProveedor()" value="otro">otro</option>
       </select>
     </div>
-    <div v-if="forceReload && logged && searchedText" class="col-">
+    <div v-if="forceReload && logged && changeSearch" class="col-">
       <table class="table table-striped" id="jobs" v-if="jobsLoaded">
         <thead>
           <tr>
@@ -252,26 +252,32 @@ export default {
       
       this.searchedJobs = [];
       this.searchedText = document.getElementById("myInput").value;
-      if (this.searchedText != "") {
-          for (let index = 0; index < this.jobs.length; index++) {
-              var element = this.jobs[index];
-              if (element.descripcion.toLowerCase().includes(this.searchedText.toLowerCase())) {
-                if (this.typeFilter != "") {
-                  if (element.tipo == this.typeFilter) {
-                    this.searchedJobs[index] = element;
-                  }
-                } else {
+      if (this.searchedText != "" || this.typeFilter != "") {
+        for (let index = 0; index < this.jobs.length; index++) {
+            var element = this.jobs[index];
+            if (this.searchedText != "" && element.descripcion.toLowerCase().includes(this.searchedText.toLowerCase())) {
+              if (this.typeFilter != "") {
+                if (element.tipo == this.typeFilter) {
+                  this.searchedJobs[index] = element;
+                }
+              } else {
+                this.searchedJobs[index] = element;
+              }
+            } else {
+              if (this.typeFilter != "") {
+                if (element.tipo == this.typeFilter) {
                   this.searchedJobs[index] = element;
                 }
               }
-          }
-
-          this.searchedJobs.sort((a, b) => a.descripcion >= b.descripcion);
-          this.searchedJobs = this.searchedJobs.filter(function (el) {
-            return el != null;
-          });
+            }
+        }
+        this.searchedJobs.sort((a, b) => a.descripcion >= b.descripcion);
+        this.searchedJobs = this.searchedJobs.filter(function (el) {
+          return el != null;
+        });
+      
+        this.changeSearch = true;
       }
-      this.changeSearch = true;
     },
     redirectJob(jobId) {
       this.$router.push("/jobs/" + jobId);

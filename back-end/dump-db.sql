@@ -30,7 +30,7 @@ CREATE TABLE `alertas` (
   `activa` tinyint(1) DEFAULT NULL,
   `id_access` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,8 +39,31 @@ CREATE TABLE `alertas` (
 
 LOCK TABLES `alertas` WRITE;
 /*!40000 ALTER TABLE `alertas` DISABLE KEYS */;
-INSERT INTO `alertas` VALUES (1,'El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica','2022-03-27','Revisión',1,'X'),(2,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-26','Contacto',1,'X'),(3,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-24','Contacto',1,'X'),(4,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-27','Contacto',1,'X'),(5,'Queda poca cantidad de X que debería ser repuesto','2022-03-26','Inventario',1,'X');
+INSERT INTO `alertas` VALUES (1,'El trabajo nºX se realizó hace más de 5 años y necesita revisión periódica','2022-03-27','Revisión',1,'X'),(2,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-26','Contacto',1,'X'),(3,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-24','Contacto',1,'X'),(4,'Un nuevo usuario con correo X te ha contactado desde la web','2022-03-27','Contacto',1,'X'),(5,'Queda poca cantidad de X que debería ser repuesto','2022-03-26','Inventario',1,'X'),(9,'Queda poca cantidad de X que debería ser repuesto','2022-03-31','Inventario',0,'Tubo'),(10,'Queda poca cantidad de X que debería ser repuesto','2022-03-31','Inventario',0,'Tuerca 10mm'),(12,'Un nuevo usuario con correo X te ha contactado desde la web','2022-04-14','Contacto',0,'david.brincau@hotmail.com'),(13,'Un nuevo usuario con correo X te ha contactado desde la web','2022-04-14','Contacto',1,'correodeprueba@us.es');
 /*!40000 ALTER TABLE `alertas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `certificados`
+--
+
+DROP TABLE IF EXISTS `certificados`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `certificados` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ruta` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `certificados`
+--
+
+LOCK TABLES `certificados` WRITE;
+/*!40000 ALTER TABLE `certificados` DISABLE KEYS */;
+/*!40000 ALTER TABLE `certificados` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -114,7 +137,7 @@ CREATE TABLE `consultas` (
   `correo` varchar(200) DEFAULT NULL,
   `descripcion` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,6 +146,7 @@ CREATE TABLE `consultas` (
 
 LOCK TABLES `consultas` WRITE;
 /*!40000 ALTER TABLE `consultas` DISABLE KEYS */;
+INSERT INTO `consultas` VALUES (1,'David','david.brincau@hotmail.com','Esto es una prueba'),(2,'David','david.brincau@hotmail.com','Esto es una prueba\n'),(3,'ajop','correodeprueba@us.es','ajnio');
 /*!40000 ALTER TABLE `consultas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,8 +224,35 @@ CREATE TABLE `materials` (
 
 LOCK TABLES `materials` WRITE;
 /*!40000 ALTER TABLE `materials` DISABLE KEYS */;
-INSERT INTO `materials` VALUES ('Arandelas',210,50),('Tubo',10,2),('Tuerca 10mm',28,5);
+INSERT INTO `materials` VALUES ('Arandelas',210,50),('Tubo',6,10),('Tuerca 10mm',4,5);
 /*!40000 ALTER TABLE `materials` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `proveedores`
+--
+
+DROP TABLE IF EXISTS `proveedores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `proveedores` (
+  `nombre` varchar(100) DEFAULT NULL,
+  `email` varchar(250) DEFAULT NULL,
+  `direccion` varchar(500) DEFAULT NULL,
+  `telefono` varchar(12) DEFAULT NULL,
+  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `proveedores`
+--
+
+LOCK TABLES `proveedores` WRITE;
+/*!40000 ALTER TABLE `proveedores` DISABLE KEYS */;
+INSERT INTO `proveedores` VALUES ('Bricomarkt',NULL,'Av. Príncipe de Asturias, s/n, 41500 Alcalá de Guadaíra, Sevilla','955 62 05 01',1),('Proveedor1','email1@hotmail.com','Calle de prueba 1','678 98 09 87',2),('Proveedor2','email@us.es','Calle de prueba 2','678 89 90 09',4);
+/*!40000 ALTER TABLE `proveedores` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -286,7 +337,7 @@ CREATE TABLE `workers` (
 
 LOCK TABLES `workers` WRITE;
 /*!40000 ALTER TABLE `workers` DISABLE KEYS */;
-INSERT INTO `workers` VALUES (1,'0T234T6T897TcT11f5disKl21oñlPq17',3,'Técnico'),(2,'contraseña',4,'Administrador'),(4,'Peritisimo',3,'Perito');
+INSERT INTO `workers` VALUES (1,'4SXmDlKP14DB104m3syt26K8ducBH2024SXmDlKP14DB104m3syt26K8ducBH202',3,'Técnico'),(2,'2024SXmDlKP14DB-64m3syt10K-8ducBH4FD26ñ5u-4vDB-34m3syt13K-5ducBH',4,'Administrador'),(4,'4SXmDlKP14DB104m3syt26K8ducBH2024SXmDlKP14DB104m3syt26K8ducBH202',3,'Técnico');
 /*!40000 ALTER TABLE `workers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,4 +354,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-28  0:29:33
+-- Dump completed on 2022-05-11  9:05:28

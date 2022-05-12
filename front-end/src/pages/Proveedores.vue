@@ -37,7 +37,6 @@
                         <td><input class="inputClass" v-model="proveedorActual.nombre"/></td>
                         <td><input class="inputClass" v-model="proveedorActual.direccion"/></td>
                         <td><input class="inputClass" v-model="proveedorActual.email"/></td>
-                        <td><input class="inputClass" v-model="proveedorActual.telefono"/></td>
                         <td><a style="color: blue;text-decoration: underline blue; cursor: pointer;" @click="crearProveedor(proveedorActual)"> Crear Proveedor </a></td> 
                     </tr>
                     <tr v-for="proveedor in searchedProviders" v-bind:key="proveedor">
@@ -158,24 +157,29 @@ export default {
         
         },
         crearProveedor() {
-            axios.post(`${process.env.VUE_APP_BACK_URL}/proveedores`, {"nombre": this.proveedorActual.nombre, "direccion": this.proveedorActual.direccion, "email": this.proveedorActual.email, "telefono": this.proveedorActual.telefono}, {
-            headers: {
-                'Content-Type': 'application/json',
-                "Access-Control-Allow-Origin": "*",
-                "Authorization": this.token
-            }
-            }).then(response => {
-                console.log(response);            
-                this.proveedorActual= {
-                    nombre: '',
-                    direccion: '',
-                    email: '',
-                    telefono: ''
+            var re = /^[0-9]{3} [0-9]{2} [0-9]{2} [0-9]{2}/;
+            if (re.test(this.proveedorActual.telefono)) {
+                axios.post(`${process.env.VUE_APP_BACK_URL}/proveedores`, {"nombre": this.proveedorActual.nombre, "direccion": this.proveedorActual.direccion, "email": this.proveedorActual.email, "telefono": this.proveedorActual.telefono}, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Access-Control-Allow-Origin": "*",
+                    "Authorization": this.token
                 }
-                this.reloadSite();
-            }).catch(error => {
-                console.log(error);
-            });
+                }).then(response => {
+                    console.log(response);            
+                    this.proveedorActual= {
+                        nombre: '',
+                        direccion: '',
+                        email: '',
+                        telefono: ''
+                    }
+                    this.reloadSite();
+                }).catch(error => {
+                    console.log(error);
+                });
+            } else {
+                alert("Formato del telefono incorrecto. Formato correcto: 000 00 00 00");
+            }
         },
         actualizar() {
             this.forceReload = false;
