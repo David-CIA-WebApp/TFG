@@ -62,9 +62,10 @@ export default {
     },
     methods: {
         updateAlert(alerta) {
+            var fechaAEnviar = new Date(alerta.fecha.split('/').reverse().join("-"));
             axios.put(`${process.env.VUE_APP_BACK_URL}/editAlert/`+alerta.id, {
                 activa: !alerta.activa,
-                fecha: new Date(alerta.fecha.split('/').reverse().join("-"))
+                fecha: fechaAEnviar.getFullYear() + "-" + (fechaAEnviar.getMonth() + 1) + "-" + fechaAEnviar.getDate()
             }, {
                 headers: {
                     'Content-Type': 'application/json',
