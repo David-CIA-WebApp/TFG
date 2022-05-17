@@ -1,7 +1,4 @@
-FROM node:14.16.0
-WORKDIR /usr/src/app
-COPY package*.json ./
-
+FROM base as dev
 RUN npm install
-COPY . .
-RUN node index.js
+COPY . /
+CMD ["node", "index.js"]
