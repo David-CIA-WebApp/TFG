@@ -1,6 +1,8 @@
 const axios = require('axios');
 require('dotenv').config();
 
+console.log("Checking jobs...\n");
+
 const path = `${process.env.VUE_APP_BACK_URL}/login`;
 const config = {
     method: 'post',
@@ -17,7 +19,6 @@ const config = {
 
 
 setInterval(function(){
-    console.log("Checking jobs...\n");
     axios(config)
     .then((res) => {
         if (res.data.accepted) { 
