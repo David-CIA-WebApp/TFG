@@ -17,6 +17,8 @@ const config = {
 
 
 setInterval(function(){
+    var fecha = new Date();
+    console.log("Checking jobs at: " + fecha.toLocaleString());
     axios(config)
     .then((res) => {
         if (res.data.accepted) { 
