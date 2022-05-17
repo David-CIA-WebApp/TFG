@@ -1,5 +1,5 @@
 FROM node:14.16.0
 WORKDIR /app
-COPY . ./app
+COPY . ./
 RUN npm install
 CMD ["npm", "start"]
