@@ -425,11 +425,11 @@ def editUsers(user_dni):
             mysql.connection.commit()
         except:
             try:
-                cur.execute('UPDATE externalworkers SET pass = %s where user_id = %s', (ocupacion, user_id))
+                cur.execute('UPDATE externalworkers SET ocupacion = %s where user_id = %s', (ocupacion, user_id))
                 mysql.connection.commit()
             except:
                 try:
-                    cur.execute('UPDATE clients SET pass = %s where user_id = %s', (clientePotencial, user_id))
+                    cur.execute('UPDATE clients SET clientePotencial = %s where user_id = %s', (clientePotencial, user_id))
                     mysql.connection.commit()
                 except:
                     pass
