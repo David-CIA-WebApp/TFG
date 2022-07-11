@@ -153,6 +153,7 @@ export default {
         }
       }).then(response => {
         console.log(response);
+        window.alert("Su consulta ha sido enviada y será respondida a la con la mayor brevedad posible. Gracias!");
         
         axios.post(`${process.env.VUE_APP_BACK_URL}/alertas`, {"tipoAlerta": "Contacto", "descripcion": "Un nuevo usuario con correo X te ha contactado desde la web", "fecha": new Date(fechaAEnviar), "activa": 1, "id_access": this.contacto.correo}, {
           headers: {
